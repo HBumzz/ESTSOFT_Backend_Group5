@@ -2,7 +2,9 @@ package com.app.salty.user.controller;
 
 import com.app.salty.user.dto.request.EmailVerificationRequest;
 import com.app.salty.user.dto.request.LoginRequest;
+import com.app.salty.user.dto.kakao.KAKAOAuthResponse;
 import com.app.salty.user.dto.response.TokenResponse;
+import com.app.salty.user.entity.Users;
 import com.app.salty.user.service.EmailService;
 import com.app.salty.user.service.UserService;
 import com.app.salty.util.JwtUtil;
@@ -32,6 +34,7 @@ public class AuthController {
     private final EmailService emailService;
     private final UserService userService;
 
+    //로컬 로그인
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
@@ -62,6 +65,18 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
+
+    //kakao 로그인
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<?> kakaoCallback(@RequestParam String code) {
+        System.out.println("핸들러 작동 확인 +++++++++++++++++++++++");
+        log.info("code : {}",code);
+        // 인증 코드로 카카오 로그인 처리
+        Users authResponse = userService.kakaoLogin(code);
+        return ResponseEntity.ok(authResponse);
+    }
+
+
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestHeader("Refresh-Token") String refreshToken) {

@@ -33,9 +33,18 @@
   <div class="social-login">
     <h3>Or Sign In With</h3>
     <div class="social-icons">
-      <a href="#"><i class="fab fa-google"></i></a>
-      <a href="#"><i class="fab fa-github"></i></a>
-      <a href="#"><i class="fab fa-kakao"></i></a>
+      <a href=# class="social-button google">
+        <i class="fab fa-google"></i>
+        <span>Google</span>
+      </a>
+      <a href="" class="social-button github">
+        <i class="fab fa-github"></i>
+        <span>Github</span>
+      </a>
+      <a th:href="@{/auth/login/kakao}" class="social-button kakao">
+        <img src="/images/kakao-icon.png" alt="Kakao icon" class="kakao-icon">
+        <span>Kakao</span>
+      </a>
     </div>
   </div>
   <div class="register-link">
@@ -45,6 +54,16 @@
 <script th:herf="@{/js/login.js}"></script>
 <script>
   // login.js
+
+  const API = {
+    LOGIN: '/api/auth/login',
+    REFRESH: '/api/auth/refresh',
+    SOCIAL: {
+      GOOGLE: '/api/auth/oauth2/google',
+      GITHUB: '/api/auth/oauth2/github',
+      KAKAO: "${kakaoLocation}"
+    }
+  };
 
   document.addEventListener('DOMContentLoaded', () => {
     // DOM 요소 선택 - 최상단에서 한 번만 선택하여 재사용
@@ -56,11 +75,21 @@
       rememberMeCheckbox: document.querySelector('input[type="checkbox"]')
     };
 
-    // API 엔드포인트 상수 정의
-    const API = {
-      LOGIN: '/api/auth/login',
-      REFRESH: '/api/auth/refresh'
-    };
+    //socialLogin
+    const handleSocialLogin = (provider) => {
+      const width = 500;
+      const height = 600;
+      const left = window.screen.width / 2 - width / 2;
+      const top = window.screen.height / 2 - height / 2;
+
+      const popup = window.open(
+              API.SOCIAL[provider],
+              `${provider}Login`,
+              `width=${width},height=${height},left=${left},top=${top}`
+      );
+
+    }
+
 
     // 유틸리티 함수들
     const utils = {

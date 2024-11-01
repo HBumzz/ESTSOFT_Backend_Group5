@@ -54,6 +54,16 @@ public class WebSecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll() //authenticated()
                 )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .authorizationEndpoint(authorization -> authorization
+//                                .baseUri("/oauth2/authorization"))
+//                        .redirectionEndpoint(redirection -> redirection
+//                                .baseUri("/api/auth/**/callback"))
+//                        .userInfoEndpoint(userInfo -> userInfo
+//                                .userService(())
+//                        .successHandler(oAuth2AuthenticationSuccessHandler)
+//                        .failureHandler(oAuth2AuthenticationFailureHandler)
+//                )
                 .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/auth/logout")

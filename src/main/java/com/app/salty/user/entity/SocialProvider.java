@@ -3,12 +3,17 @@ package com.app.salty.user.entity;
 import com.app.salty.user.common.AuthProvider;
 import com.app.salty.util.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Entity
+@Getter
 @Table(name = "social_providers")
+@NoArgsConstructor
 public class SocialProvider extends BaseTimeEntity {
 
     @Id
@@ -35,6 +40,15 @@ public class SocialProvider extends BaseTimeEntity {
 //    @Column(columnDefinition = "json")
 //    private Map<String, Object> additionalData = new HashMap<>();
 
+    //생성 메서드
+    @Builder
+    public SocialProvider( AuthProvider provider, String providerId, String nickname, String profileImage) {
+        this.provider = provider;
+        this.providerId = providerId;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+
+    }
 
     @Override
     public String toString() {
