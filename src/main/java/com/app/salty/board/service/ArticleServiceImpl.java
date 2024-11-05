@@ -5,7 +5,7 @@ import com.app.salty.board.dto.article.*;
 import com.app.salty.board.dto.comment.GetCommentResponseDto;
 import com.app.salty.board.entity.Article;
 import com.app.salty.board.entity.Comment;
-import com.app.salty.board.entity.Images;
+import com.app.salty.board.entity.Image;
 import com.app.salty.board.repository.ArticleRepository;
 import com.app.salty.board.repository.CommentRepository;
 import com.app.salty.board.repository.ImagesRepository;
@@ -46,8 +46,8 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public GetArticleResponseDto getArticleById(Long id) {
         Article article = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        List<Images> imagesList = imagesRepository.findImagesByArticle_Id(article.getId());
-        List<ImagesResponseDto> imagesResponseDtoList = imagesList.stream().map(ImagesResponseDto::new).toList();
+        List<Image> imageList = imagesRepository.findImagesByArticle_Id(article.getId());
+        List<ImagesResponseDto> imagesResponseDtoList = imageList.stream().map(ImagesResponseDto::new).toList();
         GetArticleResponseDto responseDto = new GetArticleResponseDto(article);
         responseDto.setImageList(imagesResponseDtoList);
         return responseDto;
@@ -73,7 +73,7 @@ public class ArticleServiceImpl implements ArticleService {
                 String filePath = fileDir + originalFileName;
                 log.info("filePath = {}" , filePath);
 
-                Images image = new Images(originalFileName,originalFileName,filePath,size,contentType,article);
+                Image image = new Image(originalFileName,originalFileName,filePath,size,contentType,article);
                 imagesRepository.save(image);
 
                 file.transferTo(new File(filePath));

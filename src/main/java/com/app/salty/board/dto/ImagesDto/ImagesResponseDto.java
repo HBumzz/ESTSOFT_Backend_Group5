@@ -1,6 +1,6 @@
 package com.app.salty.board.dto.ImagesDto;
 
-import com.app.salty.board.entity.Images;
+import com.app.salty.board.entity.Image;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +12,7 @@ public class ImagesResponseDto {
     private String storedFileName;
     private String filePath;
 
-    public ImagesResponseDto(Images image) {
+    public ImagesResponseDto(Image image) {
         this.imageId = image.getId();
         this.originalFileName = image.getOriginalFileName();
         this.storedFileName = image.getStoredFileName();
