@@ -52,7 +52,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/auth/**","/auth/**").permitAll()
                         .requestMatchers("/api/boards/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().permitAll()  // authenticated()
+                        .anyRequest().permitAll() //authenticated()
                 )
                 .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
