@@ -26,7 +26,7 @@ public class ChallengeBoardController {
 
     @PostMapping("/chboard/write")
     public ResponseEntity<ChallengeResponse> writeArticle(@RequestBody AddChallengeRequest request) {
-        log.info(request.getTitle(), request.getContent());
+        //log.info("title : {} , content : {} " , request.getTitle(), request.getContent());
         Challenge challenge = service.saveChallenge(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)

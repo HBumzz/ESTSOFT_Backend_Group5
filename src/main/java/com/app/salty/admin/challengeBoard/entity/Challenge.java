@@ -63,7 +63,7 @@ public class Challenge {
     }
 
     public ChallengeResponse convert() {
-        return new ChallengeResponse(id, title, content);
+        return new ChallengeResponse(this);
     }
 
     public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, ChallengeStatus status) {

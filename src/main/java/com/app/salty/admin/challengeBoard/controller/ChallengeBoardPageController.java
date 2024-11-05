@@ -34,7 +34,7 @@ public class ChallengeBoardPageController {
         return "/chboard/challengeList";  //challengeList.html
     }
 
-    //GET /articles/{id} 상세페이지 리턴
+    //GET 상세페이지 리턴
     @GetMapping("/chboard/{id}")
     public String showDetails(@PathVariable Long id, Model model) {
         Challenge challenge = challengeBoardService.findBy(id);
@@ -43,7 +43,7 @@ public class ChallengeBoardPageController {
         return "/chboard/challenge";
     }
 
-    //GET /new-articles?id=1
+    //GET /new-challenge?id=1
     @GetMapping("/new-challenge")
     public String newArticle(@RequestParam(required = false) Long id, Model model) {
         if (id == null) {
