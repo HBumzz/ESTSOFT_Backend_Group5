@@ -41,7 +41,7 @@
         <i class="fab fa-github"></i>
         <span>Github</span>
       </a>
-      <a th:href="@{/auth/login/kakao}" class="social-button kakao">
+      <a th:href="@{/auth/login/kakao}" onclick="handleSocialLogin(Event)" class="social-button kakao">
         <img src="/images/kakao-icon.png" alt="Kakao icon" class="kakao-icon">
         <span>Kakao</span>
       </a>
@@ -76,17 +76,19 @@
     };
 
     //socialLogin
-    const handleSocialLogin = (provider) => {
-      const width = 500;
-      const height = 600;
-      const left = window.screen.width / 2 - width / 2;
-      const top = window.screen.height / 2 - height / 2;
+    const handleSocialLogin = async (e) => {
+     e.preventDefault();
 
-      const popup = window.open(
-              API.SOCIAL[provider],
-              `${provider}Login`,
-              `width=${width},height=${height},left=${left},top=${top}`
-      );
+     try {
+       const response = await fetch(`${API.SOCIAL.KAKAO}`);
+       if (response.ok){
+         const data = response.json();
+         tokenManager.setTokens(data.accessToken, data.refreshToken);
+         window.location.href = '/';
+       }
+     }catch (e){
+       console.error(e);
+     }
 
     }
 

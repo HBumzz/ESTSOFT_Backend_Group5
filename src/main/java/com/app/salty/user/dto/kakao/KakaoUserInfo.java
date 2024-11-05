@@ -4,9 +4,11 @@ import com.app.salty.user.common.AuthProvider;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class KakaoUserInfo {
     private String id;
     private AuthProvider provider;
@@ -46,4 +48,6 @@ public class KakaoUserInfo {
         @JsonProperty("profile_image_url")
         private String profileImageUrl;
     }
+
+
 }

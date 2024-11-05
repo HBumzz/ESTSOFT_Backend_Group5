@@ -56,25 +56,31 @@ spring:
       host: localhost
       port: 6379
 
-  security:
-    oauth2:
-      client:
-        registration:
-          kakao:
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/api/auth/kakao/callback
-            authorization-grant-type: authorization_code
-            client-authentication-method: client_secret_post
-            client-name: Kakao
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          kakao:
+#            client-id: ${KAKAO_CLIENT_ID}
+#            client-secret: ${KAKAO_CLIENT_SECRET}
+#            redirect-uri: http://localhost:8080/api/auth/kakao/callback
+#            authorization-grant-type: authorization_code
+#            client-authentication-method: client_secret_post
+#            client-name: Kakao
+#
+#        provider:
+#          # Kakao Provider 설정 (Google과 Github는 기본 제공됨)
+#          kakao:
+#            authorization-uri: https://kauth.kakao.com/oauth/authorize
+#            token-uri: https://kauth.kakao.com/oauth/token
+#            user-info-uri: https://kapi.kakao.com/v2/user/me
+#            user-name-attribute: id
 
-        provider:
-          # Kakao Provider 설정 (Google과 Github는 기본 제공됨)
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
+kakao:
+  client_id: ${KAKAO_CLIENT_ID}
+  secret_key: ${KAKAO_CLIENT_SECRET}
+  redirect_uri: ${KAKAO_REDIRECT_URI}
+  admin_key: ${KAKAO_ADMIN_KEY}
 
 jwt:
   secret: ${JWT_SECRET_KEY}
