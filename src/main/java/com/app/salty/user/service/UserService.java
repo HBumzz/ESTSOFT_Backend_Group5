@@ -30,6 +30,10 @@ public class UserService {
     private final RolesRepository rolesRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public Users findBy(Long userId) {
+        return userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+    }
+
     @Transactional
     public UserResponse signup(UserSignupRequest request) {
         validateDuplicateEmail(request.getEmail());

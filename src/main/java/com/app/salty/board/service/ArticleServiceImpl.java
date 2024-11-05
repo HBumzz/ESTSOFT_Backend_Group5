@@ -9,6 +9,7 @@ import com.app.salty.board.entity.Image;
 import com.app.salty.board.repository.ArticleRepository;
 import com.app.salty.board.repository.CommentRepository;
 import com.app.salty.board.repository.ImagesRepository;
+import com.app.salty.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import java.util.Objects;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
+    private final UserService userService;
     ArticleRepository articleRepository;
     CommentRepository commentRepository;
     ImagesRepository imagesRepository;
@@ -31,34 +33,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     ArticleServiceImpl(ArticleRepository articleRepository
             , CommentRepository commentRepository
-            , ImagesRepository imagesRepository) {
+            , ImagesRepository imagesRepository, UserService userService) {
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
         this.imagesRepository = imagesRepository;
+        this.userService = userService;
     }
 
-    @Override
-    public List<GetArticleResponseDto> getArticleList() {
-        List<Article> list = articleRepository.findAll();
-        return list.stream().map(GetArticleResponseDto::new).toList();
-    }
-
-    @Override
-    public GetArticleResponseDto getArticleById(Long id) {
-        Article article = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        List<Image> imageList = imagesRepository.findImagesByArticle_Id(article.getId());
-        List<ImagesResponseDto> imagesResponseDtoList = imageList.stream().map(ImagesResponseDto::new).toList();
-        GetArticleResponseDto responseDto = new GetArticleResponseDto(article);
-        responseDto.setImageList(imagesResponseDtoList);
-        return responseDto;
-    }
-
-    @Transactional
-    @Override
-    public SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto, MultipartFile[] multipartFiles) throws IOException {
-        Article article = articleRepository.save(dto.toEntity());
-
-        log.info("multipartFile = {}", multipartFiles);
+    private void FileHandler(MultipartFile[] multipartFiles ,Article article) throws IOException {
+        log.info("multipartFile = {}", (Object) multipartFiles);
         if(!Objects.isNull(multipartFiles)) {
             for(MultipartFile file : multipartFiles) {
                 String originalFileName = file.getOriginalFilename();
@@ -79,17 +62,51 @@ public class ArticleServiceImpl implements ArticleService {
                 file.transferTo(new File(filePath));
             }
         }
+    }
+
+    @Override
+    public List<GetArticleResponseDto> getArticleList() {
+        List<Article> list = articleRepository.findAll();
+        return list.stream().map(GetArticleResponseDto::new).toList();
+    }
+
+    @Override
+    public GetArticleResponseDto getArticleById(Long id) {
+        Article article = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        List<Image> imageList = imagesRepository.findImagesByArticle_Id(article.getId());
+        List<ImagesResponseDto> imagesResponseDtoList = imageList.stream().map(ImagesResponseDto::new).toList();
+        GetArticleResponseDto responseDto = new GetArticleResponseDto(article);
+        responseDto.setImageList(imagesResponseDtoList);
+        return responseDto;
+    }
+
+    @Override
+    public SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto, MultipartFile[] multipartFiles) throws IOException {
+        Article article = articleRepository.save(dto.toEntity());
+
+        FileHandler(multipartFiles, article);
 
         return new SaveArticleResponseDto(article);
     }
 
+    @Transactional
     @Override
-    public UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto, Long articleId)  {
+    public UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto
+            , MultipartFile[] multipartFiles,Long articleId) throws IOException {
+
+        userService.findBy(dto.getUserId()); // 사용자 인증
 
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
+        if(!Objects.equals(article.getUser().getId(), dto.getUserId())) {
+            throw new IllegalArgumentException("로그인 정보와 작성자 정보가 다릅니다.");
+        }
+
         article.setHeader(dto.getHeader());
         article.setTitle(dto.getTitle());
         article.setContent(dto.getContent());
+
+        imagesRepository.deleteImagesByArticle_Id(article.getId());
+        FileHandler(multipartFiles,article);
 
         Article newArticle = articleRepository.save(article);
         return new UpdateArticleResponseDto(newArticle);

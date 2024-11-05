@@ -46,10 +46,6 @@ public class Article {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-    /*
-    @OneToMany(mappedBy = "article")
-    private List<Images> uploadImages = new ArrayList<>();
-    */
 
     public Article(Users user, ArticleHeader header, String title, String content) {
         this.user = user;
