@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Images {
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="image_id")
@@ -34,7 +34,7 @@ public class Images {
     @JoinColumn(name="article_id")
     private Article article;
 
-    public Images(String originalFileName, String originalFileName1
+    public Image(String originalFileName, String originalFileName1
             , String filePath, long size
             , String contentType, Article article) {
         this.originalFileName=originalFileName;

@@ -2,7 +2,6 @@ package com.app.salty.board.dto.article;
 
 import com.app.salty.board.dto.ImagesDto.ImagesResponseDto;
 import com.app.salty.board.entity.Article;
-import com.app.salty.board.entity.Images;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
