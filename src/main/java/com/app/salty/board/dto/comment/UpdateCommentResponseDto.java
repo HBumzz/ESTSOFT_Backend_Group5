@@ -8,17 +8,17 @@ import static com.app.salty.util.DateFormatUtil.formatter;
 
 @NoArgsConstructor
 @Getter
-public class GetCommentResponseDto {
+public class UpdateCommentResponseDto {
     private Long commentId;
-    private Long userId;
+    private Long writerId;
     private Long articleId;
     private String content;
     private String createdAt;
     private String updatedAt;
 
-    public GetCommentResponseDto(Comment comment) {
+    public UpdateCommentResponseDto(Comment comment) {
         this.commentId = comment.getId();
-        this.userId = comment.getUser().getId();
+        this.writerId = comment.getUser().getId();
         this.articleId = comment.getArticle().getId();
         this.content = comment.getContent();
         this.createdAt = comment.getCreatedAt().format(formatter);

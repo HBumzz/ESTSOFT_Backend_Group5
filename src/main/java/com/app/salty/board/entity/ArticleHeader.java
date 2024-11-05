@@ -1,7 +1,7 @@
 package com.app.salty.board.entity;
 
 // 글머리에 들어갈 열거형
-public enum BoardHeader {
+public enum ArticleHeader {
     DAILY("일상"),          // 일상
     CERTIFY("인증"),        // 절약/소비 인증
     INFORMATION("정보"),    // 정보
@@ -10,7 +10,7 @@ public enum BoardHeader {
 
     final private String name;
 
-    BoardHeader(String s) {
+    ArticleHeader(String s) {
         this.name= s;
     }
     public String getName() {

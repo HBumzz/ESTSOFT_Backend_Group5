@@ -1,27 +1,30 @@
 package com.app.salty.board.entity;
 
-import com.app.salty.board.dto.board.GetBoardResponseDto;
-import com.app.salty.board.dto.board.SaveBoardResponseDto;
+import com.app.salty.board.dto.article.UpdateArticleRequestDto;
 import com.app.salty.user.entity.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
-public class Board {
+public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="board_id")
+    @Column(name ="article_id")
     private Long id;
 
     @ManyToOne
@@ -29,8 +32,8 @@ public class Board {
     private Users user;
 
     @Enumerated(EnumType.STRING)
-    @Column(name ="board_header", nullable = false)
-    private BoardHeader header;
+    @Column(name ="article_header", nullable = false)
+    private ArticleHeader header;
 
     @Column(nullable = false)
     private String title;
@@ -39,14 +42,26 @@ public class Board {
     private String content;
 
     @CreatedDate
-    @Column(name="created-at")
+    @Column(name="created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name="updated-at")
+    @Column(name="updated_at")
     private LocalDateTime updatedAt;
+    /*
+    @OneToMany(mappedBy = "article")
+    private List<Images> uploadImages = new ArrayList<>();
+*/
 
-    public Board(Users user, BoardHeader header, String title, String content) {
+    public Article(Users user, ArticleHeader header, String title, String content) {
+        this.user = user;
+        this.header=header;
+        this.title=title;
+        this.content=content;
+    }
+
+    public Article(Long id, Users user, ArticleHeader header, String title, String content) {
+        this.id = id;
         this.user = user;
         this.header=header;
         this.title=title;

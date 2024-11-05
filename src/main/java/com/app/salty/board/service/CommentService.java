@@ -1,20 +1,17 @@
 package com.app.salty.board.service;
 
-import com.app.salty.board.dto.comment.GetCommentResponseDto;
-import com.app.salty.board.dto.comment.SaveCommentRequestDto;
-import com.app.salty.board.dto.comment.UpdateCommentRequestDto;
-import org.springframework.http.ResponseEntity;
+import com.app.salty.board.dto.comment.*;
 
 import java.util.List;
 
 public interface CommentService {
-    ResponseEntity<List<GetCommentResponseDto>> getCommentList();
-    ResponseEntity<GetCommentResponseDto> getCommentById(Long id);
-    ResponseEntity<Void> saveComment(SaveCommentRequestDto dto);
-    ResponseEntity<Void> updateComment(UpdateCommentRequestDto dto);
-    ResponseEntity<Void> deleteComment(Long id);
+    List<GetCommentResponseDto> getCommentList();
+    GetCommentResponseDto getCommentById(Long id);
+    SaveCommentResponseDto saveComment(SaveCommentRequestDto dto, Long articleId);
+    UpdateCommentResponseDto updateComment(UpdateCommentRequestDto dto, Long commentId);
+    void deleteComment(Long id);
 
-    ResponseEntity<List<GetCommentResponseDto>> getCommentByBoardId(Long boardId);
+    List<GetCommentResponseDto> getCommentsByArticleId(Long articleId);
 
-    ResponseEntity<List<GetCommentResponseDto>> getCommentByUserId(Long UserId);
+    List<GetCommentResponseDto> getCommentsByUserId(Long userId);
 }
