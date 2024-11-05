@@ -5,9 +5,12 @@ import com.app.salty.user.dto.request.LoginRequest;
 import com.app.salty.user.dto.kakao.KAKAOAuthResponse;
 import com.app.salty.user.dto.response.TokenResponse;
 import com.app.salty.user.entity.Users;
+import com.app.salty.user.service.AuthenticationService;
+import com.app.salty.user.service.CustomUserDetailsService;
 import com.app.salty.user.service.EmailService;
 import com.app.salty.user.service.UserService;
 import com.app.salty.util.JwtUtil;
+import jakarta.mail.AuthenticationFailedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,97 +34,36 @@ import java.util.Map;
 @Slf4j
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final EmailService emailService;
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     //로컬 로그인
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                    )
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            String accessToken = jwtUtil.generateAccessToken(authentication);
-            String refreshToken = jwtUtil.generateRefreshToken(authentication);
-
-            TokenResponse tokenResponse = new TokenResponse();
-            tokenResponse.setStatus("success");
-            tokenResponse.setAccessToken(accessToken);
-            tokenResponse.setRefreshToken(refreshToken);
-            tokenResponse.setUsername(authentication.getName());
-            tokenResponse.setRememberMe(loginRequest.isRememberMe());
-
+            TokenResponse tokenResponse = authenticationService.authenticateLocal(loginRequest);
+            log.info("tokenResponse : {}", tokenResponse);
             return ResponseEntity.ok(tokenResponse);
-        } catch (AuthenticationException e) {
-            log.error("Authentication failed: ", e);
-            TokenResponse errorResponse = new TokenResponse();
-            errorResponse.setStatus("error");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        } catch (AuthenticationFailedException e) {
+            System.out.println("local login failed : /login" + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
-
-    //kakao 로그인
-    @GetMapping("/kakao/callback")
-    public ResponseEntity<?> kakaoCallback(@RequestParam String code) {
-        System.out.println("핸들러 작동 확인 +++++++++++++++++++++++");
-        log.info("code : {}",code);
-        // 인증 코드로 카카오 로그인 처리
-        Users authResponse = userService.kakaoLogin(code);
-        return ResponseEntity.ok(authResponse);
-    }
-
 
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestHeader("Refresh-Token") String refreshToken) {
-        try {
-            // 리프레시 토큰 검증
-            if (!jwtUtil.validateToken(refreshToken)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
-            }
-
-            // 사용자 정보 추출
-            String username = jwtUtil.extractUsername(refreshToken);
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            // 새로운 액세스 토큰 발급
-            String newAccessToken = jwtUtil.generateAccessToken(authentication);
-
-            Map<String, String> tokens = new HashMap<>();
-            tokens.put("accessToken", newAccessToken);
-
-            return ResponseEntity.ok(tokens);
-        } catch (Exception e) {
-            log.error("Token refresh failed: ", e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token refresh failed");
-        }
+        TokenResponse newResponseToken = authenticationService.refreshToken(refreshToken);
+        return ResponseEntity.ok(newResponseToken);
     }
 
     // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String accessToken) {
-        try {
-            // 토큰 검증
-            if (accessToken != null && accessToken.startsWith("Bearer ")) {
-                String token = accessToken.substring(7);
-                // 토큰 블랙리스트 처리 또는 무효화
-                jwtUtil.invalidateToken(token);
-            }
-
-            SecurityContextHolder.clearContext();
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            log.error("Logout failed: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        authenticationService.logout(accessToken);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/email-verification-send")

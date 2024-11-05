@@ -9,13 +9,16 @@ import org.springframework.stereotype.Component;
 @Getter
 public class KakaoAPI {
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    @Value("${kakao.client_id}")
     private String clientId;
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    @Value("${kakao.secret_key}")
+    private String secretKet;
+    @Value("${kakao.redirect_uri}")
     private String redirectUri;
+    @Value("${kakao.admin_key}")
+    private String adminKey;
 
     private final AuthProvider authProvider = AuthProvider.KAKAO;
-
     private final String KAUTH_TOKEN_URL_HOST ="https://kauth.kakao.com";
     private final String KAUTH_USER_URL_HOST = "https://kapi.kakao.com";
     private final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";

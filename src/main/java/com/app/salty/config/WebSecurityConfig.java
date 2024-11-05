@@ -1,5 +1,6 @@
 package com.app.salty.config;
 
+import com.app.salty.config.filter.JwtAuthenticationFilter;
 import com.app.salty.config.filter.LoginFilter;
 import com.app.salty.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,6 +30,12 @@ public class WebSecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -65,6 +73,7 @@ public class WebSecurityConfig {
 //                        .failureHandler(oAuth2AuthenticationFailureHandler)
 //                )
                 .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/auth/logout")
                         .invalidateHttpSession(true)

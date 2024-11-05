@@ -48,11 +48,7 @@ public class UserService {
     public UserResponse signup(UserSignupRequest request) {
         validateDuplicateEmail(request.getEmail());
 
-
         Users signupUser = userSignupRequestToUser(request);
-        Roles userRole = rolesRepository.findByRole(Role.USER)
-                .orElseThrow(() -> new IllegalArgumentException("찾을 수 없는 권한입니다."));
-
         addUserRole(signupUser,Role.USER);
 
         Users savedUser = userRepository.save(signupUser);
