@@ -16,18 +16,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "comments")
 public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="comment_id")
-    private Long id;
+    private Long commentId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users user;
 
-    @ManyToOne
-    @JoinColumn(name ="article_id")
+    @Enumerated(EnumType.STRING)
+    @Column(name ="article_type", nullable = false)
+    private ArticleType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id")
     private Article article;
 
     @Column(name ="content" ,nullable = false)
@@ -41,9 +47,10 @@ public class Comment {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-    public Comment(Users user, Article article, String content) {
-        this.user= user;
-        this.article = article;
-        this.content = content;
+    public Comment(ArticleType type, Users user, Article article, String content) {
+        this.type=type;
+        this.user=user;
+        this.article=article;
+        this.content=content;
     }
 }

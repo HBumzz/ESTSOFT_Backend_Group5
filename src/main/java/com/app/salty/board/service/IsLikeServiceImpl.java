@@ -36,12 +36,15 @@ public class IsLikeServiceImpl implements IsLikeService{
     @Override
     public IsLikeResponseDto likeComment(IsLikeRequestDto requestDto, Long commentId) {
         // 댓글 존재 여부 확인
-        commentService.getCommentById(commentId);
-
-        IsLike like = requestDto.toEntity();
-        like.setContentId(commentId);
-        return new IsLikeResponseDto(isLikeRepository.save(like));
+//
+//        commentService.getCommentById(commentId);
+//
+//        IsLike like = requestDto.toEntity();
+//        like.setContentId(commentId);
+        //return new IsLikeResponseDto(isLikeRepository.save(like));
+        return null;
     }
+
 
     @Override
     public Integer countLikesArticle(Long articleId) {

@@ -127,7 +127,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public GetArticleWithCommentResponseDto getArticleWithCommentByArticleId(Long articleId) {
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
-        List<Comment> commentList = commentRepository.findCommentsByArticle_Id(articleId);
+        List<Comment> commentList = commentRepository.findCommentsByArticle(article);
         List<GetCommentResponseDto> commentResponseDtoList = commentList.stream().map(GetCommentResponseDto::new).toList();
         return new GetArticleWithCommentResponseDto(article,commentResponseDtoList);
     }

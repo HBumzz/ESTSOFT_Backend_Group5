@@ -1,10 +1,14 @@
 package com.app.salty.board.service;
 
 import com.app.salty.board.dto.comment.*;
+import com.app.salty.board.entity.ArticleType;
 import com.app.salty.board.entity.Article;
 import com.app.salty.board.entity.Comment;
 import com.app.salty.board.repository.ArticleRepository;
 import com.app.salty.board.repository.CommentRepository;
+import com.app.salty.user.entity.Users;
+import com.app.salty.user.repository.UserRepository;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +18,13 @@ public class CommentServiceImpl implements CommentService {
 
     CommentRepository commentRepository;
     ArticleRepository articleRepository;
+    UserRepository userRepository;
 
-    CommentServiceImpl(CommentRepository commentRepository, ArticleRepository articleRepository) {
+    CommentServiceImpl(CommentRepository commentRepository
+            , ArticleRepository articleRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.articleRepository = articleRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -27,8 +34,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public GetCommentResponseDto getCommentById(Long id) {
-        Comment comment = commentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public GetCommentResponseDto getCommentById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
         return new GetCommentResponseDto(comment);
     }
 
@@ -48,19 +55,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
+    public void deleteComment(Long commentId) {
+        commentRepository.deleteById(commentId);
     }
 
     @Override
     public List<GetCommentResponseDto> getCommentsByArticleId(Long articleId) {
-        List<Comment> commentList = commentRepository.findCommentsByArticle_Id(articleId);
+        Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
+        List<Comment> commentList = commentRepository.findCommentsByArticle(article);
         return commentList.stream().map(GetCommentResponseDto::new).toList();
     }
 
     @Override
     public List<GetCommentResponseDto> getCommentsByUserId(Long userId) {
-        List<Comment> commentList = commentRepository.findCommentsByUser_Id(userId);
+        Users user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+        List<Comment> commentList = commentRepository.findCommentsByUser(user);
         return commentList.stream().map(GetCommentResponseDto::new).toList();
     }
 }

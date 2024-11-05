@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
+@Table(name="articles")
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +46,12 @@ public class Article {
     @LastModifiedDate
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name="trade_price")
+    private Long price;
+
+    @Column(name="trade_status")
+    private boolean status; // true(판매중), false(판매종료)
 
 
     public Article(Users user, ArticleHeader header, String title, String content) {
