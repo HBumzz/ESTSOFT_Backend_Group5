@@ -1,5 +1,6 @@
 package com.app.salty.user.entity;
 
+import com.app.salty.common.entity.Attachment;
 import com.app.salty.user.dto.kakao.KakaoUserInfo;
 import com.app.salty.common.entity.Attachment;
 import com.app.salty.util.BaseTimeEntity;
