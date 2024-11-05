@@ -1,10 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SALTY - 절약하는 일상</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 기본 스타일 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        /* 헤더 스타일 */
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #4AADAD;
+            font-size: 24px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo img {
+            height: 30px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a {
+            color: #666;
+            text-decoration: none;
+            padding: 8px 12px;
+        }
+
+        .nav-menu a.active {
+            color: #4AADAD;
+            font-weight: bold;
+        }
+
+        /* 메인 컨테이너 */
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* 왼쪽 사이드바 (카테고리) */
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .category-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* 메인 컨텐츠 */
+        .main-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* 오른쪽 사이드바 (유저 정보) */
+        .user-sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .user-info {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        /* 로그인 버튼 */
+        .login-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #4AADAD;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            background: #3d9191;
+        }
+    </style>
 </head>
 <body>
+<!-- 헤더 -->
+<header class="header">
+    <a href="/" class="logo">
+        <img src="/images/salty-logo.png" alt="SALTY">
+        SALTY
+    </a>
+    <nav class="nav-menu">
+        <a href="/" class="active">HOME</a>
+        <a href="/trade">TRADE</a>
+        <a href="/chat">CHAT</a>
+        <a href="/checklist">CHECKLIST</a>
+        <a href="/user">USER</a>
+    </nav>
+</header>
 
+<!-- 메인 컨테이너 -->
+<div class="container">
+    <!-- 왼쪽 사이드바 (카테고리) -->
+    <aside class="sidebar">
+        <ul class="category-list">
+            <li>공지사항</li>
+            <li>자유게시판</li>
+            <li>절약팁</li>
+            <li>지출내역</li>
+            <li>목표달성</li>
+        </ul>
+    </aside>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-content">
+        <div class="post-list">
+            <!-- 게시글 아이템 -->
+            <div th:each="post : ${posts}" class="post-item">
+                <h3 th:text="${post.title}">게시글 제목</h3>
+                <p th:text="${post.content}">게시글 내용...</p>
+                <small th:text="${post.author + ' | ' + post.date}">작성자 | 날짜</small>
+            </div>
+        </div>
+    </main>
+
+    <!-- 오른쪽 사이드바 (유저 정보) -->
+    <aside class="user-sidebar">
+        <!-- 비로그인 상태 -->
+        <div th:if="${user == null}" class="user-info">
+            <h3>로그인하고 시작하기</h3>
+            <p>SALTY와 함께 절약하는 일상을 시작해보세요!</p>
+            <a href="/auth/login" class="login-button">로그인하러 가기</a>
+        </div>
+
+        <!-- 로그인 상태 -->
+        <div th:if="${user != null}" class="user-info">
+            <img class="user-avatar" th:src="${user.avatar}" alt="프로필 이미지">
+            <h3 th:text="${user.nickname}">사용자명</h3>
+            <p>님의 절약 일지</p>
+            <div class="user-stats">
+                <p>이번 달 목표 달성률: <span th:text="${user.achievementRate}">33.33%</span></p>
+                <p>총 절약액: <span th:text="${user.totalSavings}">77,777원</span></p>
+            </div>
+        </div>
+    </aside>
+</div>
+<script>
+
+
+</script>
 </body>
 </html>
