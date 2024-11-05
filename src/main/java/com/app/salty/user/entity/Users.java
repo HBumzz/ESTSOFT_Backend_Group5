@@ -1,5 +1,6 @@
 package com.app.salty.user.entity;
 
+import com.app.salty.common.entity.Attachment;
 import com.app.salty.user.dto.kakao.KakaoUserInfo;
 import com.app.salty.util.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -40,8 +41,8 @@ public class Users extends BaseTimeEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private SocialProvider socialProvider;  // 소셜 로그인 정보와 1:1 관계
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private UserProfile userProfile;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Attachment attachment;
 
     //연관 관계 method
     public void addRoleMappings(UserRoleMapping roleMapping) {
@@ -49,6 +50,9 @@ public class Users extends BaseTimeEntity {
     }
     public void addSocialProvider(SocialProvider socialProvider) {
         this.socialProvider = socialProvider;
+    }
+    public void addAttachment(Attachment attachment) {
+        this.attachment = attachment;
     }
 
     //business method

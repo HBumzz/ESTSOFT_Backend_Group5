@@ -61,6 +61,7 @@ public class UserController {
         Users socialLoginUser = userService.kakaoLogin(code);
         TokenResponse tokenResponse= authenticationService.authenticateKakao(socialLoginUser);
         model.addAttribute("tokenResponse", tokenResponse);
+
         return "redirect:/";
     }
 

@@ -1,6 +1,9 @@
 package com.app.salty.user.service;
 
 
+import com.app.salty.common.entity.Attachment;
+import com.app.salty.common.entity.AttachmentId;
+import com.app.salty.common.entity.AttachmentType;
 import com.app.salty.config.globalExeption.custom.DuplicateEmailException;
 import com.app.salty.user.common.AuthProvider;
 import com.app.salty.user.common.Role;
@@ -8,7 +11,9 @@ import com.app.salty.user.common.social.KakaoAPI;
 import com.app.salty.user.dto.kakao.KakaoUserInfo;
 import com.app.salty.user.dto.request.UserSignupRequest;
 import com.app.salty.user.dto.kakao.KAKAOAuthResponse;
+import com.app.salty.user.dto.response.AttachmentResponse;
 import com.app.salty.user.dto.response.UserResponse;
+import com.app.salty.user.dto.response.UsersResponse;
 import com.app.salty.user.entity.Roles;
 import com.app.salty.user.entity.SocialProvider;
 import com.app.salty.user.entity.UserRoleMapping;
@@ -56,6 +61,22 @@ public class UserService {
 
         return convertUserResponse(savedUser);
     }
+
+    //유저 정보 갖고오기 및 프로필 없을 시 생성
+    @Transactional
+    public UsersResponse findByUserWithAttachment(String email) {
+        Users user = userRepository.findByEmailWithAttachment(email)
+                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithAttachment::::::User not found with email: " + email));
+        log.info("Found user: {}", user);
+        if(user.getAttachment() == null) {
+            System.out.println("프로필 없음 메서드 실행");
+            Attachment attachment = createAttachment(user);
+            user.addAttachment(attachment);
+        }
+
+        return userToUsersResponse(user);
+    }
+
 
 
     //이메일 중복 검사
@@ -222,6 +243,33 @@ public class UserService {
                 .nickname(user.getNickname())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+                .build();
+    }
+
+
+    private UsersResponse userToUsersResponse(Users user) {
+        return UsersResponse.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .profile(ataachmentToResponse(user.getAttachment()))
+                .build();
+    }
+
+    private AttachmentResponse ataachmentToResponse(Attachment attachment) {
+        return AttachmentResponse.builder()
+                .type(AttachmentType.PROFILE.toString())
+                .path(attachment.getPath())
+                .originalFilename(attachment.getOriginalFilename())
+                .id(attachment.getId().getUserId())
+                .build();
+    }
+
+    private Attachment createAttachment(Users user) {
+        return Attachment.builder()
+                .id(new AttachmentId(AttachmentType.PROFILE,user.getId()))
+                .originalFilename("default-profile.png")
+                .renamedFileName("default-profile.png")
                 .build();
     }
 }
