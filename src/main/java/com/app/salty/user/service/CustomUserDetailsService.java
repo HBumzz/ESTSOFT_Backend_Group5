@@ -1,14 +1,10 @@
 package com.app.salty.user.service;
 
-import com.app.salty.user.dto.response.TokenResponse;
 import com.app.salty.user.entity.UserRoleMapping;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.repository.UserRepository;
-import com.app.salty.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
