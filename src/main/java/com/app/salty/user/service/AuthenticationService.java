@@ -33,7 +33,7 @@ public class AuthenticationService {
                             request.getPassword()
                     )
             );
-
+            log.debug("Authentication successful: {}", authentication);
             return generateAuthResponse(authentication, request.isRememberMe());
         } catch (AuthenticationException e) {
             log.error("Local authentication failed", e);
@@ -44,7 +44,10 @@ public class AuthenticationService {
     public TokenResponse authenticateKakao(Users socialLoginUser) {
         try {
             Authentication authentication = createAuthenticationToken(socialLoginUser);
-            return generateAuthResponse(authentication, false);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+            TokenResponse tokenResponse = generateAuthResponse(authentication, true);
+            log.info("tokenResponse : {}", tokenResponse);
+            return tokenResponse;
         } catch (Exception e) {
             log.error("Kakao authentication failed", e);
             throw new IllegalArgumentException("카카오 로그인 처리 중 오류가 발생했습니다.");
@@ -73,6 +76,7 @@ public class AuthenticationService {
 
     private Authentication createAuthenticationToken(Users user) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+        log.info("userDetails ++++++++++++++++++++++++: {}", userDetails);
         return new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,

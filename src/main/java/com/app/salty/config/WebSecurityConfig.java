@@ -2,6 +2,7 @@ package com.app.salty.config;
 
 import com.app.salty.config.filter.JwtAuthenticationFilter;
 import com.app.salty.config.filter.LoginFilter;
+import com.app.salty.user.service.CustomUserDetailsService;
 import com.app.salty.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,17 +31,21 @@ public class WebSecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
-    }
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         log.debug(" WebSecurityConfig Start !!! ");
-        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil);
+
+        LoginFilter loginFilter = new LoginFilter(
+                authenticationManager(authenticationConfiguration),
+                jwtUtil
+        );
+
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(
+                jwtUtil,
+                customUserDetailsService
+        );
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -49,15 +54,13 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/",
-                                "/login",
-                                "/signup",
                                 "/static/**",
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
                                 "/h2-console/**" //임시
                         ).permitAll()
-                        .requestMatchers("/api/auth/**","/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**","/auth/**").anonymous()
                         .requestMatchers("/api/boards/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll() //authenticated()
@@ -72,8 +75,8 @@ public class WebSecurityConfig {
 //                        .successHandler(oAuth2AuthenticationSuccessHandler)
 //                        .failureHandler(oAuth2AuthenticationFailureHandler)
 //                )
-                .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(loginFilter, JwtAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/auth/logout")
                         .invalidateHttpSession(true)

@@ -34,6 +34,7 @@ public class AuthController {
         try {
             TokenResponse tokenResponse = authenticationService.authenticateLocal(loginRequest);
             log.info("tokenResponse : {}", tokenResponse);
+
             return ResponseEntity.ok(tokenResponse);
         } catch (AuthenticationFailedException e) {
             System.out.println("local login failed : /login" + e.getMessage());
