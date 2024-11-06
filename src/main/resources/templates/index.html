@@ -178,11 +178,11 @@
     <main class="main-content">
         <div class="post-list">
             <!-- 게시글 아이템 -->
-            <div th:each="post : ${posts}" class="post-item">
-                <h3 th:text="${post.title}">게시글 제목</h3>
-                <p th:text="${post.content}">게시글 내용...</p>
-                <small th:text="${post.author + ' | ' + post.date}">작성자 | 날짜</small>
-            </div>
+<!--            <div th:each="post : ${posts}" class="post-item">-->
+<!--                <h3 th:text="${post.title}">게시글 제목</h3>-->
+<!--                <p th:text="${post.content}">게시글 내용...</p>-->
+<!--                <small th:text="${post.author + ' | ' + post.date}">작성자 | 날짜</small>-->
+<!--            </div>-->
         </div>
     </main>
 
@@ -197,12 +197,12 @@
 
         <!-- 로그인 상태 -->
         <div th:if="${user != null}" class="user-info">
-            <img class="user-avatar" th:src="${user.avatar}" alt="프로필 이미지">
+            <img class="user-avatar" th:src="${user.profile.path+user.getProfile().originalFilename}" alt="프로필 이미지">
             <h3 th:text="${user.nickname}">사용자명</h3>
-            <p>님의 절약 일지</p>
+<!--            <p>님의 절약 일지</p>-->
             <div class="user-stats">
-                <p>이번 달 목표 달성률: <span th:text="${user.achievementRate}">33.33%</span></p>
-                <p>총 절약액: <span th:text="${user.totalSavings}">77,777원</span></p>
+<!--                <p>이번 달 목표 달성률: <span th:text="${user.achievementRate}">33.33%</span></p>-->
+<!--                <p>총 절약액: <span th:text="${user.totalSavings}">77,777원</span></p>-->
             </div>
         </div>
     </aside>

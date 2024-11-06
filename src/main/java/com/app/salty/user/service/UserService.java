@@ -21,6 +21,7 @@ import com.app.salty.user.entity.Users;
 import com.app.salty.user.repository.RolesRepository;
 import com.app.salty.user.repository.SocialRepository;
 import com.app.salty.user.repository.UserRepository;
+import com.app.salty.util.SaltyUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -269,7 +270,9 @@ public class UserService {
         return Attachment.builder()
                 .id(new AttachmentId(AttachmentType.PROFILE,user.getId()))
                 .originalFilename("default-profile.png")
-                .renamedFileName("default-profile.png")
+                .renamedFileName(SaltyUtils.getRenameFilename("default-profile.png"))
+                .path("/images/") // 주소
+                .user(user)
                 .build();
     }
 }
