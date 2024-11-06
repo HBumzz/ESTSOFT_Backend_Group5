@@ -7,8 +7,11 @@ import com.app.salty.user.dto.response.UserResponse;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.service.AuthenticationService;
 import com.app.salty.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +42,7 @@ public class UserController {
     public String createUser(@RequestBody UserSignupRequest request){
         log.info("request: {}", request);
         UserResponse createdUser = userService.signup(request);
-        return "redirect:/auth/login";
+        return "/user/login";
     }
 
     //카카오 로그인
@@ -56,11 +59,13 @@ public class UserController {
     //kakao callback
     @GetMapping("/kakao/callback")
     public String kakaoCallback(@RequestParam String code,
-                                Model model) {
+                                Model model,
+                                HttpSession session) {
 
         Users socialLoginUser = userService.kakaoLogin(code);
         TokenResponse tokenResponse= authenticationService.authenticateKakao(socialLoginUser);
         model.addAttribute("tokenResponse", tokenResponse);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
         return "redirect:/";
     }

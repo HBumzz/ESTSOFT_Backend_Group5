@@ -69,7 +69,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithAttachment::::::User not found with email: " + email));
         log.info("Found user: {}", user);
         if(user.getAttachment() == null) {
-            System.out.println("프로필 없음 메서드 실행");
+            System.out.println("프로필 없음 메서드 실행 ");
             Attachment attachment = createAttachment(user);
             user.addAttachment(attachment);
         }

@@ -1,6 +1,7 @@
 package com.app.salty.controller;
 
 import com.app.salty.user.dto.response.UsersResponse;
+import com.app.salty.user.entity.CustomUserDetails;
 import com.app.salty.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +21,9 @@ public class HomeViewController {
     @GetMapping("/")
     public String showIndex(
             Model model,
-            @AuthenticationPrincipal UserDetails userDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
+        log.info("UserDetails: {}", userDetails);
         if(userDetails != null) {
             UsersResponse usersResponse = userService.findByUserWithAttachment(userDetails.getUsername());
             model.addAttribute("user", usersResponse);
