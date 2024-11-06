@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-list">
+        <h2>CHAT</h2>
+        <ul>
+            <li th:each="chatRoom : ${chatRooms}">
+                <a href="javascript:void(0);" th:onclick="'loadChatRoom(' + ${chatRoom.id} + ')'">
+                    <div class="chat-item">
+                        <div class="chat-avatar">
+                            <img th:src="@{/images/avatar.png}" alt="프사">
+                        </div>
+                        <div class="chat-info">
+                            <h4 th:text="${chatRoom.user2.nickname}">Chat with 1</h4>
+                            <span class="chat-time">2024-11-04 18:12</span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+<!--    채팅방-->
+    <div class="chat-room">
+        <div class="chat-header">
+            <h2 id="chatRoomTitle">채팅방</h2>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+<!--            채팅목록-->
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Message" id="messageInput" onkeypress="if(event.keyCode==13) sendMessage()">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
+<script th:src="@{/js/chat.js}"></script>
+</body>
+</html>
