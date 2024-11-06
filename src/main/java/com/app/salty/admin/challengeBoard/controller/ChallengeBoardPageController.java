@@ -38,7 +38,7 @@ public class ChallengeBoardPageController {
     @GetMapping("/chboard/{id}")
     public String showDetails(@PathVariable Long id, Model model) {
         Challenge challenge = challengeBoardService.findBy(id);
-        model.addAttribute("article", new ChallengeViewResponse(challenge));
+        model.addAttribute("challenge", new ChallengeViewResponse(challenge));
 
         return "/chboard/challenge";
     }
@@ -47,10 +47,10 @@ public class ChallengeBoardPageController {
     @GetMapping("/new-challenge")
     public String newArticle(@RequestParam(required = false) Long id, Model model) {
         if (id == null) {
-            model.addAttribute("article", new ChallengeViewResponse());
+            model.addAttribute("challenge", new ChallengeViewResponse());
         } else {
             Challenge challenge = challengeBoardService.findBy(id);
-            model.addAttribute("article", new ChallengeViewResponse(challenge));
+            model.addAttribute("challenge", new ChallengeViewResponse(challenge));
         }
         return "/chboard/newChallenge";
     }
