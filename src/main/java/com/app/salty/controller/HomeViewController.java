@@ -23,7 +23,6 @@ public class HomeViewController {
             Model model,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        log.info("UserDetails: {}", userDetails);
         if(userDetails != null) {
             log.info("UserDetails: {}", userDetails);
             UsersResponse usersResponse = userService.findByUserWithAttachment(userDetails.getUsername());

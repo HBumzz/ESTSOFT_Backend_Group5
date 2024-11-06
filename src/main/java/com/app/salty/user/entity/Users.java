@@ -54,8 +54,7 @@ public class Users extends BaseTimeEntity {
     private Attachment attachment;
 
     //연관 관계 method
-    public void addRoleMappings(UserRoleMapping roleMapping)
-    {
+    public void addRoleMappings(UserRoleMapping roleMapping) {
         this.userRoleMappings.add(roleMapping);
     }
     public void addSocialProvider(SocialProvider socialProvider) {
