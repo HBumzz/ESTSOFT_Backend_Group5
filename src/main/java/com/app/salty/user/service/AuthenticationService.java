@@ -44,7 +44,7 @@ public class AuthenticationService {
     public TokenResponse authenticateKakao(Users socialLoginUser) {
         try {
             Authentication authentication = createAuthenticationToken(socialLoginUser);
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//          SecurityContextHolder.getContext().setAuthentication(authentication);
             TokenResponse tokenResponse = generateAuthResponse(authentication, true);
             log.info("tokenResponse : {}", tokenResponse);
             return tokenResponse;

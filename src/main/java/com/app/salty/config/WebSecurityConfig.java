@@ -49,8 +49,8 @@ public class WebSecurityConfig {
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .sessionManagement(session ->
+//                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/",
@@ -60,7 +60,7 @@ public class WebSecurityConfig {
                                 "/images/**",
                                 "/h2-console/**" //임시
                         ).permitAll()
-                        .requestMatchers("/api/auth/**","/auth/**").anonymous()
+                        .requestMatchers("/api/auth/**","/auth/**").permitAll()
                         .requestMatchers("/api/boards/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll() //authenticated()
@@ -75,8 +75,8 @@ public class WebSecurityConfig {
 //                        .successHandler(oAuth2AuthenticationSuccessHandler)
 //                        .failureHandler(oAuth2AuthenticationFailureHandler)
 //                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(loginFilter, JwtAuthenticationFilter.class)
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAt(loginFilter, JwtAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/auth/logout")
                         .invalidateHttpSession(true)
