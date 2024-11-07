@@ -23,10 +23,10 @@ import java.util.List;
 public class ChecklistController {
     private final ChecklistService checklistService;
 
-    @PostMapping
-    public ResponseEntity<ChecklistResponseDTO> createChecklist(@Valid @RequestBody ChecklistRequestDTO requestDTO) {
-        return ResponseEntity.ok(checklistService.createChecklist(requestDTO));
-    }
+//    @PostMapping
+//    public ResponseEntity<ChecklistResponseDTO> createChecklist(@Valid @RequestBody ChecklistRequestDTO requestDTO) {
+//        return ResponseEntity.ok(checklistService.createChecklist(requestDTO));
+//    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<ChecklistResponseDTO> getChecklist(
