@@ -68,8 +68,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<GetCommentResponseDto> getCommentsByUserId(Long userId) {
-        Users user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
-        List<Comment> commentList = commentRepository.findCommentsByUser(user);
+        List<Comment> commentList = commentRepository.findCommentsByUserId(userId);
         return commentList.stream().map(GetCommentResponseDto::new).toList();
     }
 }

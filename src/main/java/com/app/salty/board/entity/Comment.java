@@ -5,17 +5,20 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Comment {
 
     @Id
@@ -23,19 +26,17 @@ public class Comment {
     @Column(name="comment_id")
     private Long commentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Users user;
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
     @Column(name ="article_type", nullable = false)
     private ArticleType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "article_id")
     private Article article;
 
-    @Column(name ="content" ,nullable = false)
+    @Column(name ="content", columnDefinition = "TEXT",nullable = false)
     private String content;
 
     @CreatedDate
@@ -46,9 +47,13 @@ public class Comment {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "comment")
+    private List<LikeComment> likeComments;
+
     public Comment(ArticleType type, Users user, Article article, String content) {
         this.type=type;
-        this.user=user;
+        this.userId=user.getId();
         this.article=article;
         this.content=content;
     }

@@ -1,6 +1,7 @@
 package com.app.salty.board.controller;
 
 import com.app.salty.board.dto.article.*;
+import com.app.salty.board.entity.ArticleHeader;
 import com.app.salty.board.service.ArticleServiceImpl;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.service.UserService;
@@ -47,7 +48,8 @@ public class ArticleController {
     public ResponseEntity<SaveArticleResponseDto> saveArticle(@RequestPart SaveArticleRequestDto requestDto
             , @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
 
-        Users user = userService.findBy(requestDto.getUserId());
+        // 임의의 유저로 정보 전달
+        Users user = userService.findBy(1L);
 
         requestDto.setUser(user);
 

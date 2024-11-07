@@ -27,7 +27,7 @@ public class LikeServiceImpl implements LikeService {
         if (dto.getContentType().equals(ContentType.ARTICLE)) {
             LikeArticle like = likeArticleRepository
                     .findByArticleAndUserId(dto.getArticle(),dto.getUser_id()).orElse(null);
-            if(like ==null) {
+            if(like == null) {
                 likeArticleRepository.save(dto.convertLikeArticleEntity());
             } else {
                 likeArticleRepository.delete(like);
@@ -46,9 +46,9 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public Integer countLike(LikeRequestDto dto) {
         if (dto.getContentType().equals(ContentType.ARTICLE)) {
-            return likeArticleRepository.countByArticle(dto.getArticle());
+            return likeArticleRepository.countByArticle(dto.getArticle()).orElse(0);
         } else if(dto.getContentType().equals(ContentType.COMMENT)) {
-            return likeCommentRepository.countByComment(dto.getComment());
+            return likeCommentRepository.countByComment(dto.getComment()).orElse(0);
         }
         return 0;
     }

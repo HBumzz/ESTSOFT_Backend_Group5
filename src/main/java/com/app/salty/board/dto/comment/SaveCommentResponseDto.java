@@ -18,7 +18,7 @@ public class SaveCommentResponseDto {
 
     public SaveCommentResponseDto(Comment comment) {
         this.commentId=comment.getCommentId();
-        this.writerId = comment.getUser().getId();
+        this.writerId = comment.getUserId();
         this.articleId = comment.getArticle().getId();
         this.contentType = comment.getType().getName();
         this.content = comment.getContent();

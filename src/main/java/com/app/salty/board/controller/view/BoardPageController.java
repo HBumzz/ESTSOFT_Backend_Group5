@@ -4,6 +4,8 @@ import com.app.salty.board.dto.article.GetArticleResponseDto;
 import com.app.salty.board.dto.article.SaveArticleRequestDto;
 import com.app.salty.board.service.ArticleServiceImpl;
 import com.app.salty.user.entity.Users;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.Banner;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-import static com.app.salty.board.entity.QArticle.article;
-
+@Slf4j
 @Controller
 public class BoardPageController {
 
@@ -35,7 +36,7 @@ public class BoardPageController {
     }
 
     // 게시물 상세 보기
-    @GetMapping("/articles/{id}")
+    @GetMapping("/article/{id}")
     public String showArticle(Model model, @PathVariable Long id, @AuthenticationPrincipal Users user) {
         // @AuthenticationPrincipal로 Users객체를 받으면 Users객체에 대한 내용만 조회가 됨
 
@@ -51,17 +52,20 @@ public class BoardPageController {
     }
 
 
-    // 게시물 등록 또는 수정
+    // 게시물 등록
     @GetMapping("/new-article")
     public String addArticle(@RequestParam(required = false) Long id, Model model) {
-        if(id == null) { // id가 없다? 새로운 게시글 생성
-            model.addAttribute("article", new SaveArticleRequestDto());  // 빈객체를 보내줌
-        } else {        // 게시글 수정
-            GetArticleResponseDto responseDto = articleService.getArticleById(id);
-            model.addAttribute("article",responseDto);
-        }
-
+//        model.addAttribute("article", new SaveArticleRequestDto());  // 빈객체를 보내줌
         return "board/newArticle";
+    }
+
+    @GetMapping("/update-Article/{articleId}")
+    public String updateArticle(Model model, @PathVariable Long articleId) {
+        log.warn(String.valueOf(articleId));
+        GetArticleResponseDto responseDto = articleService.getArticleById(articleId);
+        model.addAttribute("article",responseDto);
+
+        return "board/updateArticle";
     }
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -112,9 +113,16 @@ public class ArticleServiceImpl implements ArticleService {
         return new UpdateArticleResponseDto(newArticle);
     }
 
+    @Transactional
     @Override
     public void deleteArticle(Long id) {
-        articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Article article = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        List<Comment> commentList = commentRepository.findCommentsByArticle(article);
+        for (Comment comment : commentList) {
+            commentRepository.deleteById(comment.getCommentId());
+        }
+
         articleRepository.deleteById(id);
     }
 

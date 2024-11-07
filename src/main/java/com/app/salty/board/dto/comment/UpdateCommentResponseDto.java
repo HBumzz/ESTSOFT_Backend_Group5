@@ -19,7 +19,7 @@ public class UpdateCommentResponseDto {
 
     public UpdateCommentResponseDto(Comment comment) {
         this.commentId = comment.getCommentId();
-        this.writerId = comment.getUser().getId();
+        this.writerId = comment.getUserId();
         this.articleType = comment.getType().getName();
         this.articleId = comment.getArticle().getId();
         this.content = comment.getContent();

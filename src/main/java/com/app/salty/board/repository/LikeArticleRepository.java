@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface LikeArticleRepository extends JpaRepository<LikeArticle, Long> {
     Optional<LikeArticle> findByArticleAndUserId(Article article, Long userId);
-    Integer countByArticle(Article article);
+    Optional<Integer> countByArticle(Article article);
 }
