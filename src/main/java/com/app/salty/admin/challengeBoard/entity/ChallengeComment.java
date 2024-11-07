@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Comment {
+public class ChallengeComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
@@ -36,7 +36,7 @@ public class Comment {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
-    public Comment(String body, Challenge challenge) {
+    public ChallengeComment(String body, Challenge challenge) {
         this.body = body;
         this.challenge = challenge;
     }
