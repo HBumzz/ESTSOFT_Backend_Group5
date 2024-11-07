@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
-
 
 @Entity
 @NoArgsConstructor
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-@Table(name="articles")
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,9 +47,11 @@ public class Article {
     private LocalDateTime updatedAt;
 
     @Column(name="trade_price")
+    @ColumnDefault("")
     private Long price;
 
     @Column(name="trade_status")
+    @ColumnDefault("")
     private boolean status; // true(판매중), false(판매종료)
 
 
