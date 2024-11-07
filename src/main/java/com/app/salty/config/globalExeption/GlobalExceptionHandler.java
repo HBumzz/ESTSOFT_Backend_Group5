@@ -3,6 +3,8 @@ package com.app.salty.config.globalExeption;
 import com.app.salty.config.globalExeption.custom.DuplicateEmailException;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.Banner;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,5 +55,11 @@ public class GlobalExceptionHandler {
             this.message = message;
         }
 
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ModelAndView httpMessageNotReadableException(Exception e, Model model) {
+        model.addAttribute("error", new ErrorResponse("400","잘못된 값이 전달 됐습니다."));
+        return new ModelAndView("error/error");
     }
 }
