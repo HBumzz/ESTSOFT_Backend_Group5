@@ -8,6 +8,7 @@
 <body>
 <div class="p-5 mb-5 text-center</> bg-light">
     <h1 class="mb-3">Salty</h1>
+    <h4 class="mb-3">Board</h4>
 </div>
 
 <div class="container">
@@ -16,12 +17,12 @@
     <button type="button" class="btn btn-secondary" onclick="location.href='/logout'">로그아웃</button>
     <div class="row-6" th:each="article :${articles}">  <!-- articles 갯수 만큼 반복 -->
         <div class="card">
-            <div class="card-header" th:text="${article.id}">  <!-- item의 id 출력-->
+            <div class="card-header" th:text="${article.articleId}">  <!-- item의 id 출력-->
             </div>
             <div class="card-body">
                 <h5 class="card-title" th:text="${article.title}"></h5> <!-- item의 title 출력-->
                 <p class="card-text" th:text="${article.content}"></p>   <!-- item의 title 출력-->
-                <a th:href="@{/articles/{id}(id=*{article.id})}" class="btn btn-primary">Show content</a>
+                <a th:href="@{/articles/{id}(id=*{article.articleId})}" class="btn btn-primary">Show content</a>
             </div>
         </div>
         <br>

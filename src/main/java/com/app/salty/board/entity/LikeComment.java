@@ -1,0 +1,34 @@
+package com.app.salty.board.entity;
+
+import com.app.salty.user.entity.Users;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
+
+@Entity
+@NoArgsConstructor
+@Getter
+public class LikeComment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name="user_id")
+    private Long userId;
+
+    @ManyToOne
+    @JoinColumn(name="comment_id")
+    private Comment comment;
+
+    @LastModifiedDate
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
+
+    public LikeComment(Comment comment, Long userId) {
+        this.comment=comment;
+        this.userId=userId;
+    }
+}

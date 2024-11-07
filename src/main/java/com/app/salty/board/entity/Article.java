@@ -47,11 +47,9 @@ public class Article {
     private LocalDateTime updatedAt;
 
     @Column(name="trade_price")
-    @ColumnDefault("")
     private Long price;
 
     @Column(name="trade_status")
-    @ColumnDefault("")
     private boolean status; // true(판매중), false(판매종료)
 
 
