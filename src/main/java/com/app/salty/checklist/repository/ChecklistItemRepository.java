@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ChecklistItemRepository extends JpaRepository<ChecklistItem, Long> {
-    List<ChecklistItem> findByChecklistId(Long checklistId);
+    List<ChecklistItem> findByChecklist_ChecklistId(Long checklistId);
 
     long countByChecklist_ChecklistId(Long checklistId);
 

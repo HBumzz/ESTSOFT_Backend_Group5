@@ -19,6 +19,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -104,7 +105,7 @@ public class ChecklistService {
         LocalDateTime startDate = date.withHour(0).withMinute(0).withSecond(0);
         LocalDateTime endDate = date.withHour(23).withMinute(59).withSecond(59);
 
-        List<Checklist> checklists = checklistRepository.findByUserIdAndTypeNameAndDateRange(
+        List<Checklist> checklists = checklistRepository.findByUserIdAndTypeNameAndDateRangeOrderByCreatedAtDesc(
                 userId, type, startDate, endDate
         );
 
@@ -156,13 +157,13 @@ public class ChecklistService {
         dto.setItemContent(item.getItemContent());
         dto.setItemMemo(item.getItemMemo());
         dto.setSavedAmount(item.getSavedAmount());
-        dto.setCategoryType(item.getCategory().getCategorytype());
+        dto.setCategoryType(item.getCategory().getCategoryType());
         dto.setCompleted(item.isCompleted());
         return dto;
     }
 
     private long countByChecklistId(Long checklistId) {
-        return checklistItemRepository.findByChecklistId(checklistId).size();
+        return checklistItemRepository.findByChecklist_ChecklistId(checklistId).size();
     }
 
     private ChecklistSummaryDTO convertToSummaryDTO(Checklist checklist) {
@@ -228,8 +229,31 @@ public class ChecklistService {
         }
 
         List<Checklist> checklists = checklistRepository
-                .findByUserIdAndTypeNameAndDateRange(userId, type, startDate, endDate);
+                .findByUserIdAndTypeNameAndDateRangeOrderByCreatedAtDesc(userId, type, startDate, endDate);
 
         return checklists.isEmpty() ? null : convertToResponseDTO(checklists.get(0));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChecklistSummaryDTO> getChecklistSummary(Long userId, ChecklistType type,
+                                                         LocalDateTime startDate, LocalDateTime endDate) {
+        // 날짜 범위 정규화
+        LocalDateTime normalizedStartDate = startDate.withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime normalizedEndDate = endDate.withHour(23).withMinute(59).withSecond(59);
+
+        // 정렬된 체크리스트 조회
+        List<Checklist> checklists = checklistRepository
+                .findByUserIdAndTypeNameAndDateRangeOrderByCreatedAtDesc(
+                        userId, type, normalizedStartDate, normalizedEndDate);
+
+        // 체크리스트가 없는 경우 빈 리스트 반환
+        if (checklists.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 각 체크리스트를 SummaryDTO로 변환
+        return checklists.stream()
+                .map(this::convertToSummaryDTO)
+                .collect(Collectors.toList());
     }
 }
