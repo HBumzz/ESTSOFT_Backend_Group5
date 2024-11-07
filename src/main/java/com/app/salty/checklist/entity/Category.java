@@ -21,7 +21,7 @@ public class Category {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CategoryType categorytype;
+    private CategoryType categoryType;
 
     @Column(nullable = false, length = 100)
     private String categoryDescription; // 카테고리 설명
