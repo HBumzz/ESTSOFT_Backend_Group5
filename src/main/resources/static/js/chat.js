@@ -1,57 +1,88 @@
 let socket;
 let chatRoomId;
+let senderInfo = {};
+let receiverInfo = {};
+
 function getUserIdFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('userId');
 }
-const userId = getUserIdFromURL();
-// 채팅방의 메시지
+
+const userId = Number(getUserIdFromURL());
+
+// 채팅방의 메시지 로드
 function loadChatRoom(roomId) {
     chatRoomId = roomId;
 
+    // 채팅방 메시지 가져오기
     fetch(`/api/chat/rooms/${chatRoomId}/messages`)
         .then(response => response.json())
         .then(messages => {
             const chatMessages = document.getElementById("chatMessages");
             chatMessages.innerHTML = '';
-            console.log(messages[0].sender.nickname);
-            messages.forEach(message => {
-                displayMessage(message);
-            });
+            messages.forEach(message => displayMessage(message));
 
-            // WebSocket 연결 갱신
+            // senderInfo와 receiverInfo 설정
+            fetch(`/api/chat/rooms?userId=${userId}`)
+                .then(response => response.json())
+                .then(chatRooms => {
+                    const chatRoom = chatRooms.find(room => room.id === roomId);
+                    if (chatRoom) {
+                        senderInfo = chatRoom.user1;
+                        receiverInfo = chatRoom.user2;
+                    }
+                })
+                .catch(error => console.error("Error loading chat room info:", error));
+
+            // WebSocket 연결
             connectWebSocket(chatRoomId);
-            console.log("여기",messages)
-            document.getElementById("chatRoomTitle").innerText = `${messages[0].chatRoom.user2.nickname}`;
         })
-        .catch(error => console.error(error));
+        .catch(error => console.error("Error loading chat room messages:", error));
 }
 
-// WebSocket
+// WebSocket 연결 설정
 function connectWebSocket(chatRoomId) {
     if (socket && socket.readyState === WebSocket.OPEN) {
         socket.close();
     }
 
+    // WebSocket 객체를 생성하고 초기화합니다.
     socket = new WebSocket(`ws://localhost:8080/ws/chat?roomId=${chatRoomId}&userId=${userId}`);
+    console.log('ws주소',`ws://localhost:8080/ws/chat?roomId=${chatRoomId}&userId=${userId}`);
+    // 초기 readyState는 CONNECTING 상태일 것입니다.
+    console.log("WebSocket Initial Ready State (CONNECTING):", socket.readyState);
 
     socket.onopen = () => {
-        console.log("웹소켓 연결");
+        console.log("WebSocket 연결 성공");
+        console.log("WebSocket Ready State on open (OPEN):", socket.readyState); // 연결이 성공적으로 열리면 OPEN 상태(1)가 됩니다.
     };
 
     socket.onmessage = (event) => {
-        const messageData = JSON.parse(event.data);
-        console.log(messageData);
-        displayMessage(messageData);
-    };
+        console.log("WebSocket 메시지 수신 중...");
+        try {
+            const messageData = JSON.parse(event.data);
+            console.log("Received message via WebSocket:", messageData);
 
+            // 메시지 타입이 "info"일 경우 연결 완료 메시지로 처리
+            if (messageData.type === "info") {
+                console.log("Info message from server:", messageData.message);
+            } else {
+                displayMessage(messageData); // 실제 메시지 처리
+            }
+        } catch (error) {
+            console.error("Error parsing WebSocket message:", error);
+            console.log("Received raw message:", event.data);
+        }
+    };
+    socket.addEventListener("message", (event) => {
+        console.log("Message from server:", event.data);
+    });
     socket.onclose = (event) => {
         console.log("Disconnected from WebSocket", event);
         if (!event.wasClean) {
             setTimeout(() => {
-                console.log("Attempting to reconnect to WebSocket...");
                 connectWebSocket(chatRoomId);
-            }, 1000);
+            }, 3000); // 3초 후 재연결 시도
         }
     };
 
@@ -60,32 +91,32 @@ function connectWebSocket(chatRoomId) {
     };
 }
 
-
+// 메시지 전송 함수
 async function sendMessage() {
     const messageInput = document.getElementById("messageInput");
     const message = messageInput.value.trim();
 
     if (message) {
-        const messageDto = {
+        const chatMessageDto = {
             chatRoomId: chatRoomId,
-            senderId: userId,
+            sender: senderInfo,
+            receiver: receiverInfo,
             message: message,
             messageType: "TALK"
         };
-
+        socket.send(JSON.stringify(chatMessageDto));
         try {
             const response = await fetch('/api/chat/message', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(messageDto)
+                body: JSON.stringify(chatMessageDto)
             });
 
             if (response.ok) {
-                const chatMessage = await response.json();
-                console.log("메세지전송완료")
-                displayMessage(chatMessage);
+                const savedMessage = await response.json();
+                console.log("Message sent successfully:", savedMessage);
             } else {
                 console.error("Failed to send message:", response.statusText);
             }
@@ -97,14 +128,14 @@ async function sendMessage() {
     }
 }
 
-
+// 메시지를 화면에 표시하는 함수
 function displayMessage(messageData) {
+    console.log("Displaying message:", messageData);
     const chatMessages = document.getElementById("chatMessages");
-    console.log(messageData.sender);
-    console.log("내아이디",messageData.chatRoom.id, "보낸사람 아이디",messageData.sender.id)
     const messageElement = document.createElement("div");
-    messageElement.className = messageData.sender && messageData.sender.id === messageData.chatRoom.id ? 'message-outgoing' : 'message-incoming';
 
+    // 'message-outgoing' 또는 'message-incoming' 결정
+    messageElement.className = messageData.sender.userId === userId ? 'message-outgoing' : 'message-incoming';
     const nickname = messageData.sender.nickname;
 
     const senderNickname = document.createElement("strong");
@@ -115,7 +146,7 @@ function displayMessage(messageData) {
     messageContent.innerText = messageData.message;
     messageElement.appendChild(messageContent);
 
-    const date = new Date(messageData.createdAt);
+    const date = messageData.createdAt ? new Date(messageData.createdAt) : new Date();
     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
     const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     const formattedDateTime = `${formattedDate} ${formattedTime}`;

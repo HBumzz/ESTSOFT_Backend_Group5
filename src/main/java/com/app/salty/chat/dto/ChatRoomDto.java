@@ -1,6 +1,6 @@
 package com.app.salty.chat.dto;
 
-import com.app.salty.user.entity.Users;
+import com.app.salty.user.dto.response.UsersResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ChatRoomDto {
     private Long id;
-    private Users user1;
-    private Users user2;
+    private UsersResponse user1;
+    private UsersResponse user2;
     private LocalDateTime createdAt;
 }

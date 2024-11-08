@@ -2,7 +2,6 @@ package com.app.salty.chat.controller;
 
 import com.app.salty.chat.dto.ChatMessageDto;
 import com.app.salty.chat.dto.ChatRoomDto;
-import com.app.salty.chat.entity.ChatMessage;
 import com.app.salty.chat.entity.ChatRoom;
 import com.app.salty.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +29,15 @@ public class ChatApiController {
     }
 
     @PostMapping("/message")
-    public ResponseEntity<ChatMessage> sendMessage(@RequestBody ChatMessageDto messageDto) {
-        ChatMessage chatMessage = chatService.sendMessage(messageDto);
-        return ResponseEntity.ok(chatMessage);
+    public ResponseEntity<ChatMessageDto> sendMessage(@RequestBody ChatMessageDto chatMessageDto) {
+        ChatMessageDto savedMessage = chatService.sendMessage(chatMessageDto);
+        return ResponseEntity.ok(savedMessage);
     }
 
+
     @GetMapping("/rooms/{chatRoomId}/messages")
-    public ResponseEntity<List<ChatMessage>> getMessagesByChatRoom(@PathVariable Long chatRoomId) {
-        List<ChatMessage> messages = chatService.getMessagesByChatRoom(chatRoomId);
+    public ResponseEntity<List<ChatMessageDto>> getMessagesByChatRoom(@PathVariable Long chatRoomId) {
+        List<ChatMessageDto> messages = chatService.getMessagesByChatRoom(chatRoomId);
         return ResponseEntity.ok(messages); // 채팅 메시지 리스트 반환
     }
 }
