@@ -8,12 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Slf4j
 public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,16 +40,21 @@ public class ChatMessage {
     private LocalDateTime createdAt;
 
     @PrePersist
-    protected void onCreate(){
-        this.createdAt = LocalDateTime.now();
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+//        log.info("onCreate 호출됨, createdAt 값: {}", this.createdAt);
     }
 
     @Builder
-    public ChatMessage(ChatRoom chatRoom, Users sender, String message, MessageType messageType) {
+    public ChatMessage(ChatRoom chatRoom, Users sender, String message, MessageType messageType, LocalDateTime createdAt) {
         this.chatRoom = chatRoom;
         this.sender = sender;
         this.message = message;
         this.messageType = messageType;
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();  // Null 체크 후 기본값 설정
+//        log.info("ChatMessage 빌더 호출됨, createdAt 값: {}", this.createdAt);
     }
 
     public enum MessageType {
