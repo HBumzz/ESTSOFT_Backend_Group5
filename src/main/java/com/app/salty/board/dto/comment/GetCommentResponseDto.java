@@ -3,11 +3,13 @@ package com.app.salty.board.dto.comment;
 import com.app.salty.board.entity.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import static com.app.salty.util.DateFormatUtil.formatter;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class GetCommentResponseDto {
     private Long commentId;
     private Long writerId;
@@ -16,6 +18,7 @@ public class GetCommentResponseDto {
     private String content;
     private String createdAt;
     private String updatedAt;
+    private Integer likeCount;
 
     public GetCommentResponseDto(Comment comment) {
         this.commentId=comment.getCommentId();
