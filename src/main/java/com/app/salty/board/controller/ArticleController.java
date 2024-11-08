@@ -1,8 +1,11 @@
 package com.app.salty.board.controller;
 
 import com.app.salty.board.dto.article.*;
+import com.app.salty.board.entity.ArticleHeader;
 import com.app.salty.board.service.ArticleServiceImpl;
 import com.app.salty.user.entity.Users;
+import com.app.salty.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +16,16 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class ArticleController {
     ArticleServiceImpl articleService;
+    UserService userService;
 
-    ArticleController(ArticleServiceImpl articleService) {
+    ArticleController(ArticleServiceImpl articleService, UserService userService) {
         this.articleService = articleService;
+        this.userService = userService;
     }
 
     // 게시물 전체 조회
@@ -40,24 +46,24 @@ public class ArticleController {
     @PostMapping(value = "/article", consumes ={MediaType.APPLICATION_JSON_VALUE
             , MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<SaveArticleResponseDto> saveArticle(@RequestPart SaveArticleRequestDto requestDto
-            , @RequestPart("files") MultipartFile[] files) throws IOException {
+            , @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
 
-        // 임의의 유저 생성 - test
-        Users tempUser = new Users();
-        tempUser.setId(1L);
-        // ==============================
+        // 임의의 유저로 정보 전달
+        Users user = userService.findBy(1L);
 
-        requestDto.setUser(tempUser);
+        requestDto.setUser(user);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(articleService.saveArticle(requestDto, files));
     }
 
     // 게시물(articleId) 수정
-    @PutMapping("/article/{articleId}")
+    @PutMapping(value ="/article/{articleId}", consumes ={MediaType.APPLICATION_JSON_VALUE
+            , MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<UpdateArticleResponseDto> updateArticle(@PathVariable Long articleId
-            , @RequestBody UpdateArticleRequestDto requestDto
-            , @AuthenticationPrincipal Users user) {
+            , @RequestPart UpdateArticleRequestDto requestDto
+            , @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
 
-        return ResponseEntity.ok(articleService.updateArticle(requestDto, articleId));
+        return ResponseEntity.ok(articleService.updateArticle(requestDto, files, articleId));
     }
 
     // 게시물(articleId) 삭제

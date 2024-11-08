@@ -10,7 +10,7 @@ public interface ArticleService {
     List<GetArticleResponseDto> getArticleList();
     GetArticleResponseDto getArticleById(Long id);
     SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto, MultipartFile[] multipartFile) throws IOException;
-    UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto, Long articleId) throws IllegalAccessException;
+    UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto, MultipartFile[] multipartFile ,Long articleId) throws IllegalAccessException, IOException;
     void deleteArticle(Long id);
 
     List<GetArticleResponseDto> getArticlesByUserId(Long Id);

@@ -50,6 +50,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final KakaoAPI kakaoAPI;
 
+    public Users findBy(Long userId) {
+        return userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+    }
+
     @Transactional
     public UserResponse signup(UserSignupRequest request) {
         validateDuplicateEmail(request.getEmail());

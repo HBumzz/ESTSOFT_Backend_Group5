@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UpdateArticleRequestDto {
+    private Long userId;
     private ArticleHeader header;
     private String title;
     private String content;

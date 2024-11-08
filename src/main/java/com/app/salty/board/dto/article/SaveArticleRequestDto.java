@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter
 public class SaveArticleRequestDto {
 
+    private Long articleId;
+    private Long userId;
     private Users user;
     private ArticleHeader header;
     private String title;
