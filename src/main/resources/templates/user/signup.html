@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/signup.css}">
+  <link rel="stylesheet" th:href="@{/css/user/signup.css}">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
@@ -14,6 +14,7 @@
 <div class="mountains"></div>
 <div class="signup-container">
   <h2>Sign Up</h2>
+
   <form id="signupForm">
     <div class="input-group">
       <input type="email" id="email" placeholder="Email" value="test@test.com"  required>
@@ -171,7 +172,8 @@
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(userData),
-        success: () => {
+        success: (response) => {
+
           alert('회원가입이 완료되었습니다!');
           window.location.href = '/auth/login';
         },

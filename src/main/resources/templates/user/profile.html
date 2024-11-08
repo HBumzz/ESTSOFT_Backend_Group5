@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="profile-container">
+    <h2>프로필 설정</h2>
+    <form class="profile-form" id="profileForm" enctype="multipart/form-data">
+        <div class="profile-image-section">
+            <div class="profile-image-wrapper">
+                <img th:src="${user?.profileImageUrl ?: '/images/default-avatar.png'}"
+                     alt="프로필 이미지"
+                     id="profilePreview"
+                     class="profile-image">
+                <label for="profileImage" class="image-upload-label">
+                    <i class="fas fa-camera"></i>
+                    사진 변경
+                </label>
+                <input type="file"
+                       id="profileImage"
+                       name="profileImage"
+                       accept="image/*"
+                       class="hidden">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="nickname">닉네임</label>
+            <input type="text"
+                   id="nickname"
+                   name="nickname"
+                   th:value="${user?.nickname}"
+                   class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="email"
+                   id="email"
+                   name="email"
+                   th:value="${user?.email}"
+                   readonly
+                   class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label for="currentPassword">현재 비밀번호</label>
+            <input type="password"
+                   id="currentPassword"
+                   name="currentPassword"
+                   class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label for="newPassword">새 비밀번호</label>
+            <input type="password"
+                   id="newPassword"
+                   name="newPassword"
+                   class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">새 비밀번호 확인</label>
+            <input type="password"
+                   id="confirmPassword"
+                   name="confirmPassword"
+                   class="form-input">
+        </div>
+
+        <button type="submit" class="save-button">저장하기</button>
+    </form>
+</div>
+
+</body>
+</html>

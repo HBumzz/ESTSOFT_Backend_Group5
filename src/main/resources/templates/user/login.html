@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/login.css}">
+  <link rel="stylesheet" th:href="@{/css/user/login.css}">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -33,9 +33,18 @@
   <div class="social-login">
     <h3>Or Sign In With</h3>
     <div class="social-icons">
-      <a href="#"><i class="fab fa-google"></i></a>
-      <a href="#"><i class="fab fa-github"></i></a>
-      <a href="#"><i class="fab fa-kakao"></i></a>
+      <a href=# class="social-button google">
+        <i class="fab fa-google"></i>
+        <span>Google</span>
+      </a>
+      <a href="" class="social-button github">
+        <i class="fab fa-github"></i>
+        <span>Github</span>
+      </a>
+      <a th:href="@{/auth/login/kakao}" onclick="handleSocialLogin(Event)" class="social-button kakao">
+        <img src="/images/kakao-icon.png" alt="Kakao icon" class="kakao-icon">
+        <span>Kakao</span>
+      </a>
     </div>
   </div>
   <div class="register-link">
@@ -46,8 +55,18 @@
 <script>
   // login.js
 
+  const API = {
+    LOGIN: '/api/auth/login',
+    REFRESH: '/api/auth/refresh',
+    SOCIAL: {
+      GOOGLE: '/api/auth/oauth2/google',
+      GITHUB: '/api/auth/oauth2/github',
+      KAKAO: "${kakaoLocation}"
+    }
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
-    // DOM 요소 선택 - 최상단에서 한 번만 선택하여 재사용
+
     const elements = {
       form: document.querySelector('form'),
       email: document.querySelector('input[type="text"]'),
@@ -56,11 +75,24 @@
       rememberMeCheckbox: document.querySelector('input[type="checkbox"]')
     };
 
-    // API 엔드포인트 상수 정의
-    const API = {
-      LOGIN: '/api/auth/login',
-      REFRESH: '/api/auth/refresh'
-    };
+    //socialLogin
+    const handleSocialLogin = async (e) => {
+     e.preventDefault();
+
+     try {
+       const response = await fetch(`${API.SOCIAL.KAKAO}`);
+       if (response.ok){
+         const data = response.json();
+         tokenManager.setTokens(data.accessToken, data.refreshToken);
+
+         window.location.href = '/';
+       }
+     }catch (e){
+       console.error(e);
+     }
+
+    }
+
 
     // 유틸리티 함수들
     const utils = {
@@ -149,8 +181,8 @@
     // 토큰 관리
     const tokenManager = {
       setTokens: (accessToken, refreshToken) => {
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('accessToken',"Bearer "+ accessToken);
+        localStorage.setItem('refreshToken',"Bearer "+ refreshToken);
       },
 
       clearTokens: () => {

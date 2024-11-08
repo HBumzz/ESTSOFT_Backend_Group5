@@ -32,6 +32,9 @@ public class UserRoleMapping {
         this.role = role;
     }
 
+    //연관 메서드
+
+
     @Override
     public String toString() {
         return "UserRoleMapping{" +

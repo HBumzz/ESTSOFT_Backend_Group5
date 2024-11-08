@@ -1,15 +1,20 @@
 package com.app.salty.user.controller;
 
+import com.app.salty.user.common.social.KakaoAPI;
 import com.app.salty.user.dto.request.UserSignupRequest;
+import com.app.salty.user.dto.response.TokenResponse;
 import com.app.salty.user.dto.response.UserResponse;
+import com.app.salty.user.entity.Users;
+import com.app.salty.user.service.AuthenticationService;
 import com.app.salty.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
@@ -17,10 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
+    private final KakaoAPI kakaoAPI;
 
     //로그인 페이지
     @GetMapping("/login")
-    public String showLogin() {
+    public String showLogin(Model model) {
+
         return "/user/login";  // login.html 반환
     }
 
@@ -34,6 +42,32 @@ public class UserController {
     public String createUser(@RequestBody UserSignupRequest request){
         log.info("request: {}", request);
         UserResponse createdUser = userService.signup(request);
-        return "redirect:/auth/login";
+        return "/user/login";
     }
+
+    //카카오 로그인
+    @GetMapping("/login/kakao")
+    public String kakaoLogin() {
+        String baseUrl = "https://kauth.kakao.com/oauth/authorize";
+
+        return "redirect:" + baseUrl + "?" +
+                "client_id=" + kakaoAPI.getClientId() +
+                "&redirect_uri=" + kakaoAPI.getRedirectUri() +
+                "&response_type=code";
+    }
+
+    //kakao callback
+    @GetMapping("/kakao/callback")
+    public String kakaoCallback(@RequestParam String code,
+                                Model model,
+                                HttpSession session) {
+
+        Users socialLoginUser = userService.kakaoLogin(code);
+        TokenResponse tokenResponse= authenticationService.authenticateKakao(socialLoginUser);
+        model.addAttribute("tokenResponse", tokenResponse);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+        return "redirect:/";
+    }
+
 }

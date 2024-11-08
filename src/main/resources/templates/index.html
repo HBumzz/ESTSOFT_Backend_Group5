@@ -1,10 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SALTY - 절약하는 일상</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}" />
 
+</head>
+
+
+<!-- 헤더 임포트 -->
+<div th:replace="~{common/header :: header}"></div>
+
+<!-- 메인 컨테이너 -->
+<div class="container">
+    <!-- 왼쪽 사이드바 (카테고리) -->
+    <aside class="sidebar">
+        <ul class="category-list">
+            <li>공지사항</li>
+            <li>자유게시판</li>
+            <li>절약팁</li>
+            <li>지출내역</li>
+            <li>목표달성</li>
+        </ul>
+    </aside>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-content">
+        <div class="post-list">
+            <!-- 게시글 아이템 -->
+<!--            <div th:each="post : ${posts}" class="post-item">-->
+<!--                <h3 th:text="${post.title}">게시글 제목</h3>-->
+<!--                <p th:text="${post.content}">게시글 내용...</p>-->
+<!--                <small th:text="${post.author + ' | ' + post.date}">작성자 | 날짜</small>-->
+<!--            </div>-->
+        </div>
+    </main>
+
+    <!-- 오른쪽 사이드바 (유저 정보) -->
+    <aside class="user-sidebar">
+        <!-- 비로그인 상태 -->
+        <div th:if="${user == null}" class="user-info">
+            <h3>로그인하고 시작하기</h3>
+            <p>SALTY와 함께 절약하는 일상을 시작해보세요!</p>
+            <a href="/auth/login" class="login-button">로그인하러 가기</a>
+        </div>
+
+        <!-- 로그인 상태 -->
+        <div th:if="${user != null}" class="user-info">
+            <img class="user-avatar" th:src="${user.profile.path+user.getProfile().originalFilename}" alt="프로필 이미지">
+            <h3 th:text="${user.nickname}">사용자명</h3>
+            <div class="dropdown-menu" id="userDropdown">
+                <a href="/user/profile" class="dropdown-item">프로필 설정</a>
+                <button onclick="logout()" class="dropdown-item logout-btn">로그아웃</button>
+            </div>
+<!--            <p>님의 절약 일지</p>-->
+            <div class="user-stats">
+<!--                <p>이번 달 목표 달성률: <span th:text="${user.achievementRate}">33.33%</span></p>-->
+<!--                <p>총 절약액: <span th:text="${user.totalSavings}">77,777원</span></p>-->
+            </div>
+        </div>
+    </aside>
+</div>
+
+
+<div th:replace="~{common/footer :: footer}"></div>
+<script>
+
+</script>
 </body>
 </html>
