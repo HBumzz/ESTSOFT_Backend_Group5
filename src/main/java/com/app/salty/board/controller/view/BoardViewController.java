@@ -81,7 +81,7 @@ public class BoardViewController {
     public String deleteComment(@PathVariable Long commentId, @PathVariable Long articleId, Model model) {
         commentService.deleteComment(commentId);
         String aid = String.valueOf(articleId);
-        String href = "board/article/" + aid;
+        String href = "/board/article/" + aid;
         log.warn(href);
         MessageDto message = new MessageDto("댓글 삭제 완료!", href);
         return showMessageAndRedirect(message,model);
@@ -92,7 +92,7 @@ public class BoardViewController {
     public String saveComment(
             SaveCommentRequestDto requestDto
             , Long articleId
-            , @AuthenticationPrincipal Users user) {
+            , @AuthenticationPrincipal Users user, Model model) {
 
         // 임의의 유저 생성 - test
         Users tempUser = new Users();
@@ -102,6 +102,8 @@ public class BoardViewController {
 
         SaveCommentResponseDto responseDto = commentService.saveComment(requestDto,articleId);
 
-        return "redirect:/board/article/"+articleId;
+        String href = "/board/article/"+articleId;
+        MessageDto message = new MessageDto("댓글 작성 완료!", href);
+        return showMessageAndRedirect(message,model);
     }
 }

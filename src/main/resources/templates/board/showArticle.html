@@ -75,7 +75,7 @@
         </tr>
         <tr>
           <td colspan="2">
-            <textarea id="article-content" th:text="${article.content}"></textarea>
+            <textarea id="article-content" th:text="${article.content}" disabled></textarea>
           </td>
         </tr>
       </table>
@@ -94,7 +94,7 @@
               <td id="comment02" th:text="'작성자 ' + ${comment.writerId} + ' | ' + ${comment.updatedAt}"></td>
             </tr>
             <tr>
-              <td colspan="2" th:text="${comment.content}"></td>
+              <td colspan="2" th:text="${comment.content}" ></td>
             </tr>
             <tr>
               <input type="hidden" id="comment-id" th:value="${comment.commentId}">
