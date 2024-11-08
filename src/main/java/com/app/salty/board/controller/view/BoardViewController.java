@@ -8,7 +8,9 @@ import com.app.salty.board.dto.comment.SaveCommentResponseDto;
 import com.app.salty.board.dto.like.ContentType;
 import com.app.salty.board.dto.like.LikeRequestDto;
 import com.app.salty.board.entity.Article;
+import com.app.salty.board.entity.Comment;
 import com.app.salty.board.repository.ArticleRepository;
+import com.app.salty.board.repository.CommentRepository;
 import com.app.salty.board.service.ArticleServiceImpl;
 import com.app.salty.board.service.CommentServiceImpl;
 import com.app.salty.board.service.LikeServiceImpl;
@@ -36,6 +38,8 @@ public class BoardViewController {
     CommentServiceImpl commentService;
     @Autowired
     ArticleRepository articleRepository;
+    @Autowired
+    CommentRepository commentRepository;
     @Autowired
     LikeServiceImpl likeService;
 
@@ -105,5 +109,21 @@ public class BoardViewController {
         String href = "/board/article/"+articleId;
         MessageDto message = new MessageDto("댓글 작성 완료!", href);
         return showMessageAndRedirect(message,model);
+    }
+
+    // 댓글 좋아요
+    @GetMapping("/comment/like/{articleId}/{commentId}")
+    public String likeComment(@PathVariable Long commentId, @PathVariable Long articleId
+            , @AuthenticationPrincipal Users user, Model model) {
+        LikeRequestDto requestDto = new LikeRequestDto();
+        requestDto.setContentType(ContentType.COMMENT);
+        requestDto.setContentId(commentId);
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
+        requestDto.setComment(comment);
+
+        likeService.Like(requestDto);
+
+        return"redirect:/board/article/"+articleId;
     }
 }

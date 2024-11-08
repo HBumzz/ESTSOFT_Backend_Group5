@@ -62,6 +62,7 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-8" th:object="${article}">
+      <input type="hidden" id="article-id" th:value="${article.articleId}">
       <table id="show-article-table">
         <tr>
           <th colspan="2" id="main-title">자유 게시판</th>
@@ -98,12 +99,13 @@
             </tr>
             <tr>
               <input type="hidden" id="comment-id" th:value="${comment.commentId}">
-              <input type="hidden" id="article-id" th:value="${article.articleId}">
               <td>
                 <a class="update-comment-btn" type="button" th:href="@{/board/article/{id}(id=${article.articleId})}">수정</a> |
                 <button type="button" id="delete-comment-btn" th:onclick="|location.href='@{/comment/delete/{articleId}/{commentId}(articleId=${article.articleId} ,commentId=${comment.commentId})}'|" >삭제</button>
               </td>
-              <td id="comment-like-btn" th:text="'[좋아요] '+ ${comment.likeCount}"></td>
+              <td>
+                <button type="button" id="comment-like-btn" th:onclick="|location.href='@{/comment/like/{articleId}/{commentId}(articleId=${article.articleId} ,commentId=${comment.commentId})}'|">좋아요</button> <span th:text="${comment.likeCount}"></span>
+              </td>
             </tr>
           </table>
         </div>
@@ -118,20 +120,6 @@
     likeButton.addEventListener('click', event => {
       let articleId = document.getElementById('article-id').value;
       fetch(`/api/article/like/${articleId}`, {
-        method: 'GET'
-      }).then(() => {
-        location.replace(`/board/article/${articleId}`);
-      });
-    });
-  }
-
-  const commentLikeButton = document.getElementById('comment-like-btn');
-
-  if (commentLikeButton) {
-    commentLikeButton.addEventListener('click', event => {
-      let commentId = document.getElementById('comment-id').value;
-      let articleId = document.getElementById('article-id').value;
-      fetch(`/api/comment/like/${commentId}`, {
         method: 'GET'
       }).then(() => {
         location.replace(`/board/article/${articleId}`);
