@@ -9,6 +9,7 @@
     #editorContent {
       height: auto;
       width: 50%;
+      text-align: left;
     }
     img {
       max-width: 350px;
@@ -99,7 +100,8 @@
       </tr>
       <tr>
         <td id="update-btn" colspan="2">
-          <button type="button" th:onclick="|location.href='@{/board/article/update/{articleId}(articleId=${article.articleId})}'|">수정</button>
+          <button type="button" id="go-back" th:href="@{/board}">목록으로</button> |
+          <button type="button" th:onclick="|location.href='@{/board/article/update/{articleId}(articleId=${article.articleId})}'|">수정</button> |
           <button type="button" id="delete-article-btn">삭제</button>
         </td>
       </tr>
@@ -125,7 +127,6 @@
         <tr>
           <input type="hidden" id="comment-id" th:value="${comment.commentId}">
           <td>
-            <a class="update-comment-btn" type="button" th:href="@{/board/article/{id}(id=${article.articleId})}">수정</a> |
             <button type="button" id="delete-comment-btn" th:onclick="|location.href='@{/comment/delete/{articleId}/{commentId}(articleId=${article.articleId} ,commentId=${comment.commentId})}'|" >삭제</button>
           </td>
           <td>
