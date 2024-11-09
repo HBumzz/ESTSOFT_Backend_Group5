@@ -9,7 +9,7 @@ import java.util.List;
 public interface ArticleService {
     List<GetArticleResponseDto> getArticleList();
     GetArticleResponseDto getArticleById(Long id);
-    SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto, MultipartFile[] multipartFile) throws IOException;
+    SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto);
     UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto, MultipartFile[] multipartFile ,Long articleId) throws IllegalAccessException, IOException;
     void deleteArticle(Long id);
 

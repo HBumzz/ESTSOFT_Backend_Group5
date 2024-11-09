@@ -33,8 +33,6 @@ public class ArticleServiceImpl implements ArticleService {
     ImagesRepository imagesRepository;
     LikeServiceImpl likeService;
 
-    private final String fileDir = "C:\\Users\\leejinhun\\Downloads\\server\\";
-
     ArticleServiceImpl(ArticleRepository articleRepository
             , CommentRepository commentRepository
             , ImagesRepository imagesRepository, UserService userService
@@ -45,30 +43,6 @@ public class ArticleServiceImpl implements ArticleService {
         this.imagesRepository = imagesRepository;
         this.userService = userService;
         this.likeService=likeService;
-    }
-
-    private void FileHandler(MultipartFile[] multipartFiles ,Article article) throws IOException {
-        log.info("multipartFile = {}", (Object) multipartFiles);
-        if(!Objects.isNull(multipartFiles)) {
-            for(MultipartFile file : multipartFiles) {
-                String originalFileName = file.getOriginalFilename();
-                log.info("originalFilename ={}",originalFileName);
-
-                long size = file.getSize();
-                log.info("size ={}",size);
-
-                String contentType = file.getContentType();
-                log.info("contentType={}", contentType);
-
-                String filePath = fileDir + originalFileName;
-                log.info("filePath = {}" , filePath);
-
-                Image image = new Image(originalFileName,originalFileName,filePath,size,contentType,article);
-                imagesRepository.save(image);
-
-                file.transferTo(new File(filePath));
-            }
-        }
     }
 
     @Override
@@ -89,11 +63,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto, MultipartFile[] multipartFiles) throws IOException {
+    public SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto) {
         Article article = articleRepository.save(dto.toEntity());
-
-        FileHandler(multipartFiles, article);
-
         return new SaveArticleResponseDto(article);
     }
 
@@ -114,7 +85,6 @@ public class ArticleServiceImpl implements ArticleService {
         article.setContent(dto.getContent());
 
         imagesRepository.deleteImagesByArticle_Id(article.getId());
-        FileHandler(multipartFiles,article);
 
         Article newArticle = articleRepository.save(article);
         return new UpdateArticleResponseDto(newArticle);

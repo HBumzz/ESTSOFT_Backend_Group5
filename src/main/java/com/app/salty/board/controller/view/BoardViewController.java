@@ -76,7 +76,7 @@ public class BoardViewController {
         Integer countComment = commentService.countCommentByArticle(article);
         responseDto.setCommentCount(countComment);
 
-        model.addAttribute("article",responseDto);
+        model.addAttribute("article", responseDto);
 
         return "board/showArticle";
     }
@@ -88,7 +88,7 @@ public class BoardViewController {
         String href = "/board/article/" + aid;
         log.warn(href);
         MessageDto message = new MessageDto("댓글 삭제 완료!", href);
-        return showMessageAndRedirect(message,model);
+        return showMessageAndRedirect(message, model);
     }
 
     // 게시판에 댓글 달기
@@ -104,11 +104,11 @@ public class BoardViewController {
         // ==============================
         requestDto.setUser(tempUser);
 
-        SaveCommentResponseDto responseDto = commentService.saveComment(requestDto,articleId);
+        SaveCommentResponseDto responseDto = commentService.saveComment(requestDto, articleId);
 
-        String href = "/board/article/"+articleId;
+        String href = "/board/article/" + articleId;
         MessageDto message = new MessageDto("댓글 작성 완료!", href);
-        return showMessageAndRedirect(message,model);
+        return showMessageAndRedirect(message, model);
     }
 
     // 댓글 좋아요
@@ -124,6 +124,12 @@ public class BoardViewController {
 
         likeService.Like(requestDto);
 
-        return"redirect:/board/article/"+articleId;
+        return "redirect:/board/article/" + articleId;
+    }
+
+    // 새글 작성 페이지
+    @GetMapping("/board/new")
+    public String newArticle() {
+        return "board/newArticle";
     }
 }
