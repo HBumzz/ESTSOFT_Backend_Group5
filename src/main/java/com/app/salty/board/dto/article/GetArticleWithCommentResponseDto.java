@@ -12,6 +12,7 @@ import static com.app.salty.util.DateFormatUtil.formatter;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class GetArticleWithCommentResponseDto {
     private Long articleId;
     private Long writerId;
@@ -20,6 +21,8 @@ public class GetArticleWithCommentResponseDto {
     private String content;
     private String createdAt;
     private String updatedAt;
+    private Integer likeCount;
+    private Integer commentCount;
     private List<GetCommentResponseDto> commentList;
 
 

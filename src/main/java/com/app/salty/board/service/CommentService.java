@@ -1,6 +1,7 @@
 package com.app.salty.board.service;
 
 import com.app.salty.board.dto.comment.*;
+import com.app.salty.board.entity.Article;
 import com.app.salty.board.entity.ArticleType;
 import com.app.salty.user.entity.Users;
 
@@ -16,4 +17,6 @@ public interface CommentService {
     List<GetCommentResponseDto> getCommentsByArticleId(Long articleId);
 
     List<GetCommentResponseDto> getCommentsByUserId(Long userId);
+
+    Integer countCommentByArticle(Article article);
 }

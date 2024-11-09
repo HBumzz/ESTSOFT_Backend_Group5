@@ -1,14 +1,11 @@
 package com.app.salty.board.service;
 
 import com.app.salty.board.dto.comment.*;
-import com.app.salty.board.entity.ArticleType;
 import com.app.salty.board.entity.Article;
 import com.app.salty.board.entity.Comment;
 import com.app.salty.board.repository.ArticleRepository;
 import com.app.salty.board.repository.CommentRepository;
-import com.app.salty.user.entity.Users;
 import com.app.salty.user.repository.UserRepository;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,5 +67,10 @@ public class CommentServiceImpl implements CommentService {
     public List<GetCommentResponseDto> getCommentsByUserId(Long userId) {
         List<Comment> commentList = commentRepository.findCommentsByUserId(userId);
         return commentList.stream().map(GetCommentResponseDto::new).toList();
+    }
+
+    @Override
+    public Integer countCommentByArticle(Article article) {
+        return commentRepository.countCommentsByArticle(article).orElse(0);
     }
 }

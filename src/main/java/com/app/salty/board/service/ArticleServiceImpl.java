@@ -3,6 +3,8 @@ package com.app.salty.board.service;
 import com.app.salty.board.dto.ImagesDto.ImagesResponseDto;
 import com.app.salty.board.dto.article.*;
 import com.app.salty.board.dto.comment.GetCommentResponseDto;
+import com.app.salty.board.dto.like.ContentType;
+import com.app.salty.board.dto.like.LikeRequestDto;
 import com.app.salty.board.entity.Article;
 import com.app.salty.board.entity.Comment;
 import com.app.salty.board.entity.Image;
@@ -29,46 +31,25 @@ public class ArticleServiceImpl implements ArticleService {
     ArticleRepository articleRepository;
     CommentRepository commentRepository;
     ImagesRepository imagesRepository;
-
-    private final String fileDir = "C:\\Users\\leejinhun\\Downloads\\server\\";
+    LikeServiceImpl likeService;
 
     ArticleServiceImpl(ArticleRepository articleRepository
             , CommentRepository commentRepository
-            , ImagesRepository imagesRepository, UserService userService) {
+            , ImagesRepository imagesRepository, UserService userService
+            , LikeServiceImpl likeService) {
+
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
         this.imagesRepository = imagesRepository;
         this.userService = userService;
-    }
-
-    private void FileHandler(MultipartFile[] multipartFiles ,Article article) throws IOException {
-        log.info("multipartFile = {}", (Object) multipartFiles);
-        if(!Objects.isNull(multipartFiles)) {
-            for(MultipartFile file : multipartFiles) {
-                String originalFileName = file.getOriginalFilename();
-                log.info("originalFilename ={}",originalFileName);
-
-                long size = file.getSize();
-                log.info("size ={}",size);
-
-                String contentType = file.getContentType();
-                log.info("contentType={}", contentType);
-
-                String filePath = fileDir + originalFileName;
-                log.info("filePath = {}" , filePath);
-
-                Image image = new Image(originalFileName,originalFileName,filePath,size,contentType,article);
-                imagesRepository.save(image);
-
-                file.transferTo(new File(filePath));
-            }
-        }
+        this.likeService=likeService;
     }
 
     @Override
     public List<GetArticleResponseDto> getArticleList() {
-        List<Article> list = articleRepository.findAll();
-        return list.stream().map(GetArticleResponseDto::new).toList();
+        List<Article> articleList = articleRepository.findAll();
+
+        return articleList.stream().map(GetArticleResponseDto::new).toList();
     }
 
     @Override
@@ -82,22 +63,18 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto, MultipartFile[] multipartFiles) throws IOException {
+    public SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto) {
         Article article = articleRepository.save(dto.toEntity());
-
-        FileHandler(multipartFiles, article);
-
         return new SaveArticleResponseDto(article);
     }
 
     @Transactional
     @Override
-    public UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto
-            , MultipartFile[] multipartFiles,Long articleId) throws IOException {
+    public UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto){
 
         userService.findBy(dto.getUserId()); // 사용자 인증
 
-        Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
+        Article article = articleRepository.findById(dto.getArticleId()).orElseThrow(IllegalArgumentException::new);
         if(!Objects.equals(article.getUser().getId(), dto.getUserId())) {
             throw new IllegalArgumentException("로그인 정보와 작성자 정보가 다릅니다.");
         }
@@ -107,7 +84,6 @@ public class ArticleServiceImpl implements ArticleService {
         article.setContent(dto.getContent());
 
         imagesRepository.deleteImagesByArticle_Id(article.getId());
-        FileHandler(multipartFiles,article);
 
         Article newArticle = articleRepository.save(article);
         return new UpdateArticleResponseDto(newArticle);
@@ -137,6 +113,15 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
         List<Comment> commentList = commentRepository.findCommentsByArticle(article);
         List<GetCommentResponseDto> commentResponseDtoList = commentList.stream().map(GetCommentResponseDto::new).toList();
+        for (GetCommentResponseDto getCommentResponseDto : commentResponseDtoList) {
+            Long commentId = getCommentResponseDto.getCommentId();
+            LikeRequestDto requestDto = new LikeRequestDto();
+            requestDto.setContentType(ContentType.COMMENT);
+            Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
+            requestDto.setComment(comment);
+            Integer count = likeService.countLike(requestDto);
+            getCommentResponseDto.setLikeCount(count);
+        }
         return new GetArticleWithCommentResponseDto(article,commentResponseDtoList);
     }
 }

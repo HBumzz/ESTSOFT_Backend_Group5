@@ -38,10 +38,10 @@ public class CommentController {
     }
 
     // 게시판에 댓글 달기
-    @PostMapping("/comment/{articleId}")
+    @PostMapping("/comment")
     public ResponseEntity<SaveCommentResponseDto> saveComment(
-            @RequestBody SaveCommentRequestDto requestDto
-            , @PathVariable Long articleId
+            SaveCommentRequestDto requestDto
+            , Long articleId
             , @AuthenticationPrincipal Users user) {
 
         // 임의의 유저 생성 - test
@@ -51,6 +51,7 @@ public class CommentController {
         requestDto.setUser(tempUser);
 
         SaveCommentResponseDto responseDto = commentService.saveComment(requestDto,articleId);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
@@ -74,6 +75,8 @@ public class CommentController {
     @GetMapping("/comment/article/{articleId}")
     public ResponseEntity<List<GetCommentResponseDto>> getCommentsByArticleId(@PathVariable Long articleId) {
         List<GetCommentResponseDto> responseDto = commentService.getCommentsByArticleId(articleId);
+
+
         return ResponseEntity.ok(responseDto);
     }
     // user의 댓글 전체 조회
