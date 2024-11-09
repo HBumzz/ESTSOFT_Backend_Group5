@@ -1,6 +1,6 @@
 package com.app.salty.common.entity;
 
-public enum AttachmentType {
+public enum ProfileType {
     PROFILE,
     ARTICLE,
 }

@@ -1,17 +1,19 @@
 package com.app.salty.user.service;
 
 
-import com.app.salty.common.entity.Attachment;
-import com.app.salty.common.entity.AttachmentId;
-import com.app.salty.common.entity.AttachmentType;
+import com.app.salty.common.entity.Profile;
+import com.app.salty.common.entity.ProfileId;
+import com.app.salty.common.entity.ProfileType;
+import com.app.salty.config.FilePathConfig;
 import com.app.salty.config.globalExeption.custom.DuplicateEmailException;
 import com.app.salty.user.common.AuthProvider;
 import com.app.salty.user.common.Role;
 import com.app.salty.user.common.social.KakaoAPI;
 import com.app.salty.user.dto.kakao.KakaoUserInfo;
+import com.app.salty.user.dto.request.UserUpdateRequest;
 import com.app.salty.user.dto.request.UserSignupRequest;
 import com.app.salty.user.dto.kakao.KAKAOAuthResponse;
-import com.app.salty.user.dto.response.AttachmentResponse;
+import com.app.salty.user.dto.response.ProfileResponse;
 import com.app.salty.user.dto.response.UserResponse;
 import com.app.salty.user.dto.response.UsersResponse;
 import com.app.salty.user.entity.Roles;
@@ -34,9 +36,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -49,6 +60,7 @@ public class UserService {
     private final SocialRepository socialRepository;
     private final PasswordEncoder passwordEncoder;
     private final KakaoAPI kakaoAPI;
+    private final FilePathConfig filePathConfig;
 
     @Transactional
     public UserResponse signup(UserSignupRequest request) {
@@ -65,20 +77,69 @@ public class UserService {
 
     //유저 정보 갖고오기 및 프로필 없을 시 생성
     @Transactional
-    public UsersResponse findByUserWithAttachment(String email) {
-        Users user = userRepository.findByEmailWithAttachment(email)
-                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithAttachment::::::User not found with email: " + email));
+    public UsersResponse findByUserWithProfile(String email) {
+        Users user = userRepository.findByEmailWithProfile(email)
+                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithProfile::::::User not found with email: " + email));
+        user.updateLastActivityDate();
         log.info("Found user: {}", user);
-        if(user.getAttachment() == null) {
+        if(user.getProfile() == null) {
             System.out.println("프로필 없음 메서드 실행 ");
-            Attachment attachment = createAttachment(user);
-            user.addAttachment(attachment);
+            Profile Profile = createDefaultProfile(user);
+            user.addProfile(Profile);
         }
 
         return userToUsersResponse(user);
     }
 
+    //프로필 수정 -닉네임 및 소개글
+    @Transactional
+    public UsersResponse updateProfile(String email, UserUpdateRequest userUpdateRequest) {
+        Users user = userRepository.findByEmailWithProfile(email)
+                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithProfile::::::User not found with email: " + email));
 
+        user.updateDescription(userUpdateRequest.getBio());
+        user.updateNickname(userUpdateRequest.getNickname());
+
+        return userToUsersResponse(user);
+    }
+
+    //프로필 이미지 업데이트
+    @Transactional
+    public String updateProfileImage(String email, MultipartFile file) throws IOException {
+        Users user = userRepository.findByEmailWithProfile(email)
+                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithProfile::::::User not found with email: " + email));
+
+        Profile profile = user.getProfile();
+        //기본 이미지 아닐 시 파일 삭제
+        deleteExistingProfile(profile);
+
+        //파일 업데이트
+        profile.profileUpdate(file.getOriginalFilename());
+
+        return saveProfileImage(file,profile);
+    }
+
+    //파일 경로 생성 및 파일 추가 -경로 리턴
+    private String saveProfileImage(MultipartFile file, Profile profile) throws IOException {
+        Path targetPath = Paths.get(filePathConfig.getUserProfilePath(), profile.getRenamedFileName());
+        // 디렉토리 생성 확인
+        Files.createDirectories(targetPath.getParent());
+        // 파일 저장
+        Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+        return filePathConfig.getUserProfilePath()+profile.getRenamedFileName();
+    }
+
+    private void deleteExistingProfile(Profile profile) throws IOException {
+        if(profile != null && !profile.isDefaultProfile()) {
+            Path existingFilePath = Paths.get(filePathConfig.getUserProfilePath(),
+                    profile.getRenamedFileName());
+
+            if (Files.deleteIfExists(existingFilePath)) {
+                log.info("Successfully deleted existing profile image: {}", existingFilePath);
+            }
+        }
+    }
 
     //이메일 중복 검사
     private void validateDuplicateEmail(String email) {
@@ -224,6 +285,8 @@ public class UserService {
                 .nickname(nickname)
                 .activated(true)
                 .password(passwordEncoder.encode(userInfo.getId()))
+                .lastActivityDate(LocalDateTime.now())
+                .point(0L)
                 .build();
     }
 
@@ -233,6 +296,8 @@ public class UserService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .nickname(request.getNickname())
                 .activated(true)
+                .point(0L)
+                .lastActivityDate(LocalDateTime.now())
                 .build();
 
     }
@@ -242,8 +307,10 @@ public class UserService {
                 .id(user.getId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
+                .point(user.getPoint())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+
                 .build();
     }
 
@@ -253,26 +320,30 @@ public class UserService {
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .email(user.getEmail())
-                .profile(ataachmentToResponse(user.getAttachment()))
+                .profile(profileToResponse(user.getProfile()))
+                .bio(user.getDescription())
+                .point(user.getPoint())
+                .lastLoginDate(user.getLastActivityDate())
                 .build();
     }
 
-    private AttachmentResponse ataachmentToResponse(Attachment attachment) {
-        return AttachmentResponse.builder()
-                .type(AttachmentType.PROFILE.toString())
-                .path(attachment.getPath())
-                .originalFilename(attachment.getOriginalFilename())
-                .id(attachment.getId().getUserId())
+    private ProfileResponse profileToResponse(Profile profile) {
+        return ProfileResponse.builder()
+                .type(ProfileType.PROFILE.toString())
+                .path(filePathConfig.getUserProfileUrl()+profile.getRenamedFileName())
+                .originalFilename(profile.getOriginalFilename())
+                .renamedFilename(profile.getRenamedFileName())
+                .id(profile.getId().getUserId())
                 .build();
     }
 
-    private Attachment createAttachment(Users user) {
-        return Attachment.builder()
-                .id(new AttachmentId(AttachmentType.PROFILE,user.getId()))
+    private Profile createDefaultProfile(Users user) {
+        return Profile.builder()
+                .id(new ProfileId(ProfileType.PROFILE,user.getId()))
                 .originalFilename("default-profile.png")
-                .renamedFileName(SaltyUtils.getRenameFilename("default-profile.png"))
-                .path("/images/") // 주소
+                .renamedFileName("default-profile.png")
                 .user(user)
                 .build();
     }
+
 }

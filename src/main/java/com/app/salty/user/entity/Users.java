@@ -1,8 +1,8 @@
 package com.app.salty.user.entity;
 
-import com.app.salty.common.entity.Attachment;
+import com.app.salty.common.entity.Profile;
 import com.app.salty.user.dto.kakao.KakaoUserInfo;
-import com.app.salty.common.entity.Attachment;
+import com.app.salty.common.entity.Profile;
 import com.app.salty.util.BaseTimeEntity;
 import jakarta.persistence.*;
 
@@ -16,6 +16,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,18 @@ public class Users extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean activated;
 
+    @Column(nullable = false)
+    private Long point;
+
+    @Column
+    private String description;
+
+    @Column(name = "last_activity_date", nullable = false)
+    private LocalDateTime lastActivityDate;
+
+    @Column(name = "login_count")
+    private int loginCount;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<UserRoleMapping> userRoleMappings = new ArrayList<>();
 
@@ -51,7 +64,7 @@ public class Users extends BaseTimeEntity {
     private SocialProvider socialProvider;  // 소셜 로그인 정보와 1:1 관계
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Attachment attachment;
+    private Profile Profile;
 
     //연관 관계 method
     public void addRoleMappings(UserRoleMapping roleMapping) {
@@ -59,9 +72,11 @@ public class Users extends BaseTimeEntity {
     }
     public void addSocialProvider(SocialProvider socialProvider) {
         this.socialProvider = socialProvider;
+        socialProvider.addUser(this);
     }
-    public void addAttachment(Attachment attachment) {
-        this.attachment = attachment;
+    public void addProfile(Profile Profile) {
+        this.Profile = Profile;
+        Profile.addUser(this);
     }
 
     //business method
@@ -72,11 +87,11 @@ public class Users extends BaseTimeEntity {
     public void updateNickname(String newNickname) {
         this.nickname = newNickname;
     }
-
     public void updateActivated(boolean newActivated) {
         this.activated = newActivated;
     }
-
+    public void updateDescription(String newDescription) {this.description = newDescription;}
+    public void updateLastActivityDate() {this.lastActivityDate = LocalDateTime.now();}
 
     @Override
     public String toString() {

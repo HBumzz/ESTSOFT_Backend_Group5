@@ -6,7 +6,7 @@
     <title>SALTY - 절약하는 일상</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}" />
-
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
 </head>
 
 
@@ -49,18 +49,19 @@
 
         <!-- 로그인 상태 -->
         <div th:if="${user != null}" class="user-info">
-            <img class="user-avatar" th:src="${user.profile.path+user.getProfile().originalFilename}" alt="프로필 이미지">
-            <h3 th:text="${user.nickname}">사용자명</h3>
-            <div class="dropdown-menu" id="userDropdown">
-                <a href="/user/profile" class="dropdown-item">프로필 설정</a>
-                <button onclick="logout()" class="dropdown-item logout-btn">로그아웃</button>
+            <img class="user-avatar" th:src="${user.profile.path}" alt="프로필 이미지">
+            <h3 th:text="${user.nickname}" class="user-nickname">사용자명</h3>
+            <div class="user-menu">
+                <a href="/auth/profile" class="menu-item">프로필 설정</a>
+                <a href="/auth/logout" class="menu-item logout-btn">로그아웃</a>
             </div>
+        </div>
 <!--            <p>님의 절약 일지</p>-->
             <div class="user-stats">
 <!--                <p>이번 달 목표 달성률: <span th:text="${user.achievementRate}">33.33%</span></p>-->
 <!--                <p>총 절약액: <span th:text="${user.totalSavings}">77,777원</span></p>-->
             </div>
-        </div>
+
     </aside>
 </div>
 

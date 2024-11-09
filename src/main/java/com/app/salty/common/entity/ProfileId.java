@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor   //복합키 클래스
-public class AttachmentId implements Serializable {
-    private AttachmentType type;
+public class ProfileId implements Serializable {
+    private ProfileType type;
     private Long userId;
 }
