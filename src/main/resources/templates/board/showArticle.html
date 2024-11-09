@@ -17,6 +17,10 @@
     #show-article-table {
       width: 100%;
     }
+
+    #article-info {
+      border-bottom: 3px solid dimgrey;
+    }
     #article-info-02 {
       text-align: end;
     }
@@ -31,6 +35,7 @@
       width: 50%;
       height: auto;
       resize: none;
+      margin-top: 10px;
     }
     #content {
       border: 1px solid rebeccapurple;
@@ -38,10 +43,17 @@
       resize: none;
     }
 
+    #update-btn {
+      text-align: right;
+      margin-bottom: 10px;
+      border-bottom: 3px solid dimgrey;
+    }
+
     #comment-list {
       display: flex;
       flex-direction: column;
       justify-content: end;
+      margin-top: 10px;
     }
 
     #comment01 {
@@ -54,8 +66,6 @@
     #comment-like-btn {
       text-align: right;
     }
-  </style>
-
   </style>
 </head>
 <body th:object="${article}">
@@ -73,7 +83,7 @@
       <tr>
         <th colspan="2" id="title" th:text="${article.title} + '  /  ' + ${article.header}"></th>
       </tr>
-      <tr>
+      <tr id="article-info">
         <td id="article-info-01" th:text="'작성자 Id : ' + ${article.writerId} + ' | '+${article.updatedAt}"></td>
         <td id="article-info-02" th:text="'[좋아요] ' + ${article.likeCount} + ' | [댓글] '+ ${article.commentCount}"></td>
       </tr>
@@ -87,6 +97,13 @@
         </div>
         </td>
       </tr>
+      <tr>
+        <td id="update-btn" colspan="2">
+          <button type="button" th:onclick="|location.href='@{/board/article/update/{articleId}(articleId=${article.articleId})}'|">수정</button>
+          <button type="button" id="delete-article-btn">삭제</button>
+        </td>
+      </tr>
+
     </table>
     <div id="new-comment">
       <form method="post" action="/comment">
@@ -120,7 +137,6 @@
   </div>
 </div>
 
-
 <script>
   window.onload = async () => {
     findPost();
@@ -131,9 +147,7 @@
   async function findPost() {
 
     // 1. URL 쿼리 스트링에서 게시글 번호 조회
-
     const articleId = document.getElementById('article-id').value;
-
     // 2. API 호출
     const url = `/api/article/${articleId}`;
     const response = await fetch(url);
@@ -142,9 +156,7 @@
     // 3. 에디터 콘텐츠 렌더링
     document.querySelector('#editorContent').innerHTML = post.content;
   }
-
   const likeButton = document.getElementById('article-info-02');
-
   if (likeButton) {
     likeButton.addEventListener('click', event => {
       let articleId = document.getElementById('article-id').value;
@@ -152,6 +164,19 @@
         method: 'GET'
       }).then(() => {
         location.replace(`/board/article/${articleId}`);
+      });
+    });
+  }
+
+  const deleteButton = document.getElementById('delete-article-btn');
+  if (deleteButton) {
+    deleteButton.addEventListener('click', event => {
+      let articleId = document.getElementById('article-id').value;
+      fetch(`/api/article/${articleId}`, {
+        method: 'DELETE'
+      }).then(() => {
+        alert("게시글이 삭제되었습니다.");
+        location.replace('/board');
       });
     });
   }

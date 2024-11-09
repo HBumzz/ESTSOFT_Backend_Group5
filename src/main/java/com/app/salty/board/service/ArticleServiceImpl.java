@@ -70,12 +70,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto
-            , MultipartFile[] multipartFiles,Long articleId) throws IOException {
+    public UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto){
 
         userService.findBy(dto.getUserId()); // 사용자 인증
 
-        Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
+        Article article = articleRepository.findById(dto.getArticleId()).orElseThrow(IllegalArgumentException::new);
         if(!Objects.equals(article.getUser().getId(), dto.getUserId())) {
             throw new IllegalArgumentException("로그인 정보와 작성자 정보가 다릅니다.");
         }

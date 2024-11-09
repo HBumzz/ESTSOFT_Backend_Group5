@@ -125,13 +125,11 @@ public class ArticleController {
     }
 
     // 게시물(articleId) 수정
-    @PutMapping(value ="/article/{articleId}", consumes ={MediaType.APPLICATION_JSON_VALUE
-            , MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<UpdateArticleResponseDto> updateArticle(@PathVariable Long articleId
-            , @RequestPart UpdateArticleRequestDto requestDto
-            , @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
-
-        return ResponseEntity.ok(articleService.updateArticle(requestDto, files, articleId));
+    @PutMapping(value ="/article/{articleId}")
+    public ResponseEntity<UpdateArticleResponseDto> updateArticle(@RequestBody UpdateArticleRequestDto requestDto
+            , @PathVariable Long articleId) {
+        requestDto.setUserId(1L);
+        return ResponseEntity.ok(articleService.updateArticle(requestDto));
     }
 
     // 게시물(articleId) 삭제

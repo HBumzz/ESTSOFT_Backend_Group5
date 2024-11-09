@@ -132,4 +132,12 @@ public class BoardViewController {
     public String newArticle() {
         return "board/newArticle";
     }
+
+    @GetMapping("/board/article/update/{articleId}")
+    public String updateArticle(@PathVariable Long articleId, Model model) {
+        GetArticleResponseDto responseDto = articleService.getArticleById(articleId);
+        model.addAttribute("article", responseDto);
+
+        return "board/updateArticle";
+    }
 }
