@@ -5,6 +5,7 @@ import com.app.salty.common.entity.Profile;
 import com.app.salty.common.entity.ProfileId;
 import com.app.salty.common.entity.ProfileType;
 import com.app.salty.config.FilePathConfig;
+import com.app.salty.config.globalExeption.custom.AttendanceException;
 import com.app.salty.config.globalExeption.custom.DuplicateEmailException;
 import com.app.salty.user.common.AuthProvider;
 import com.app.salty.user.common.Role;
@@ -13,17 +14,11 @@ import com.app.salty.user.dto.kakao.KakaoUserInfo;
 import com.app.salty.user.dto.request.UserUpdateRequest;
 import com.app.salty.user.dto.request.UserSignupRequest;
 import com.app.salty.user.dto.kakao.KAKAOAuthResponse;
-import com.app.salty.user.dto.response.ProfileResponse;
-import com.app.salty.user.dto.response.UserResponse;
-import com.app.salty.user.dto.response.UsersResponse;
-import com.app.salty.user.entity.Roles;
-import com.app.salty.user.entity.SocialProvider;
-import com.app.salty.user.entity.UserRoleMapping;
-import com.app.salty.user.entity.Users;
+import com.app.salty.user.dto.response.*;
+import com.app.salty.user.entity.*;
 import com.app.salty.user.repository.RolesRepository;
 import com.app.salty.user.repository.SocialRepository;
 import com.app.salty.user.repository.UserRepository;
-import com.app.salty.util.SaltyUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,16 +33,15 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -130,6 +124,7 @@ public class UserService {
         return filePathConfig.getUserProfilePath()+profile.getRenamedFileName();
     }
 
+    //기존 파일 데이터 삭제
     private void deleteExistingProfile(Profile profile) throws IOException {
         if(profile != null && !profile.isDefaultProfile()) {
             Path existingFilePath = Paths.get(filePathConfig.getUserProfilePath(),
@@ -139,6 +134,50 @@ public class UserService {
                 log.info("Successfully deleted existing profile image: {}", existingFilePath);
             }
         }
+    }
+
+    //출석체크 리스트
+    public AttendanceResponse findByUserWithAttendance(Long userId) {
+        Users user = userRepository.findByEmailWithAttendances(userId)
+                .orElseThrow();
+        List<Attendance> thisMonthAttendanceList = thisMonthAttendance(user.getAttendances());
+
+        return createAttendanceResponse(user,thisMonthAttendanceList);
+    }
+
+    //오늘 출석체크
+    @Transactional
+    public AttendanceResponse updateUserAttendance(Long userId) {
+        Users user = userRepository.findByEmailWithAttendances(userId)
+                .orElseThrow();
+       todayAttendance(user);
+
+       List<Attendance> thisMonthAttendanceList = thisMonthAttendance(user.getAttendances());
+
+       return createAttendanceResponse(user,thisMonthAttendanceList);
+    }
+
+    //출석 중복 확인
+    private void todayAttendance(Users user) {
+        if(user.getAttendances().stream()
+                .anyMatch(attendance -> attendance.getAttendanceDate().equals(LocalDate.now()))){
+            throw new AttendanceException("이미 출석체크를 하셨습니다.");
+        }
+        Attendance attendance = createAttendance();
+        user.addPoint(attendance.getRewardPoint());
+        user.addAttendance(attendance);
+    }
+
+    //이번달 출석일수 및 출석률
+    public List<Attendance> thisMonthAttendance(List<Attendance> attendanceList) {
+        LocalDate now = LocalDate.now();
+        LocalDate firstDayOfMonth = now.withDayOfMonth(1);
+        LocalDate lastDayOfMonth = now.withDayOfMonth(now.lengthOfMonth());
+
+        return attendanceList.stream()
+                .filter(a -> !a.getAttendanceDate().isBefore(firstDayOfMonth)
+                && !a.getAttendanceDate().isAfter(lastDayOfMonth))
+                .toList();
     }
 
     //이메일 중복 검사
@@ -343,6 +382,29 @@ public class UserService {
                 .originalFilename("default-profile.png")
                 .renamedFileName("default-profile.png")
                 .user(user)
+                .build();
+    }
+
+    private AttendanceResponse createAttendanceResponse(Users user, List<Attendance> thisMonthAttendanceList) {
+        return AttendanceResponse.builder()
+                .attendanceList(user.getAttendances().stream().map(this::createAttendanceDTO).toList())
+                .totalDays(user.getAttendances().size())
+                .consecutiveDays(thisMonthAttendanceList.size())
+                .monthlyRate((int)((double) thisMonthAttendanceList.size() / LocalDate.now().lengthOfMonth() * 100))
+                .point(user.getPoint())
+                .build();
+    }
+
+    private Attendance createAttendance() {
+        return Attendance.builder()
+                .attendanceDate(LocalDate.now())
+                .build();
+    }
+
+    private AttendanceDTO createAttendanceDTO(Attendance attendance) {
+        return AttendanceDTO.builder()
+                .attendanceDate(attendance.getAttendanceDate())
+                .attendanceId(attendance.getId())
                 .build();
     }
 

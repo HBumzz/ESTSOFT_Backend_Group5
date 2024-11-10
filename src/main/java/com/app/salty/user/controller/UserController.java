@@ -89,4 +89,11 @@ public class UserController {
         return "/user/profile";
     }
 
+    //출석체크 페이지
+    @GetMapping("/attendance")
+    public String attendance(Model model, @AuthenticationPrincipal UserDetails currentUser) {
+
+        return "/user/attendance";
+    }
+
 }

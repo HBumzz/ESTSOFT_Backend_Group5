@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출석체크 캘린더</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/index.global.min.js'></script>
+    <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.css' rel='stylesheet' />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/footer.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/attendance.css}" />
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{common/header :: header}"></div>
+    <div class="header">
+        <h1>Salty 출석체크</h1>
+    </div>
+    <div class="attendance-info">
+        <div class="info-box">
+            <div class="label">총 출석일</div>
+            <div class="value" id="totalDays">0</div>
+        </div>
+        <div class="info-box">
+            <div class="label">이번달 출석 일</div>
+            <div class="value" id="consecutiveDays">0</div>
+        </div>
+        <div class="info-box">
+            <div class="label">이번 달 출석률</div>
+            <div class="value" id="monthlyRate">0%</div>
+        </div>
+        <div class="info-box">
+            <div class="label">내 포인트</div>
+            <div class="value" id="point">0 Point</div>
+        </div>
+    </div>
+
+    <button class="attendance-btn" id="attendanceBtn">출석체크</button>
+    <div id="calendar"></div>
+</div>
+<div th:replace="~{common/footer :: footer}"></div>
+<script>
+    let calendar;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const calendarEl = document.getElementById('calendar');
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth'
+            },
+            locale: 'ko',
+            events: [],
+            eventContent: (arg) => {
+                return {
+                    html: '<div class="attendance-stamp">출석!</div>'
+                };
+            }
+        });
+        calendar.render();
+
+        // 출석체크 버튼 클릭 이벤트
+        document.getElementById('attendanceBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/auth/attendance.do', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // 캘린더에 출석 표시 추가
+                    calendar.addEvent({
+                        title: '출석',
+                        start: new Date(),
+                        className: 'attendance-marked'
+                    });
+
+                    // 출석 정보 업데이트
+                    updateAttendanceInfo(data);
+
+                    alert('출석체크가 완료되었습니다!');
+                    this.disabled = true;
+                } else {
+                    alert("이미 출석체크를 하였습니다.")
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        // 초기 출석 데이터 로드
+        loadAttendanceData();
+    });
+
+    const loadAttendanceData = async () => {
+        try {
+            const response = await fetch('/api/auth/attendance', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                // 출석 정보 업데이트
+                updateAttendanceInfo(data);
+
+                // 캘린더에 출석 데이터 표시
+                data.attendanceList.forEach(date => {
+                    calendar.addEvent({
+                        title: '출석',
+                        start: date,
+                        className: 'attendance-marked'
+                    });
+                });
+            }
+        } catch (error) {
+            console.error('출석 데이터 로드 실패:', error);
+        }
+    }
+
+    const updateAttendanceInfo = (data) => {
+        document.getElementById('totalDays').textContent = data.totalDays;
+        document.getElementById('consecutiveDays').textContent = data.consecutiveDays;
+        document.getElementById('monthlyRate').textContent = `${data.monthlyRate}%`;
+        document.getElementById('point').textContent = `${data.point} Point`;
+    }
+
+
+</script>
+</body>
+</html>

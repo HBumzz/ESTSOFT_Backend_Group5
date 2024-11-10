@@ -66,6 +66,9 @@ public class Users extends BaseTimeEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile Profile;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Attendance> attendances = new ArrayList<>();
+
     //연관 관계 method
     public void addRoleMappings(UserRoleMapping roleMapping) {
         this.userRoleMappings.add(roleMapping);
@@ -77,6 +80,10 @@ public class Users extends BaseTimeEntity {
     public void addProfile(Profile Profile) {
         this.Profile = Profile;
         Profile.addUser(this);
+    }
+    public void addAttendance(Attendance attendance) {
+        this.attendances.add(attendance);
+        attendance.addUser(this);
     }
 
     //business method
@@ -92,7 +99,8 @@ public class Users extends BaseTimeEntity {
     }
     public void updateDescription(String newDescription) {this.description = newDescription;}
     public void updateLastActivityDate() {this.lastActivityDate = LocalDateTime.now();}
-
+    public void addPoint(Long rewardPoint) {
+    this.point += rewardPoint;}
     @Override
     public String toString() {
         return "Users{" +
@@ -105,4 +113,5 @@ public class Users extends BaseTimeEntity {
                 ", activated=" + activated +
                 '}';
     }
+
 }

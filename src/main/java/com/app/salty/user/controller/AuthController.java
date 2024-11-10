@@ -3,6 +3,7 @@ package com.app.salty.user.controller;
 import com.app.salty.user.dto.request.EmailVerificationRequest;
 import com.app.salty.user.dto.request.LoginRequest;
 import com.app.salty.user.dto.request.UserUpdateRequest;
+import com.app.salty.user.dto.response.AttendanceResponse;
 import com.app.salty.user.dto.response.TokenResponse;
 import com.app.salty.user.dto.response.UsersResponse;
 import com.app.salty.user.entity.CustomUserDetails;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -98,7 +100,28 @@ public class AuthController {
         ));
     }
 
-    //front 분리 후 사용할 로직
+    //출석리스트
+    @GetMapping("/attendance")
+    public ResponseEntity<AttendanceResponse> getAttendanceList(
+            @AuthenticationPrincipal CustomUserDetails currentUser
+    ){
+        AttendanceResponse response = userService.findByUserWithAttendance(currentUser.getId());
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    //출석체크
+    @PostMapping("/attendance.do")
+    public ResponseEntity<AttendanceResponse> attendance(
+            @AuthenticationPrincipal CustomUserDetails currentUser
+    ){
+        AttendanceResponse response = userService.updateUserAttendance(currentUser.getId());
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestHeader("Refresh-Token") String refreshToken) {
         TokenResponse newResponseToken = authenticationService.refreshToken(refreshToken);
