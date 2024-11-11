@@ -19,28 +19,28 @@ public class ChallengeComment {
     @Column(name = "comment_id")
     private Long id;
 
-    @Column
-    private String body;
-
-    @Column
-    private String imageLink;
+    @Column(nullable = false)
+    private String body;  // 댓글 내용
 
     @CreatedDate
-    @Column
-    private LocalDateTime createdAt;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;  // 생성일
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;  // 수정일
 
     @ManyToOne
-    @JoinColumn(name = "challenge_id")
-    private Challenge challenge;
+    @JoinColumn(name = "challenge_id", nullable = false)
+    private Challenge challenge;  // 어떤 챌린지에 대한 댓글인지
 
+    // 생성자
     public ChallengeComment(String body, Challenge challenge) {
         this.body = body;
         this.challenge = challenge;
     }
 
+    // 댓글 수정 메서드
     public void updateCommentBody(String body) {
         this.body = body;
     }

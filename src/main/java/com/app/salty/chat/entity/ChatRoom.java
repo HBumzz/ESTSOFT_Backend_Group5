@@ -28,7 +28,10 @@ public class ChatRoom {
     private Users user2; // 상대방
 
     private LocalDateTime createdAt;
-
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
     @Builder
     public ChatRoom(Users user1, Users user2, LocalDateTime createdAt) {
         this.user1 = user1;

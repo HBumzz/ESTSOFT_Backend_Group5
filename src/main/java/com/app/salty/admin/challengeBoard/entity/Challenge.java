@@ -52,6 +52,17 @@ public class Challenge {
     @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
+    public enum ChallengeType {
+        DAILY,
+        WEEKLY,
+        MONTHLY
+    }
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private ChallengeType type;
+
+
     // 생성자
     @Builder
     public Challenge(String title, String content, LocalDateTime startDate, LocalDateTime endDate, ChallengeStatus status) {
@@ -66,7 +77,7 @@ public class Challenge {
         return new ChallengeResponse(this);
     }
 
-    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, ChallengeStatus status) {
+    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, ChallengeStatus status, ChallengeType type) {
 //        if (!title.isBlank()) { this.title = title; }
 //        if (!content.isBlank()) { this.content = content; }
         this.title = title;
@@ -74,5 +85,6 @@ public class Challenge {
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
+        this.type = type;
     }
 }

@@ -1,8 +1,8 @@
 package com.app.salty.chat.dto;
+import java.time.LocalDateTime;
 
-import com.app.salty.user.entity.Users;
+import com.app.salty.user.dto.response.UsersResponse;
 import lombok.*;
-
 @Builder
 @Getter
 @Setter
@@ -10,12 +10,16 @@ import lombok.*;
 @NoArgsConstructor
 public class ChatMessageDto {
 
-    public enum MessageType{
+    public enum MessageType {
         ENTER, TALK
     }
 
-    private MessageType messageType;
+    private Long messageId;
     private Long chatRoomId;
-    private Long senderId; // 채팅을 보낸 사람
+    private UsersResponse sender;
+    private UsersResponse receiver;
     private String message;
+    private MessageType messageType;
+    private LocalDateTime createdAt;
+
 }

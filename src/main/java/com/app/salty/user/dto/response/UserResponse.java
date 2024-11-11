@@ -17,6 +17,7 @@ public class UserResponse {
     private String nickname;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long point;
 
     @Override
     public String toString() {

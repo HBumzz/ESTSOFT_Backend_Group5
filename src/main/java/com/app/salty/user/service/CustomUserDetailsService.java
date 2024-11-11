@@ -1,5 +1,6 @@
 package com.app.salty.user.service;
 
+import com.app.salty.user.entity.CustomUserDetails;
 import com.app.salty.user.entity.UserRoleMapping;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.repository.UserRepository;
@@ -29,35 +30,44 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users currentUser = userRepository.findByEmailWithRoles(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        log.info("currentUser: {}", currentUser);
+        return createUserDetails(currentUser);
+    }
 
-        log.info("list : {}", currentUser.getUserRoleMappings());
+    private CustomUserDetails createUserDetails(Users user) {
+        log.info("createUserDetails: {}", getAuthorities(user));
+        Set<GrantedAuthority> authorities = getAuthorities(user);
 
-        // 사용자의 최대 권한 레벨 찾기
-        int maxLevel = currentUser.getUserRoleMappings().stream()
-                .map(mapping -> mapping.getRole().getLevel())
-                .max(Integer::compareTo)
-                .orElse(0);
-
-        log.info("maxLevel {}:", maxLevel);
-
-        // 해당 레벨 이하의 모든 권한 부여
-        Set<GrantedAuthority> authorities = currentUser.getUserRoleMappings().stream()
-                .map(UserRoleMapping::getRole)
-                .filter(role -> role.getLevel() <= maxLevel)
-                .map(role -> new SimpleGrantedAuthority(role.getRole().name()))
-                .collect(Collectors.toSet());
-
-        // 디버깅을 위한 상세 로그
-        authorities.forEach(auth ->
-                log.debug("Authority granted: {}", auth.getAuthority())
-        );
-
-        return User.builder()
-                .username(currentUser.getEmail())
-                .password(currentUser.getPassword())
+        return CustomUserDetails.builder()
+                .id(user.getId())
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .nickname(user.getNickname())
                 .authorities(authorities)
                 .build();
 
+//        return User.builder()
+//                .username(user.getEmail())
+//                .password(user.getPassword())
+//                .authorities(authorities)
+//                .build();
+    }
+
+    private Set<GrantedAuthority> getAuthorities(Users user) {
+        log.info("getUserRoleMappings+++++++++++: {}", user.getUserRoleMappings());
+//        int maxLevel = user.getUserRoleMappings().stream()
+//                .map(mapping -> mapping.getRole().getLevel())
+//                .max(Integer::compareTo)
+//                .orElse(0);
+//        log.info("maxLevel: {}", maxLevel);
+        return user.getUserRoleMappings().stream()
+                .map(UserRoleMapping::getRole)
+                .map(role -> {
+                    String authority = "ROLE_" + role.getRole().name();
+                    log.info("Adding authority: {}", authority);
+                    return new SimpleGrantedAuthority(authority);
+                })
+                .collect(Collectors.toSet());
     }
 
     public String getCurrentUserEmail() {
