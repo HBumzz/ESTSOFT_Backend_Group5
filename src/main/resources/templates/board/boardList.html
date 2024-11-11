@@ -38,6 +38,8 @@
 <div class="container">
     <button type="button" id="create-btn" th:onclick="|location.href='@{/board/new}'|"
             class ="btn btn-secondary btn-sm mb-3">글 등록</button>
+    <button type="button" id="back-btn" th:onclick="|location.href='@{/}'|"
+            class ="btn btn-secondary btn-sm mb-3">메인 페이지</button>
     <div class="row-3" th:each="article : ${articles}">
         <div class="card">
             <table id="board-table">

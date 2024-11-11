@@ -65,8 +65,9 @@ public class BoardViewController {
 
     // 게시글 상세 조회
     @GetMapping("/board/article/{articleId}")
-    public String showArticle(@PathVariable Long articleId, Model model) {
-        GetArticleWithCommentResponseDto responseDto = articleService.getArticleWithCommentByArticleId(articleId);
+    public String showArticle(@PathVariable Long articleId, Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        GetArticleWithCommentResponseDto responseDto = articleService.getArticleWithCommentByArticleId(articleId, currentUser);
+
         Article article = articleRepository.findById(responseDto.getArticleId()).orElseThrow(IllegalArgumentException::new);
 
         LikeRequestDto likeDto = new LikeRequestDto();
@@ -143,9 +144,20 @@ public class BoardViewController {
         return "board/newArticle";
     }
 
+
+    // 게시글 수정
     @GetMapping("/board/article/update/{articleId}")
-    public String updateArticle(@PathVariable Long articleId, Model model) {
+    public String updateArticle(@PathVariable Long articleId, Model model
+            ,@AuthenticationPrincipal CustomUserDetails currentUser) {
+
         GetArticleResponseDto responseDto = articleService.getArticleById(articleId);
+
+        if(!responseDto.getWriterId().equals(currentUser.getId())) {
+            MessageDto message = new MessageDto("작성자만 수정할 수 있습니다.", "/board/article/" + articleId);
+            model.addAttribute("data", message);
+            return showMessageAndRedirect(message, model);
+        }
+
         model.addAttribute("article", responseDto);
 
         return "board/updateArticle";

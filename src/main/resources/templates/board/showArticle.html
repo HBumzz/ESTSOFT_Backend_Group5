@@ -100,7 +100,7 @@
       </tr>
       <tr>
         <td id="update-btn" colspan="2">
-          <button type="button" id="go-back" th:href="@{/board}">목록으로</button> |
+          <button type="button" id="go-back" th:onclick="|location.href='@{/board}'|">목록으로</button> |
           <button type="button" th:onclick="|location.href='@{/board/article/update/{articleId}(articleId=${article.articleId})}'|">수정</button> |
           <button type="button" id="delete-article-btn">삭제</button>
         </td>
