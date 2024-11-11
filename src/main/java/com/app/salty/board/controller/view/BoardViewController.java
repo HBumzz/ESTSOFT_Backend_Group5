@@ -98,11 +98,11 @@ public class BoardViewController {
             , Long articleId
             , @AuthenticationPrincipal Users user, Model model) {
 
-        // 임의의 유저 생성 - test
-        Users tempUser = new Users();
-        tempUser.setId(1L);
-        // ==============================
-        requestDto.setUser(tempUser);
+//        // 임의의 유저 생성 - test
+//        Users tempUser = new Users();
+//        tempUser.setId(1L);
+//        // ==============================
+//        requestDto.setUser(tempUser);
 
         SaveCommentResponseDto responseDto = commentService.saveComment(requestDto, articleId);
 

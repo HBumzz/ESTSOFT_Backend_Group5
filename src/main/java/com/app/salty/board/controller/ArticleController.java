@@ -119,8 +119,8 @@ public class ArticleController {
     @PostMapping(value = "/article")
     public ResponseEntity<SaveArticleResponseDto> saveArticle(@RequestBody SaveArticleRequestDto requestDto) {
         // 임의의 유저로 정보 전달
-        Users user = userService.findBy(1L);
-        requestDto.setUser(user);
+//        Users user = userService.findBy(1L);
+//        requestDto.setUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(articleService.saveArticle(requestDto));
     }
 

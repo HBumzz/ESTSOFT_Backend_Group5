@@ -45,10 +45,10 @@ public class CommentController {
             , @AuthenticationPrincipal Users user) {
 
         // 임의의 유저 생성 - test
-        Users tempUser = new Users();
-        tempUser.setId(1L);
+//        Users tempUser = new Users();
+//        tempUser.setId(1L);
         // ==============================
-        requestDto.setUser(tempUser);
+//        requestDto.setUser(tempUser);
 
         SaveCommentResponseDto responseDto = commentService.saveComment(requestDto,articleId);
 
