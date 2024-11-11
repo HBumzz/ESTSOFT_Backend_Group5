@@ -70,6 +70,7 @@
   </style>
 </head>
 <body th:object="${article}">
+<div th:replace="~{common/header :: header}"></div>
 <input type="hidden" id="article-id" th:value="${article.articleId}">
 <div class="p-5 mb-5 text-center</> bg-light">
   <h1 class="mb-3">Salty</h1>
@@ -118,7 +119,6 @@
     <div id="comment-list" th:each="comment : ${article.commentList}">
       <table id="comment-table">
         <tr>
-<!--          <td id="comment01" th:text="'번호 : ' + ${comment.commentId}"></td>-->
           <td id="comment02" th:text="'작성자 ' + ${comment.writerNickname} + ' | ' + ${comment.updatedAt}"></td>
         </tr>
         <tr>

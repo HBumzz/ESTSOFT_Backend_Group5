@@ -27,6 +27,7 @@
     </style>
 </head>
 <body th:object="${article}">
+<div th:replace="~{common/header :: header}"></div>
 <input type = "hidden" id="article-id" th:value="${article.articleId}">
 <input type = "hidden" id="article-content" th:value="${article.content}">
 <h1 style="text-align: left; margin-left: 50px">Salty</h1>

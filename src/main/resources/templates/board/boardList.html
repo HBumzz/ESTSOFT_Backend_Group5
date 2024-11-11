@@ -33,9 +33,17 @@
         font-size: small;
         color: #555555;
     }
+    #isShow-btn {
+        font-size: smaller;
+    }
+    .hide-btn {
+        width: 70px;
+    }
 
 </style>
 <body>
+<div th:replace="~{common/header :: header}"></div>
+
 <div class="p-5 mb-5 text-center</> bg-light">
     <h1 class="mb-3">Salty</h1>
     <h4 class="mb-4">자유 게시판</h4>
@@ -48,18 +56,36 @@
             class ="btn btn-secondary btn-sm mb-3">메인 페이지</button>
     <div class="row-3" th:each="article : ${articles}">
         <div class="card">
+<!--            <p th:text="${user.getAuthorities()}"></p>-->
             <table id="board-table">
-                    <tr>
-                        <td class="article_id" th:text="${article.articleId}"></td>
-                        <td class="article_header" th:text="${article.header}"></td>
-                        <td class="article_title"><a th:href="@{/board/article/{id}(id=${article.articleId})}" th:text="${article.title} + '  ['+${article.commentCount}+']'"></a></td>
-                        <td class="article_tail" th:text="${article.writerNickname} +' | ' +${article.updatedAt}"></td>
-                    </tr>
+                <tr th:if="${#strings.equals(user.getAuthorities(),'[ROLE_USER]')}">
+                    <td class="hide-btn"><button type="button" id="isShow-btn" th:onclick="|location.href='@{/article/hide(id=${article.articleId})}'|">숨기기</button></td>
+                    <td th:if="${article.show==false}">숨겨진 글</td>
+                    <td class="article_id" th:text="${article.articleId}"></td>
+                    <td class="article_header" th:text="${article.header}"></td>
+                    <td class="article_title"><a th:href="@{/board/article/{id}(id=${article.articleId})}" th:text="${article.title} + '  ['+${article.commentCount}+']'"></a></td>
+                    <td class="article_tail" th:text="${article.writerNickname} +' | ' +${article.updatedAt}"></td>
+                </tr>
+                <tr th:if="${#strings.equals(user.getAuthorities(),'[ROLE_ADMIN]')} and ${article.show==true}">
+                    <td class="article_id" th:text="${article.articleId}"></td>
+                    <td class="article_header" th:text="${article.header}"></td>
+                    <td class="article_title"><a th:href="@{/board/article/{id}(id=${article.articleId})}" th:text="${article.title} + '  ['+${article.commentCount}+']'"></a></td>
+                    <td class="article_tail" th:text="${article.writerNickname} +' | ' +${article.updatedAt}"></td>
+                </tr>
             </table>
         </div>
         <br>
     </div>
 </div>
+<script>
+    function hide(articleId) {
+        fetch(`/api/article/hide/${articleId}`, {
+            method: 'GET'
+        }).then(() =>{
+            alert("숨김 처리");
+        });
+    };
 
+</script>
 </body>
 </html>
