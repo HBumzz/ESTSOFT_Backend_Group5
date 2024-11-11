@@ -11,6 +11,7 @@ import com.app.salty.board.entity.Image;
 import com.app.salty.board.repository.ArticleRepository;
 import com.app.salty.board.repository.CommentRepository;
 import com.app.salty.board.repository.ImagesRepository;
+import com.app.salty.user.entity.Users;
 import com.app.salty.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -121,6 +122,9 @@ public class ArticleServiceImpl implements ArticleService {
             requestDto.setComment(comment);
             Integer count = likeService.countLike(requestDto);
             getCommentResponseDto.setLikeCount(count);
+            Users user = userService.findBy(comment.getUserId());
+            getCommentResponseDto.setWriterNickname(user.getNickname());
+            getCommentResponseDto.setWriterName(user.getEmail());
         }
         return new GetArticleWithCommentResponseDto(article,commentResponseDtoList);
     }

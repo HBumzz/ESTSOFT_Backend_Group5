@@ -51,9 +51,9 @@ public class Comment {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "comment")
     private List<LikeComment> likeComments;
 
-    public Comment(ArticleType type, Users user, Article article, String content) {
+    public Comment(ArticleType type,Long userId, Article article, String content) {
         this.type=type;
-        this.userId=user.getId();
+        this.userId=userId;
         this.article=article;
         this.content=content;
     }

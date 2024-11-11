@@ -18,6 +18,8 @@ import static com.app.salty.util.DateFormatUtil.formatter;
 public class GetArticleResponseDto {
     private Long articleId;
     private Long writerId;
+    private String writerNickname;
+    private String writerName;
     private String header;
     private String title;
     private String content;
@@ -31,6 +33,8 @@ public class GetArticleResponseDto {
     public GetArticleResponseDto(Article article) {
         this.articleId =article.getId();
         this.writerId = article.getUser().getId();
+        this.writerNickname = article.getUser().getNickname();
+        this.writerName = article.getUser().getEmail();
         this.header = article.getHeader().getName();
         this.title = article.getTitle();
         this.content= article.getContent();

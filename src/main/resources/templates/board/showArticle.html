@@ -85,7 +85,7 @@
         <th colspan="2" id="title" th:text="${article.title} + '  /  ' + ${article.header}"></th>
       </tr>
       <tr id="article-info">
-        <td id="article-info-01" th:text="'작성자 Id : ' + ${article.writerId} + ' | '+${article.updatedAt}"></td>
+        <td id="article-info-01" th:text="'작성자 Id : ' + ${article.writerNickname} + ' | '+${article.updatedAt}"></td>
         <td id="article-info-02" th:text="'[좋아요] ' + ${article.likeCount} + ' | [댓글] '+ ${article.commentCount}"></td>
       </tr>
       <tr id="content-container">
@@ -118,8 +118,8 @@
     <div id="comment-list" th:each="comment : ${article.commentList}">
       <table id="comment-table">
         <tr>
-          <td id="comment01" th:text="${comment.commentId}"></td>
-          <td id="comment02" th:text="'작성자 ' + ${comment.writerId} + ' | ' + ${comment.updatedAt}"></td>
+          <td id="comment01" th:text="'번호 : ' + ${comment.commentId}"></td>
+          <td id="comment02" th:text="'작성자 ' + ${comment.writerNickname} + ' | ' + ${comment.updatedAt}"></td>
         </tr>
         <tr>
           <td colspan="2" th:text="${comment.content}" ></td>

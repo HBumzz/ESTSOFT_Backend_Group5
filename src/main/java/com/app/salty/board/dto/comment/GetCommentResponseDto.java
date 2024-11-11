@@ -13,6 +13,8 @@ import static com.app.salty.util.DateFormatUtil.formatter;
 public class GetCommentResponseDto {
     private Long commentId;
     private Long writerId;
+    private String writerNickname;
+    private String writerName;
     private String articleType;
     private Long articleId;
     private String content;
