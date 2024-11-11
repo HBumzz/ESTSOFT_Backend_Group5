@@ -83,9 +83,9 @@
                 <div class="form-section">
                     <label for="type" class="font-weight-bold">타입</label>
                     <select class="form-control" id="type">
-                        <option value="DAILY" th:selected="${challenge.type == T(com.app.salty.admin.challengeBoard.entity.Challenge$ChallengeType).DAILY}">데일리</option>
-                        <option value="WEEKLY" th:selected="${challenge.type == T(com.app.salty.admin.challengeBoard.entity.Challenge$ChallengeType).WEEKLY}">위클리</option>
-                        <option value="MONTHLY" th:selected="${challenge.type == T(com.app.salty.admin.challengeBoard.entity.Challenge$ChallengeType).MONTHLY}">먼슬리</option>
+                        <option value="DAILY" th:selected="${challenge.type == T(com.app.salty.admin.challengeBoard.entity.Challenge$ChallengeType).DAILY}">일간챌린지</option>
+                        <option value="WEEKLY" th:selected="${challenge.type == T(com.app.salty.admin.challengeBoard.entity.Challenge$ChallengeType).WEEKLY}">주간챌린지</option>
+                        <option value="MONTHLY" th:selected="${challenge.type == T(com.app.salty.admin.challengeBoard.entity.Challenge$ChallengeType).MONTHLY}">월간챌린지</option>
                     </select>
                 </div>
 
