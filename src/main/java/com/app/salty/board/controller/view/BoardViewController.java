@@ -14,12 +14,14 @@ import com.app.salty.board.repository.CommentRepository;
 import com.app.salty.board.service.ArticleServiceImpl;
 import com.app.salty.board.service.CommentServiceImpl;
 import com.app.salty.board.service.LikeServiceImpl;
+import com.app.salty.user.entity.CustomUserDetails;
 import com.app.salty.user.entity.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,6 +63,7 @@ public class BoardViewController {
         return "board/boardList";
     }
 
+    // 게시글 상세 조회
     @GetMapping("/board/article/{articleId}")
     public String showArticle(@PathVariable Long articleId, Model model) {
         GetArticleWithCommentResponseDto responseDto = articleService.getArticleWithCommentByArticleId(articleId);
@@ -81,12 +84,23 @@ public class BoardViewController {
         return "board/showArticle";
     }
 
+    // 댓글 삭제
     @GetMapping("/comment/delete/{articleId}/{commentId}")
-    public String deleteComment(@PathVariable Long commentId, @PathVariable Long articleId, Model model) {
+    public String deleteComment(@PathVariable Long commentId, @PathVariable Long articleId, Model model
+            ,@AuthenticationPrincipal CustomUserDetails currentUser) {
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
+        Long userId = comment.getUserId();
+
+        if (!currentUser.getId().equals(userId)) {
+            MessageDto message = new MessageDto("작성자만 삭제할 수 있습니다.", "/board/article/" + articleId);
+            return showMessageAndRedirect(message, model);
+        }
+
+
         commentService.deleteComment(commentId);
         String aid = String.valueOf(articleId);
         String href = "/board/article/" + aid;
-        log.warn(href);
         MessageDto message = new MessageDto("댓글 삭제 완료!", href);
         return showMessageAndRedirect(message, model);
     }
@@ -96,15 +110,9 @@ public class BoardViewController {
     public String saveComment(
             SaveCommentRequestDto requestDto
             , Long articleId
-            , @AuthenticationPrincipal Users user, Model model) {
-
-        // 임의의 유저 생성 - test
-        Users tempUser = new Users();
-        tempUser.setId(1L);
-        // ==============================
-        requestDto.setUser(tempUser);
-
-        SaveCommentResponseDto responseDto = commentService.saveComment(requestDto, articleId);
+            , @AuthenticationPrincipal CustomUserDetails user, Model model) {
+        requestDto.setUserId(user.getId());
+        SaveCommentResponseDto responseDto = commentService.saveComment(requestDto,articleId);
 
         String href = "/board/article/" + articleId;
         MessageDto message = new MessageDto("댓글 작성 완료!", href);
