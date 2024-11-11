@@ -6,6 +6,7 @@ import com.app.salty.user.dto.request.UserSignupRequest;
 import com.app.salty.user.dto.response.TokenResponse;
 import com.app.salty.user.dto.response.UserResponse;
 import com.app.salty.user.dto.response.UsersResponse;
+import com.app.salty.user.entity.CustomUserDetails;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.service.AuthenticationService;
 import com.app.salty.user.service.UserService;
@@ -78,11 +79,11 @@ public class UserController {
 
     //프로필 페이지
     @GetMapping("/profile")
-    public String updateUser(Model model, @AuthenticationPrincipal UserDetails currentUser) {
+    public String updateUser(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         if (currentUser == null) {
             return "redirect:/login";
         }
-        UsersResponse usersResponse = userService.findByUserWithProfile(currentUser.getUsername());
+        UsersResponse usersResponse = userService.findByUserWithProfile(currentUser);
         model.addAttribute("user", usersResponse);
         log.info("User: {}", usersResponse);
 
@@ -94,6 +95,15 @@ public class UserController {
     public String attendance(Model model, @AuthenticationPrincipal UserDetails currentUser) {
 
         return "/user/attendance";
+    }
+
+    //유저 상세 페이지
+    @GetMapping("/userDetails")
+    public String userDetails(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        UsersResponse usersResponse = userService.findByUserWithProfile(currentUser);
+        model.addAttribute("user", usersResponse);
+
+        return "/user/userDetails";
     }
 
 }

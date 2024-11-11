@@ -83,7 +83,7 @@ public class AuthController {
     //프로필 수정
     @PostMapping("/userUpdate")
     public ResponseEntity<Map<String, Object>> profileUpdate(
-            @AuthenticationPrincipal UserDetails currentUser,
+            @AuthenticationPrincipal CustomUserDetails currentUser,
             @RequestBody UserUpdateRequest userUpdateRequest,
             RedirectAttributes redirectAttributes
     ) {
@@ -91,7 +91,7 @@ public class AuthController {
         log.info("Form data - nickname: {}, bio: {}",
                 userUpdateRequest.getNickname(),
                 userUpdateRequest.getBio());     // 상세 로그 추가
-        UsersResponse usersResponse = userService.updateProfile(currentUser.getUsername(),userUpdateRequest);
+        UsersResponse usersResponse = userService.updateProfile(currentUser,userUpdateRequest);
 
 
         return ResponseEntity.ok().body(Map.of(
