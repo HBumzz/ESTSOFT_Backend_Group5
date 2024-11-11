@@ -1,7 +1,14 @@
+html, body {
+    overflow: hidden;
+}
 body {
     font-family: 'Inter', sans-serif;
     margin: 0;
     background: #ffffff !important;
+}
+
+.clickable {
+    cursor: pointer;
 }
 
 .chat-title {
@@ -35,6 +42,8 @@ body {
     display: flex;
     flex-direction: column;
     background: #E8F2F2;
+    height: 100%; /* 전체 높이에 맞춤 */
+    justify-content: space-between; /* 상단 채팅 목록과 하단 입력 필드를 띄움 */
 }
 
 .chat-header {
@@ -46,11 +55,11 @@ body {
 }
 
 .chat-messages {
-    flex: 1;
+    height: 65vh;
     padding: 15px;
     overflow-y: auto;
-    max-height: calc(80vh - 140px);
 }
+
 .message-wrapper {
     display: flex;
     align-items: flex-end;
@@ -88,6 +97,7 @@ body {
 .chat-input {
     display: flex;
     padding: 10px;
+    background-color: #E8F2F2;
 }
 
 .chat-input input {
@@ -160,4 +170,9 @@ a {
     background: none;
     cursor: pointer;
     padding: 0;
+}
+
+.selected-chat-item {
+    background-color: #E8F2F2;
+    /*border-left: 4px solid #9AD0D0;*/
 }
