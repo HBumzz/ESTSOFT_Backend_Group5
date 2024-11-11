@@ -39,7 +39,7 @@ public class ChatController {
 
     @GetMapping("/rooms/{chatRoomId}")
     public String chatRoom(@PathVariable Long chatRoomId, Model model) {
-        List<ChatMessageDto> messages = chatService.getMessagesByChatRoom(chatRoomId); // 변경된 부분
+        List<ChatMessageDto> messages = chatService.getMessagesByChatRoom(chatRoomId);
         model.addAttribute("messages", messages);
         model.addAttribute("chatRoomId", chatRoomId);
         return "chat/html/chatroom";

@@ -29,6 +29,7 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
 
+
     public ChatRoomDto convertToChatRoomDto(ChatRoom chatRoom) {
         UsersResponse user1Response = UsersResponse.builder()
                 .userId(chatRoom.getUser1().getId())
@@ -118,6 +119,14 @@ public class ChatService {
                 .build();
 
         return chatRoomRepository.save(chatRoom);
+    }
+
+    // 기존 채팅방 ID 반환
+    public Long getExistingRoomId(Long user1Id, Long user2Id) {
+        return chatRoomRepository
+                .findByUser1_IdAndUser2_IdOrUser2_IdAndUser1_Id(user1Id, user2Id, user1Id, user2Id)
+                .map(ChatRoom::getId)
+                .orElse(null);
     }
 
     @Transactional

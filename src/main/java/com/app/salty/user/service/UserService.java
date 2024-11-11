@@ -90,6 +90,15 @@ public class UserService {
         return userToUsersResponse(user,currentUser.getAuthorities());
     }
 
+
+    @Transactional
+    public UsersResponse findUserDetailsById(Long userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
+        return userToUsersResponse(user, List.of());
+    }
+
     //프로필 수정 -닉네임 및 소개글
     @Transactional
     public UsersResponse updateProfile(CustomUserDetails currentUser, UserUpdateRequest userUpdateRequest) {

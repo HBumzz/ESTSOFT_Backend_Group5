@@ -10,6 +10,6 @@
         <a href="/trade">TRADE</a>
         <a href="/chat">CHAT</a>
         <a href="/checklist">CHECKLIST</a>
-        <a href="/auth/userDetails">USER</a>
+        <a th:href="@{'/auth/userDetails/' + ${#authentication.principal.id}}">USER</a>
     </nav>
 </header>

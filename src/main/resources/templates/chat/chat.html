@@ -6,7 +6,7 @@
 </head>
 <body>
 <div th:replace="~{common/header :: header}"></div>
-<h2 class="chat-title">소금이와의 채팅</h2>
+<h2 class="chat-title">소금이들과의 채팅</h2>
 <div class="chat-container">
     <div class="chat-list">
         <ul>
@@ -29,8 +29,8 @@
     </div>
     <div class="chat-room" id="chatRoom" style="display: none;">
         <div class="chat-header">
-            <img id="chatUserImage" alt="profile" class="profile-img" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
-            <h4 id="chatUserName">채팅방</h4>
+            <img id="chatUserImage" alt="profile" class="profile-img clickable" onclick="redirectToUserDetails()" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+            <h4 id="chatUserName" class="clickable" onclick="redirectToUserDetails()">채팅방</h4>
         </div>
         <div class="chat-messages" id="chatMessages">
         </div>
@@ -50,6 +50,41 @@
     let receiverInfo = {};
     let userId = [[${userId}]]
     console.log("User ID:", userId);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // chatRooms 리스트 정렬 (최신 메시지가 있는 채팅방이 맨 위에 오도록)
+        const chatListContainer = document.querySelector(".chat-list ul");
+        const chatRooms = Array.from(chatListContainer.children);
+
+        chatRooms.sort((a, b) => {
+            const timeA = new Date(a.querySelector(".chat-time").textContent || 0);
+            const timeB = new Date(b.querySelector(".chat-time").textContent || 0);
+            return timeB - timeA;
+        });
+
+        // 정렬된 chatRooms 리스트를 DOM에 추가
+        chatListContainer.innerHTML = '';
+        chatRooms.forEach(room => chatListContainer.appendChild(room));
+
+        // URL에서 roomId를 추출
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('roomId');
+        console.log('roomId', roomId);
+
+        // roomId가 존재하면 채팅방을 자동으로 로드
+        if (roomId) {
+            loadChatRoom(roomId);
+        }
+    });
+    // 상대방 프로필 이동
+    function redirectToUserDetails() {
+        if (receiverInfo && receiverInfo.userId) {
+            window.location.href = `/auth/userDetails/${receiverInfo.userId}`;
+        } else {
+            console.error("Receiver information not loaded yet.");
+        }
+    }
+
     // 채팅방의 메시지 로드
     function loadChatRoom(roomId) {
         chatRoomId = roomId;
@@ -62,6 +97,13 @@
         document.getElementById("chatUserName").textContent = userName;
         document.getElementById("chatUserImage").src = userImage;
 
+        // 모든 채팅방 아이템에서 selected 클래스 제거
+        document.querySelectorAll('.chat-item').forEach(item => {
+            item.classList.remove('selected-chat-item');
+        });
+
+        // 클릭한 채팅방 아이템에 selected 클래스 추가
+        chatRoomElement.querySelector('.chat-item').classList.add('selected-chat-item');
 
         // 채팅방 메시지 가져오기
         fetch(`/api/chat/rooms/${chatRoomId}/messages`)
@@ -70,7 +112,6 @@
                 const chatMessages = document.getElementById("chatMessages");
                 chatMessages.innerHTML = '';
                 messages.forEach(message => displayMessage(message));
-
                 // senderInfo와 receiverInfo 설정
                 fetch(`/api/chat/rooms?userId=${userId}`)
                     .then(response => response.json())
@@ -80,7 +121,6 @@
                             senderInfo = chatRoom.user1;
                             receiverInfo = chatRoom.user2;
                         }
-                        console.log('여기요', chatRoom)
                     })
                     .catch(error => console.error("Error loading chat room info:", error));
 
@@ -89,6 +129,7 @@
             })
             .catch(error => console.error("Error loading chat room messages:", error));
     }
+
 
     // WebSocket 연결 설정
     function connectWebSocket(chatRoomId) {
@@ -102,7 +143,7 @@
 
         socket.onopen = () => {
             console.log("WebSocket 연결 성공");
-            console.log("WebSocket Ready State on open (OPEN):", socket.readyState); // 연결이 성공적으로 열리면 OPEN 상태(1)가 됩니다.
+            socket.send(JSON.stringify({ chatRoomId: chatRoomId }));
         };
 
         socket.onmessage = (event) => {
@@ -178,38 +219,41 @@
     }
 
     function displayMessage(messageData) {
-        const chatMessages = document.getElementById("chatMessages");
+        if (messageData && messageData.sender && messageData.sender.userId) {
+            const chatMessages = document.getElementById("chatMessages");
 
-        // 메시지 래퍼 생성
-        const messageWrapper = document.createElement("div");
-        messageWrapper.className = "message-wrapper";
-        messageWrapper.style.justifyContent = messageData.sender.userId === userId ? "flex-end" : "flex-start";
+            // 메시지 래퍼 생성
+            const messageWrapper = document.createElement("div");
+            messageWrapper.className = "message-wrapper";
+            messageWrapper.style.justifyContent = messageData.sender.userId === userId ? "flex-end" : "flex-start";
 
-        // 메시지 내용
-        const messageElement = document.createElement("div");
-        messageElement.className = messageData.sender.userId === userId ? 'message-outgoing message-content' : 'message-incoming message-content';
-        messageElement.innerText = messageData.message;
+            // 메시지 내용
+            const messageElement = document.createElement("div");
+            messageElement.className = messageData.sender.userId === userId ? 'message-outgoing message-content' : 'message-incoming message-content';
+            messageElement.innerText = messageData.message;
 
-        // 메시지 시간
-        const messageTimestamp = document.createElement("p");
-        messageTimestamp.className = "message-time";
-        const date = new Date(messageData.createdAt || Date.now());
-        const formattedDateTime = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-        messageTimestamp.innerText = formattedDateTime;
+            // 메시지 시간
+            const messageTimestamp = document.createElement("p");
+            messageTimestamp.className = "message-time";
+            const date = new Date(messageData.createdAt || Date.now());
+            const formattedDateTime = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+            messageTimestamp.innerText = formattedDateTime;
 
-        // 메시지와 시간을 래퍼에 추가
-        if (messageData.sender.userId === userId) {
-            messageWrapper.appendChild(messageElement); // 메시지 오른쪽
-            messageWrapper.appendChild(messageTimestamp); // 시간 왼쪽
+            // 메시지와 시간을 래퍼에 추가
+            if (messageData.sender.userId === userId) {
+                messageWrapper.appendChild(messageElement); // 메시지 오른쪽
+                messageWrapper.appendChild(messageTimestamp); // 시간 왼쪽
+            } else {
+                messageWrapper.appendChild(messageTimestamp); // 시간 오른쪽
+                messageWrapper.appendChild(messageElement); // 메시지 왼쪽
+            }
+
+            chatMessages.appendChild(messageWrapper);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         } else {
-            messageWrapper.appendChild(messageTimestamp); // 시간 오른쪽
-            messageWrapper.appendChild(messageElement); // 메시지 왼쪽
+            console.warn("Received message data is incomplete:", messageData);
         }
-
-        chatMessages.appendChild(messageWrapper);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-
 
 </script>
 </body>
