@@ -22,9 +22,6 @@ public class ChallengeComment {
     @Column
     private String body;
 
-    @Column
-    private String imageLink;
-
     @CreatedDate
     @Column
     private LocalDateTime createdAt;
