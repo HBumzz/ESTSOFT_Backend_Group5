@@ -115,7 +115,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void hideArticle(Long articleId) {
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
-        article.setShow(false);
+        article.setShow(!article.isShow());
         articleRepository.save(article);
     }
 }

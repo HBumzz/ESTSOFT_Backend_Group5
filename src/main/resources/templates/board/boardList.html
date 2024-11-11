@@ -59,7 +59,7 @@
 <!--            <p th:text="${user.getAuthorities()}"></p>-->
             <table id="board-table">
                 <tr th:if="${#strings.equals(user.getAuthorities(),'[ROLE_USER]')}">
-                    <td class="hide-btn"><button type="button" id="isShow-btn" th:onclick="|location.href='@{/article/hide(id=${article.articleId})}'|">숨기기</button></td>
+                    <td class="hide-btn"><button type="button" id="isShow-btn" th:onclick="|location.href='@{/article/hide(id=${article.articleId})}'|">hide/show</button></td>
                     <td th:if="${article.show==false}">숨겨진 글</td>
                     <td class="article_id" th:text="${article.articleId}"></td>
                     <td class="article_header" th:text="${article.header}"></td>
