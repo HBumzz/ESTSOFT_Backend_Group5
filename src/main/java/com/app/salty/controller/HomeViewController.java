@@ -25,7 +25,7 @@ public class HomeViewController {
     ) {
         if(userDetails != null) {
             log.info("UserDetails: {}", userDetails);
-            UsersResponse usersResponse = userService.findByUserWithProfile(userDetails.getUsername());
+            UsersResponse usersResponse = userService.findByUserWithProfile(userDetails);
             model.addAttribute("user", usersResponse);
             log.info("User: {}", usersResponse);
             log.info("Profile: {}", usersResponse.getProfile());

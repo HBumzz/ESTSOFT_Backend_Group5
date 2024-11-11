@@ -57,9 +57,6 @@ public class Article {
     private List<Comment> commnetList;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "article")
-    private List<Image> imageList;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "article")
     private List<LikeArticle> likeArticles;
 
     public Article(Users user, ArticleHeader header, String title, String content) {

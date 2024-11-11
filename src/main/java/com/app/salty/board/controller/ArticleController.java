@@ -1,8 +1,10 @@
 package com.app.salty.board.controller;
 
 import com.app.salty.board.dto.article.*;
+import com.app.salty.board.entity.Article;
 import com.app.salty.board.entity.ArticleHeader;
 import com.app.salty.board.service.ArticleServiceImpl;
+import com.app.salty.user.entity.CustomUserDetails;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,11 +28,9 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class ArticleController {
     ArticleServiceImpl articleService;
-    UserService userService;
 
-    ArticleController(ArticleServiceImpl articleService, UserService userService) {
+    ArticleController(ArticleServiceImpl articleService) {
         this.articleService = articleService;
-        this.userService = userService;
     }
 // ====================================================================================================================
 
@@ -117,10 +118,9 @@ public class ArticleController {
 
     // 게시물 저장
     @PostMapping(value = "/article")
-    public ResponseEntity<SaveArticleResponseDto> saveArticle(@RequestBody SaveArticleRequestDto requestDto) {
-        // 임의의 유저로 정보 전달
-//        Users user = userService.findBy(1L);
-//        requestDto.setUser(user);
+    public ResponseEntity<SaveArticleResponseDto> saveArticle(@RequestBody SaveArticleRequestDto requestDto
+            ,@AuthenticationPrincipal CustomUserDetails user){
+        requestDto.setUserId(user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(articleService.saveArticle(requestDto));
     }
 
@@ -128,14 +128,19 @@ public class ArticleController {
     @PutMapping(value ="/article/{articleId}")
     public ResponseEntity<UpdateArticleResponseDto> updateArticle(@RequestBody UpdateArticleRequestDto requestDto
             , @PathVariable Long articleId) {
-        requestDto.setUserId(1L);
+
         return ResponseEntity.ok(articleService.updateArticle(requestDto));
     }
 
     // 게시물(articleId) 삭제
     @DeleteMapping("/article/{articleId}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long articleId
-            ,  @AuthenticationPrincipal Users user) {
+            ,  @AuthenticationPrincipal CustomUserDetails user) {
+        Long writerID = articleService.getArticleById(articleId).getWriterId();
+        if(!writerID.equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         articleService.deleteArticle(articleId);
         return ResponseEntity.ok().build();
     }
@@ -148,8 +153,9 @@ public class ArticleController {
 
     // 게시물(articleId)과 해당 게시물의 댓글 함께 조회
     @GetMapping("/article/comment/{articleId}")
-    public ResponseEntity<GetArticleWithCommentResponseDto> getArticleWithComment(@PathVariable Long articleId) {
-        GetArticleWithCommentResponseDto dtoList = articleService.getArticleWithCommentByArticleId(articleId);
+    public ResponseEntity<GetArticleWithCommentResponseDto> getArticleWithComment(@PathVariable Long articleId
+            ,@AuthenticationPrincipal CustomUserDetails user) {
+        GetArticleWithCommentResponseDto dtoList = articleService.getArticleWithCommentByArticleId(articleId, user);
         return ResponseEntity.ok(dtoList);
     }
 

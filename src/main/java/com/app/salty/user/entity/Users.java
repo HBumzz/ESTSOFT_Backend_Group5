@@ -24,7 +24,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter //임시 세터 주석했습니다.
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

@@ -1,10 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>프로필 상세</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/footer.css}" />
+    <link rel="stylesheet" th:href="@{/css/user/userDetails.css}">
 </head>
 <body>
 
+<div th:replace="~{common/header :: header}"></div>
+<div class="profile-container">
+    <!-- 메인 프로필 섹션 -->
+    <div class="profile-header">
+        <div class="profile-cover"></div>
+        <div class="profile-info">
+            <div class="profile-image">
+                <img th:src="${user.profile.path}" alt="프로필 이미지">
+            </div>
+            <div class="profile-text">
+                <h1 th:text="${user.nickname}">닉네임</h1>
+                <p class="bio" th:text="${user.bio ?: '자기소개가 아직 없습니다.'}">자기소개</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 통계 섹션 -->
+    <div class="stats-container">
+        <div class="stat-item">
+            <i class="fas fa-calendar-check"></i>
+            <span id="totalDays" class="stat-value">0</span>
+            <span class="stat-label">총 출석일</span>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-coins"></i>
+            <span id="point" class="stat-value" >0</span>
+            <span class="stat-label">포인트</span>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-unlock-alt"></i>  <!-- 권한/기능을 나타내는 아이콘 -->
+            <span class="stat-label">이용 가능 기능</span>
+            <div class="permission-list">
+                <div th:each="permission : ${user.levels}" class="permission-item">
+                    <i class="fas fa-check"></i>  <!-- 체크 아이콘 -->
+                    <span th:text="${permission}">기능명</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div th:replace="~{common/footer :: footer}"></div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const loadAttendanceData = async () => {
+            try {
+                const response = await fetch('/api/auth/attendance', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateAttendanceInfo(data);
+
+                }
+
+            } catch (error) {
+                console.error('출석 데이터 로드 실패:', error);
+            }
+        }
+
+        loadAttendanceData();
+
+        const updateAttendanceInfo = (data) => {
+            document.getElementById('totalDays').textContent = `${data.totalDays}`;
+            document.getElementById('point').textContent = `${data.point}`;
+        }
+
+    });
+</script>
 </body>
 </html>

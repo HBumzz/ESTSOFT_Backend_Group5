@@ -13,11 +13,11 @@ import lombok.Setter;
 @Setter
 public class SaveCommentRequestDto {
     private ArticleType type;
-    private Users user;
+    private Long userId;
     private Article article;
     private String content;
 
     public Comment toEntity() {
-        return new Comment(type, user,article,content);
+        return new Comment(type, userId,article,content);
     }
 }
