@@ -18,4 +18,5 @@ public class UpdateChallengeRequest {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Challenge.ChallengeStatus status;
+    private Challenge.ChallengeType type;
 }
