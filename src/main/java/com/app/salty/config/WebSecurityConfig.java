@@ -63,6 +63,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/auth/**","/auth/**").permitAll()
                         .requestMatchers("/api/boards/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/ws/chat/**").permitAll()
                         .anyRequest().permitAll() //authenticated()
                 )
 //                .oauth2Login(oauth2 -> oauth2

@@ -24,6 +24,8 @@ public class GetArticleResponseDto {
     private String createdAt;
     private String updatedAt;
     private List<ImagesResponseDto> imageList;
+    private Integer likeCount;
+    private Integer commentCount;
 
 
     public GetArticleResponseDto(Article article) {

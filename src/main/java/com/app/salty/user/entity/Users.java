@@ -6,6 +6,7 @@ import com.app.salty.common.entity.Profile;
 import com.app.salty.util.BaseTimeEntity;
 import jakarta.persistence.*;
 
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,12 +18,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Setter // 임의로 사용자 만들기위해서 넣었습니다.
+//@Setter //임시 세터 주석했습니다.
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

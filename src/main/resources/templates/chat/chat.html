@@ -4,6 +4,7 @@
     <link rel="stylesheet" th:href="@{/css/chat.css}">
 </head>
 <body>
+<div th:replace="~{common/header :: header}"></div>
 <div class="chat-container">
     <div class="chat-list">
         <h2>CHAT</h2>
@@ -12,7 +13,10 @@
                 <a href="javascript:void(0);" th:onclick="'loadChatRoom(' + ${chatRoom.id} + ')'">
                     <div class="chat-item">
                         <div class="chat-avatar">
+
                             <img th:src="@{/uploads/avatar.png}" alt="프사">
+
+
                         </div>
                         <div class="chat-info">
                             <h4 th:text="${chatRoom.user2.nickname}">Chat with 1</h4>

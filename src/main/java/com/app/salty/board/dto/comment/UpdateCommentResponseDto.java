@@ -11,14 +11,16 @@ import static com.app.salty.util.DateFormatUtil.formatter;
 public class UpdateCommentResponseDto {
     private Long commentId;
     private Long writerId;
+    private String articleType;
     private Long articleId;
     private String content;
     private String createdAt;
     private String updatedAt;
 
     public UpdateCommentResponseDto(Comment comment) {
-        this.commentId = comment.getId();
-        this.writerId = comment.getUser().getId();
+        this.commentId = comment.getCommentId();
+        this.writerId = comment.getUserId();
+        this.articleType = comment.getType().getName();
         this.articleId = comment.getArticle().getId();
         this.content = comment.getContent();
         this.createdAt = comment.getCreatedAt().format(formatter);

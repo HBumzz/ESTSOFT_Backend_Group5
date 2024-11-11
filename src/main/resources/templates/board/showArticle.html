@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>show article</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <style>
+    #container { font-family: arial; font-size: 22px; margin: 25px; display: flex; justify-content: center; align-items: center; }
+    #editorContent {
+      height: auto;
+      width: 50%;
+      text-align: left;
+    }
+    img {
+      max-width: 350px;
+    }
+
+    #show-article-table {
+      width: 100%;
+    }
+
+    #article-info {
+      border-bottom: 3px solid dimgrey;
+    }
+    #article-info-02 {
+      text-align: end;
+    }
+    #comment-table {
+      border: 1px solid olivedrab;
+      margin-bottom: 5px;
+      width: auto;
+      height: auto;
+    }
+    #new-comment {
+      border: none;
+      width: 50%;
+      height: auto;
+      resize: none;
+      margin-top: 10px;
+    }
+    #content {
+      border: 1px solid rebeccapurple;
+      width: 50%;
+      resize: none;
+    }
+
+    #update-btn {
+      text-align: right;
+      margin-bottom: 10px;
+      border-bottom: 3px solid dimgrey;
+    }
+
+    #comment-list {
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      margin-top: 10px;
+    }
+
+    #comment01 {
+      text-align: left;
+    }
+    #comment02 {
+      text-align: right;
+    }
+
+    #comment-like-btn {
+      text-align: right;
+    }
+  </style>
+</head>
+<body th:object="${article}">
+<input type="hidden" id="article-id" th:value="${article.articleId}">
+<div class="p-5 mb-5 text-center</> bg-light">
+  <h1 class="mb-3">Salty</h1>
+  <h4 class="mb-3">show article detail</h4>
+</div>
+<div class="container">
+  <div class="row">
+    <table id="show-article-table">
+      <tr>
+        <th colspan="2" id="main-title">자유 게시판</th>
+      </tr>
+      <tr>
+        <th colspan="2" id="title" th:text="${article.title} + '  /  ' + ${article.header}"></th>
+      </tr>
+      <tr id="article-info">
+        <td id="article-info-01" th:text="'작성자 Id : ' + ${article.writerId} + ' | '+${article.updatedAt}"></td>
+        <td id="article-info-02" th:text="'[좋아요] ' + ${article.likeCount} + ' | [댓글] '+ ${article.commentCount}"></td>
+      </tr>
+      <tr id="content-container">
+        <td colspan="2">
+        <div id="container">
+          <!--/* 에디터 콘텐츠 렌더링 영역 */-->
+          <div id="editorContent">
+
+          </div>
+        </div>
+        </td>
+      </tr>
+      <tr>
+        <td id="update-btn" colspan="2">
+          <button type="button" id="go-back" th:href="@{/board}">목록으로</button> |
+          <button type="button" th:onclick="|location.href='@{/board/article/update/{articleId}(articleId=${article.articleId})}'|">수정</button> |
+          <button type="button" id="delete-article-btn">삭제</button>
+        </td>
+      </tr>
+
+    </table>
+    <div id="new-comment">
+      <form method="post" action="/comment">
+        <input type="hidden" name="articleId" th:value="${article.articleId}">
+        <input type="hidden" name="type" value="BBS">
+        <textarea rows="3" cols="30" placeholder="새 댓글" id="content" name="content"></textarea>
+        <button type="submit">등록</button>
+      </form>
+    </div>
+    <div id="comment-list" th:each="comment : ${article.commentList}">
+      <table id="comment-table">
+        <tr>
+          <td id="comment01" th:text="${comment.commentId}"></td>
+          <td id="comment02" th:text="'작성자 ' + ${comment.writerId} + ' | ' + ${comment.updatedAt}"></td>
+        </tr>
+        <tr>
+          <td colspan="2" th:text="${comment.content}" ></td>
+        </tr>
+        <tr>
+          <input type="hidden" id="comment-id" th:value="${comment.commentId}">
+          <td>
+            <button type="button" id="delete-comment-btn" th:onclick="|location.href='@{/comment/delete/{articleId}/{commentId}(articleId=${article.articleId} ,commentId=${comment.commentId})}'|" >삭제</button>
+          </td>
+          <td>
+            <button type="button" id="comment-like-btn" th:onclick="|location.href='@{/comment/like/{articleId}/{commentId}(articleId=${article.articleId} ,commentId=${comment.commentId})}'|">좋아요</button> <span th:text="${comment.likeCount}"></span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.onload = async () => {
+    findPost();
+  }
+
+
+  // 게시글 상세정보 조회
+  async function findPost() {
+
+    // 1. URL 쿼리 스트링에서 게시글 번호 조회
+    const articleId = document.getElementById('article-id').value;
+    // 2. API 호출
+    const url = `/api/article/${articleId}`;
+    const response = await fetch(url);
+    const post = await response.json();
+
+    // 3. 에디터 콘텐츠 렌더링
+    document.querySelector('#editorContent').innerHTML = post.content;
+  }
+  const likeButton = document.getElementById('article-info-02');
+  if (likeButton) {
+    likeButton.addEventListener('click', event => {
+      let articleId = document.getElementById('article-id').value;
+      fetch(`/api/article/like/${articleId}`, {
+        method: 'GET'
+      }).then(() => {
+        location.replace(`/board/article/${articleId}`);
+      });
+    });
+  }
+
+  const deleteButton = document.getElementById('delete-article-btn');
+  if (deleteButton) {
+    deleteButton.addEventListener('click', event => {
+      let articleId = document.getElementById('article-id').value;
+      fetch(`/api/article/${articleId}`, {
+        method: 'DELETE'
+      }).then(() => {
+        alert("게시글이 삭제되었습니다.");
+        location.replace('/board');
+      });
+    });
+  }
+
+</script>
+</body>
+</html>

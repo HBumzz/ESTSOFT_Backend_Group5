@@ -56,6 +56,10 @@ public class UserService {
     private final KakaoAPI kakaoAPI;
     private final FilePathConfig filePathConfig;
 
+    public Users findBy(Long userId) {
+        return userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+    }
+
     @Transactional
     public UserResponse signup(UserSignupRequest request) {
         validateDuplicateEmail(request.getEmail());
