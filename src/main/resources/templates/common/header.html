@@ -6,10 +6,12 @@
         SALTY
     </a>
     <nav class="nav-menu">
-        <a href="/" class="active">HOME</a>
-        <a href="/trade">TRADE</a>
-        <a href="/chat">CHAT</a>
-        <a href="/checklist">CHECKLIST</a>
-        <a th:href="@{'/auth/userDetails/' + ${#authentication.principal.id}}">USER</a>
+        <a th:href="@{/}" th:classappend="${requestURI == '/' ? 'active' : ''}">HOME</a>
+        <a th:href="@{/trade}" th:classappend="${requestURI == '/trade' ? 'active' : ''}">COMMUNITY</a>
+        <a th:href="@{/chat}" th:classappend="${requestURI == '/chat' ? 'active' : ''}">CHAT</a>
+        <a th:href="@{/checklist}" th:classappend="${requestURI == '/checklist' ? 'active' : ''}">CHECKLIST</a>
+        <a th:href="@{'/auth/userDetails/' + ${#authentication.principal.id}}"
+           th:classappend="${requestURI.contains('/auth/userDetails') ? 'active' : ''}">USER</a>
     </nav>
 </header>
+
