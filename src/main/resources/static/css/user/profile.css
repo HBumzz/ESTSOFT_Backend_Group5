@@ -1,0 +1,250 @@
+/* user-profile.css */
+.profile-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+}
+
+
+
+/* 메인 컨텐츠 영역 */
+.profile-content {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px;
+}
+
+.profile-title {
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 24px;
+}
+
+/* 프로필 이미지 섹션 */
+.profile-image-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.profile-image-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4AADAD;
+}
+
+.image-upload-label {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 35px;
+    height: 35px;
+    background: #4AADAD;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.image-upload-label i {
+    color: white;
+    font-size: 16px;
+}
+
+/* 폼 스타일 */
+.info-section {
+    margin-bottom: 40px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.readonly {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+Copy/* 닉네임 중복확인 관련 스타일 추가 */
+.input-with-button {
+    display: flex;
+    gap: 10px;
+}
+
+.input-with-button .form-input {
+    flex: 1;  /* 남은 공간 모두 차지 */
+}
+
+.check-button {
+    padding: 0 20px;
+    background: #4AADAD;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    white-space: nowrap;  /* 버튼 텍스트 줄바꿈 방지 */
+}
+
+.check-button:hover {
+    background: #3d9191;
+}
+
+/* 유효성 검사 메시지 스타일 */
+.validation-message {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #666;
+}
+
+.validation-message.success {
+    color: #4AADAD;
+}
+
+.validation-message.error {
+    color: #ff4444;
+}
+
+.bio {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* 버튼 스타일 */
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.save-button, .cancel-button {
+    padding: 12px 40px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.save-button {
+    background: #4AADAD;
+    color: white;
+    border: none;
+}
+
+.save-button:hover {
+    background: #3d9191;
+}
+
+.cancel-button {
+    background: white;
+    color: #666;
+    border: 1px solid #ddd;
+    text-decoration: none;
+}
+
+.cancel-button:hover {
+    background: #f5f5f5;
+}
+
+/* 회원탈퇴 관련 CSS 수정 */
+.footer-links {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    text-align: left;  /* 왼쪽 정렬로 변경 */
+}
+
+.withdrawal-link {
+    display: inline-flex;  /* 아이콘과 텍스트를 나란히 배치 */
+    align-items: center;
+    gap: 6px;
+    color: #999;
+    font-size: 13px;
+    text-decoration: none;
+    padding: 6px 0;
+}
+
+.withdrawal-link i {
+    font-size: 12px;  /* 아이콘 크기 조정 */
+}
+
+.spinner {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    color: #4AADAD;
+}
+
+.hidden {
+    display: none;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.success {
+    background-color: #4AADAD;
+}
+
+.toast.error {
+    background-color: #ff4444;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+.readonly-info {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.withdrawal-link:hover {
+    color: #ff4444;  /* 빨간색으로 변경하여 경고성 액션임을 암시 */
+}
+
+.hidden {
+    display: none;
+}

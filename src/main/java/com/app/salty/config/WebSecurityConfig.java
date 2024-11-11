@@ -81,6 +81,7 @@ public class WebSecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/auth/logout")
                         .invalidateHttpSession(true)
+                        .logoutSuccessUrl("/auth/login")
                 )
                 .build();
     }

@@ -1,0 +1,32 @@
+/* 사이드바 스타일 */
+.profile-sidebar {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    height: fit-content;
+}
+
+.profile-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-item {
+    padding: 12px 20px;
+    color: #666;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.2s;
+}
+
+.nav-item:hover {
+    background: #f5f5f5;
+    color: #4AADAD;
+}
+
+.nav-item.active {
+    background: #4AADAD;
+    color: white;
+}

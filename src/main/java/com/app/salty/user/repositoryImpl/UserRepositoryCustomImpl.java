@@ -1,12 +1,9 @@
 package com.app.salty.user.repositoryImpl;
 
-import com.app.salty.common.entity.QAttachment;
-import com.app.salty.user.dto.response.AttachmentResponse;
+import com.app.salty.common.entity.QProfile;
+import com.app.salty.user.dto.response.ProfileResponse;
 import com.app.salty.user.dto.response.UsersResponse;
-import com.app.salty.user.entity.QRoles;
-import com.app.salty.user.entity.QUserRoleMapping;
-import com.app.salty.user.entity.QUsers;
-import com.app.salty.user.entity.Users;
+import com.app.salty.user.entity.*;
 import com.app.salty.user.repository.UserRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -38,16 +35,30 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     }
 
     @Override
-    public Optional<Users> findByEmailWithAttachment(String email) {
+    public Optional<Users> findByEmailWithProfile(String email) {
         QUsers user = QUsers.users;
-        QAttachment attachment = QAttachment.attachment;
+        QProfile Profile = QProfile.profile;
 
         Users result = queryFactory
                 .selectFrom(user)
-                .leftJoin(user.attachment,attachment).fetchJoin()
+                .leftJoin(user.Profile,Profile).fetchJoin()
                 .where(user.email.eq(email))
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<Users> findByEmailWithAttendances(Long userId) {
+        QUsers user = QUsers.users;
+        QAttendance attendance = QAttendance.attendance;
+
+        return Optional.ofNullable(
+                queryFactory
+                        .selectFrom(user)
+                        .leftJoin(user.attendances, attendance).fetchJoin()
+                        .where(user.id.eq(userId))
+                        .fetchOne()
+        );
     }
 }

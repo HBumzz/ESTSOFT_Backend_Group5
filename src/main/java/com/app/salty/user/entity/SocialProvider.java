@@ -50,6 +50,11 @@ public class SocialProvider extends BaseTimeEntity {
 
     }
 
+    // 연관관
+    public void addUser(Users user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "SocialProvider{" +
@@ -61,4 +66,6 @@ public class SocialProvider extends BaseTimeEntity {
                 ", profileImage='" + profileImage + '\'' +
                 '}';
     }
+
+
 }

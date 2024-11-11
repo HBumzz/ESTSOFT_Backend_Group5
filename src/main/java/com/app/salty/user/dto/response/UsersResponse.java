@@ -1,11 +1,12 @@
 package com.app.salty.user.dto.response;
 
-import com.app.salty.common.entity.Attachment;
+import com.app.salty.common.entity.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -16,6 +17,9 @@ public class UsersResponse {
     private Long userId;
     private String email;
     private String nickname;
-    private AttachmentResponse profile;
+    private Long point;
+    private String bio;
+    private LocalDateTime lastLoginDate;
+    private ProfileResponse profile;
 
 }
