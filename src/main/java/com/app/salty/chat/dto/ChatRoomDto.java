@@ -15,4 +15,6 @@ public class ChatRoomDto {
     private UsersResponse user1;
     private UsersResponse user2;
     private LocalDateTime createdAt;
+    private String lastMessage;
+    private LocalDateTime lastMessageTime;
 }
