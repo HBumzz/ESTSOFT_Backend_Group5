@@ -6,6 +6,7 @@ import com.app.salty.admin.challengeBoard.entity.Challenge;
 import com.app.salty.admin.challengeBoard.repository.ChallengeBoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class ChallengeBoardService {
     public final ChallengeBoardRepository repository;
 
+    @Autowired
     public ChallengeBoardService(ChallengeBoardRepository repository) {
         this.repository = repository;
     }
@@ -43,5 +45,9 @@ public class ChallengeBoardService {
         Challenge challenge = findBy(id);       // 수정하고싶은 article객체 가져오기
         challenge.update(request.getTitle(), request.getContent(), request.getStartDate(), request.getEndDate(), request.getStatus());
         return challenge;
+    }
+
+    public List<Challenge> getChallengesByType(Challenge.ChallengeType type) {
+        return repository.findByType(type);
     }
 }

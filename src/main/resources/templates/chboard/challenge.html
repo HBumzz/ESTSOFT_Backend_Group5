@@ -4,34 +4,80 @@
     <meta charset="UTF-8">
     <title>챌린지 글</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <style>
+        .challenge-content, .comment-section, .comment-form {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .challenge-content {
+            background-color: #ffffff;
+        }
+    </style>
 </head>
 <body>
 <div class="p-5 mb-5 text-center bg-light">
     <h1 class="mb-3">절약 Challenge</h1>
     <h4 class="mb-3">새로운 챌린지를 확인해보세요!</h4>
+
+    <!-- 돌아가기 버튼 추가 -->
+    <button onclick="location.href='/chboard'" class="btn btn-secondary btn-sm">돌아가기</button>
 </div>
 
 <div class="container mt-5">
     <div class="row">
-        <div class="col-lg-8">
-            <article>
-                <input type="hidden" id="article-id" th:value="${challenge.id}">
+        <div class="col-lg-8 mx-auto">
+
+            <!-- 챌린지 본문 -->
+            <section class="challenge-content">
+                <input type="hidden" id="challenge-id" th:value="${challenge.id}">
                 <header class="mb-4">
-                    <h1 class="fw-bolder mb-1" th:text="${challenge.title}"></h1>
+                    <h1 class="fw-bolder mb-3" th:text="${challenge.title}"></h1>
                     <div class="text-muted fst-italic mb-2" th:text="|Posted on ${#temporals.format(challenge.createdAt, 'yyyy-MM-dd HH:mm')}|"></div>
                 </header>
-                <section class="mb-5">
-                    <p class="fs-5 mb-4" th:text="${challenge.content}"></p>
+                <section class="mb-4">
+                    <p class="fs-5" th:text="${challenge.content}"></p>
                 </section>
                 <button type="button" id="modify-btn"
                         th:onclick="|location.href='@{/new-challenge?id={challengeId}(challengeId=${challenge.id})}'|"
                         class="btn btn-primary btn-sm">수정</button>
                 <button type="button" id="delete-btn"
                         class="btn btn-secondary btn-sm">삭제</button>
-            </article>
+            </section>
+
+            <!-- 댓글 목록 -->
+            <section class="comment-section">
+                <h2>댓글 목록</h2>
+                <div th:if="${#lists.isEmpty(comments)}">아직 댓글이 없습니다.</div>
+                <div th:each="comment : ${comments}" class="mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text" th:text="${comment.content}"></p>
+                            <div class="text-muted fst-italic" th:text="|Posted on ${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}|"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 댓글 작성 폼 -->
+            <section class="comment-form">
+                <h2>댓글 작성</h2>
+                <form id="comment-form">
+                    <div class="form-group">
+                        <textarea id="comment-content" class="form-control" rows="3" placeholder="댓글을 입력하세요..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">등록</button>
+                </form>
+            </section>
         </div>
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <script src="/js/challenge.js"></script>
 </body>
+</html>

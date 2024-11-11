@@ -12,28 +12,44 @@ import java.util.Optional;
 @Service
 public class ChallengeCommentService {
     private final ChallengeBoardRepository blogRepository;
-
     private final ChallengeCommentRepository commentRepository;
 
     public ChallengeCommentService(ChallengeBoardRepository blogRepository, ChallengeCommentRepository commentRepository) {
         this.blogRepository = blogRepository;
         this.commentRepository = commentRepository;
     }
-    public ChallengeComment saveComment(Long articleId, CommentRequestDTO requestDTO) {
-        Challenge challenge = blogRepository.findById(articleId).orElseThrow(); //NoSuchElementException
-        return commentRepository.save(new ChallengeComment(requestDTO.getBody(), challenge));
+
+    // 댓글 저장
+    public ChallengeComment saveComment(Long challengeId, CommentRequestDTO requestDTO) {
+        // 해당 챌린지 찾기
+        Challenge challenge = blogRepository.findById(challengeId)
+                .orElseThrow(() -> new IllegalArgumentException("Challenge not found")); // 예외 처리 추가
+
+        // 댓글 저장
+        ChallengeComment comment = new ChallengeComment(requestDTO.getBody(), challenge);
+        return commentRepository.save(comment);
     }
+
+    // 댓글 조회
     public ChallengeComment findComment(Long commentId) {
         Optional<ChallengeComment> optionalComment = commentRepository.findById(commentId);
-        return optionalComment.orElse(new ChallengeComment());
+        return optionalComment.orElseThrow(() -> new IllegalArgumentException("Comment not found"));
     }
+
+    // 댓글 수정
     public ChallengeComment update(Long commentId, CommentRequestDTO request) {
-        ChallengeComment comment = commentRepository.findById(commentId).orElseThrow();
-        // 수정
+        ChallengeComment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found")); // 예외 처리 추가
+
+        // 댓글 내용 수정
         comment.updateCommentBody(request.getBody());
         return commentRepository.save(comment);
     }
+
+    // 댓글 삭제
     public void delete(Long commentId) {
-        commentRepository.deleteById(commentId);   // delete from comment where id = ${commentId}
+        ChallengeComment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found")); // 예외 처리 추가
+        commentRepository.delete(comment); // 객체를 직접 삭제
     }
 }

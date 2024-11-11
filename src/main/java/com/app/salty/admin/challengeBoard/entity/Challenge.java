@@ -52,6 +52,17 @@ public class Challenge {
     @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
+    public enum ChallengeType {
+        DAILY,
+        WEEKLY,
+        MONTHLY
+    }
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private ChallengeType type;
+
+
     // 생성자
     @Builder
     public Challenge(String title, String content, LocalDateTime startDate, LocalDateTime endDate, ChallengeStatus status) {
