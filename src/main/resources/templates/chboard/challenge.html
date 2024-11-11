@@ -15,6 +15,20 @@
         .challenge-content {
             background-color: #ffffff;
         }
+        /* 부가적인 정보 스타일 */
+        .challenge-meta {
+            color: #6c757d; /* 회색 */
+            margin-bottom: 1rem;
+            font-size: 0.875rem; /* 폰트 크기 줄임 */
+        }
+        .challenge-meta div {
+            margin-bottom: 0.5rem;
+        }
+        /* 본문과 부가적인 정보 사이에 선 추가 */
+        .challenge-divider {
+            border-top: 1px solid #e0e0e0;
+            margin: 1.5rem 0;
+        }
     </style>
 </head>
 <body>
@@ -37,9 +51,23 @@
                     <h1 class="fw-bolder mb-3" th:text="${challenge.title}"></h1>
                     <div class="text-muted fst-italic mb-2" th:text="|Posted on ${#temporals.format(challenge.createdAt, 'yyyy-MM-dd HH:mm')}|"></div>
                 </header>
+
+                <!-- 부가적인 정보 (시작일, 종료일, 상태, 타입) -->
+                <section class="challenge-meta">
+                    <div><strong>시작일:</strong> <span th:text="${#temporals.format(challenge.startDate, 'yyyy-MM-dd HH:mm')}"></span></div>
+                    <div><strong>종료일:</strong> <span th:text="${#temporals.format(challenge.endDate, 'yyyy-MM-dd HH:mm')}"></span></div>
+                    <div><strong>상태:</strong> <span th:text="${challenge.status}"></span></div>
+                    <div><strong>타입:</strong> <span th:text="${challenge.type}"></span></div>
+                </section>
+
+                <!-- 본문과 부가적인 정보 사이에 선 추가 -->
+                <div class="challenge-divider"></div>
+
+                <!-- 챌린지 본문 내용 -->
                 <section class="mb-4">
                     <p class="fs-5" th:text="${challenge.content}"></p>
                 </section>
+
                 <button type="button" id="modify-btn"
                         th:onclick="|location.href='@{/new-challenge?id={challengeId}(challengeId=${challenge.id})}'|"
                         class="btn btn-primary btn-sm">수정</button>
