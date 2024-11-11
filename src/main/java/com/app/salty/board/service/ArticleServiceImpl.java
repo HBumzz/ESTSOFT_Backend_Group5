@@ -1,54 +1,44 @@
 package com.app.salty.board.service;
 
-import com.app.salty.board.dto.ImagesDto.ImagesResponseDto;
 import com.app.salty.board.dto.article.*;
 import com.app.salty.board.dto.comment.GetCommentResponseDto;
 import com.app.salty.board.dto.like.ContentType;
 import com.app.salty.board.dto.like.LikeRequestDto;
 import com.app.salty.board.entity.Article;
 import com.app.salty.board.entity.Comment;
-import com.app.salty.board.entity.Image;
 import com.app.salty.board.repository.ArticleRepository;
 import com.app.salty.board.repository.CommentRepository;
-import com.app.salty.board.repository.ImagesRepository;
+import com.app.salty.user.entity.CustomUserDetails;
 import com.app.salty.user.entity.Users;
-import com.app.salty.user.service.UserService;
+import com.app.salty.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+
 
 @Slf4j
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-    private final UserService userService;
     ArticleRepository articleRepository;
     CommentRepository commentRepository;
-    ImagesRepository imagesRepository;
     LikeServiceImpl likeService;
+    UserRepository userRepository;
 
     ArticleServiceImpl(ArticleRepository articleRepository
             , CommentRepository commentRepository
-            , ImagesRepository imagesRepository, UserService userService
-            , LikeServiceImpl likeService) {
+            , LikeServiceImpl likeService, UserRepository userRepository) {
 
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
-        this.imagesRepository = imagesRepository;
-        this.userService = userService;
         this.likeService=likeService;
+        this.userRepository=userRepository;
     }
 
     @Override
     public List<GetArticleResponseDto> getArticleList() {
-        List<Article> articleList = articleRepository.findAll();
+        List<Article> articleList = articleRepository.findAllByOrderByCreatedAtDesc();
 
         return articleList.stream().map(GetArticleResponseDto::new).toList();
     }
@@ -56,15 +46,13 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public GetArticleResponseDto getArticleById(Long id) {
         Article article = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        List<Image> imageList = imagesRepository.findImagesByArticle_Id(article.getId());
-        List<ImagesResponseDto> imagesResponseDtoList = imageList.stream().map(ImagesResponseDto::new).toList();
-        GetArticleResponseDto responseDto = new GetArticleResponseDto(article);
-        responseDto.setImageList(imagesResponseDtoList);
-        return responseDto;
+        return new GetArticleResponseDto(article);
     }
 
     @Override
     public SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto) {
+        Users user = userRepository.findById(dto.getUserId()).orElseThrow(IllegalArgumentException::new);
+        dto.setUser(user);
         Article article = articleRepository.save(dto.toEntity());
         return new SaveArticleResponseDto(article);
     }
@@ -73,18 +61,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public UpdateArticleResponseDto updateArticle(UpdateArticleRequestDto dto){
 
-        userService.findBy(dto.getUserId()); // 사용자 인증
-
         Article article = articleRepository.findById(dto.getArticleId()).orElseThrow(IllegalArgumentException::new);
-        if(!Objects.equals(article.getUser().getId(), dto.getUserId())) {
-            throw new IllegalArgumentException("로그인 정보와 작성자 정보가 다릅니다.");
-        }
 
         article.setHeader(dto.getHeader());
         article.setTitle(dto.getTitle());
         article.setContent(dto.getContent());
-
-        imagesRepository.deleteImagesByArticle_Id(article.getId());
 
         Article newArticle = articleRepository.save(article);
         return new UpdateArticleResponseDto(newArticle);
@@ -110,7 +91,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public GetArticleWithCommentResponseDto getArticleWithCommentByArticleId(Long articleId) {
+    public GetArticleWithCommentResponseDto getArticleWithCommentByArticleId(Long articleId, CustomUserDetails user) {
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
         List<Comment> commentList = commentRepository.findCommentsByArticle(article);
         List<GetCommentResponseDto> commentResponseDtoList = commentList.stream().map(GetCommentResponseDto::new).toList();
@@ -122,9 +103,8 @@ public class ArticleServiceImpl implements ArticleService {
             requestDto.setComment(comment);
             Integer count = likeService.countLike(requestDto);
             getCommentResponseDto.setLikeCount(count);
-            Users user = userService.findBy(comment.getUserId());
             getCommentResponseDto.setWriterNickname(user.getNickname());
-            getCommentResponseDto.setWriterName(user.getEmail());
+            getCommentResponseDto.setWriterName(user.getUsername());
         }
         return new GetArticleWithCommentResponseDto(article,commentResponseDtoList);
     }
