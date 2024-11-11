@@ -2,14 +2,8 @@ let socket;
 let chatRoomId;
 let senderInfo = {};
 let receiverInfo = {};
-
-function getUserIdFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('userId');
-}
-
-const userId = Number(getUserIdFromURL());
-
+let userId;
+console.log(userId);
 // 채팅방의 메시지 로드
 function loadChatRoom(roomId) {
     chatRoomId = roomId;
@@ -31,6 +25,7 @@ function loadChatRoom(roomId) {
                         senderInfo = chatRoom.user1;
                         receiverInfo = chatRoom.user2;
                     }
+                    console.log('여기요', chatRoom)
                 })
                 .catch(error => console.error("Error loading chat room info:", error));
 
@@ -46,11 +41,9 @@ function connectWebSocket(chatRoomId) {
         socket.close();
     }
 
-    // WebSocket 객체를 생성하고 초기화합니다.
     socket = new WebSocket(`ws://localhost:8080/ws/chat?roomId=${chatRoomId}&userId=${userId}`);
     console.log('ws주소',`ws://localhost:8080/ws/chat?roomId=${chatRoomId}&userId=${userId}`);
-    // 초기 readyState는 CONNECTING 상태일 것입니다.
-    console.log("WebSocket Initial Ready State (CONNECTING):", socket.readyState);
+    // console.log("WebSocket Initial Ready State (CONNECTING):", socket.readyState);
 
     socket.onopen = () => {
         console.log("WebSocket 연결 성공");
@@ -104,6 +97,7 @@ async function sendMessage() {
             message: message,
             messageType: "TALK"
         };
+        console.log(chatMessageDto);
         socket.send(JSON.stringify(chatMessageDto));
         try {
             const response = await fetch('/api/chat/message', {

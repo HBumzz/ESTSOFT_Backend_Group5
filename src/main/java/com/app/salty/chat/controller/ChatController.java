@@ -30,7 +30,7 @@ public class ChatController {
         Long userId = customUserDetails.getId();
         log.info("id값: {}", userId);
         model.addAttribute("user", customUserDetails);
-
+        model.addAttribute("userId", userId);
         List<ChatRoomDto> chatRooms = chatService.getChatRoomsByUser(userId);
         model.addAttribute("chatRooms", chatRooms);
 
