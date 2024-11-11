@@ -21,5 +21,6 @@ public class UsersResponse {
     private String bio;
     private LocalDateTime lastLoginDate;
     private ProfileResponse profile;
+    private List<String> levels;
 
 }

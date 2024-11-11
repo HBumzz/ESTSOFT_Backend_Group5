@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -75,9 +77,9 @@ public class UserService {
 
     //유저 정보 갖고오기 및 프로필 없을 시 생성
     @Transactional
-    public UsersResponse findByUserWithProfile(String email) {
-        Users user = userRepository.findByEmailWithProfile(email)
-                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithProfile::::::User not found with email: " + email));
+    public UsersResponse findByUserWithProfile(CustomUserDetails currentUser) {
+        Users user = userRepository.findByEmailWithProfile(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithProfile::::::User not found with email: " + currentUser.getUsername()));
         user.updateLastActivityDate();
         log.info("Found user: {}", user);
         if(user.getProfile() == null) {
@@ -85,20 +87,19 @@ public class UserService {
             Profile Profile = createDefaultProfile(user);
             user.addProfile(Profile);
         }
-
-        return userToUsersResponse(user);
+        return userToUsersResponse(user,currentUser.getAuthorities());
     }
 
     //프로필 수정 -닉네임 및 소개글
     @Transactional
-    public UsersResponse updateProfile(String email, UserUpdateRequest userUpdateRequest) {
-        Users user = userRepository.findByEmailWithProfile(email)
-                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithProfile::::::User not found with email: " + email));
+    public UsersResponse updateProfile(CustomUserDetails currentUser, UserUpdateRequest userUpdateRequest) {
+        Users user = userRepository.findByEmailWithProfile(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithProfile::::::User not found with email: " + currentUser.getUsername()));
 
         user.updateDescription(userUpdateRequest.getBio());
         user.updateNickname(userUpdateRequest.getNickname());
 
-        return userToUsersResponse(user);
+        return userToUsersResponse(user, currentUser.getAuthorities());
     }
 
     //프로필 이미지 업데이트
@@ -358,7 +359,7 @@ public class UserService {
     }
 
 
-    private UsersResponse userToUsersResponse(Users user) {
+    private UsersResponse userToUsersResponse(Users user, Collection<? extends GrantedAuthority> authorities) {
         return UsersResponse.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
@@ -367,6 +368,11 @@ public class UserService {
                 .bio(user.getDescription())
                 .point(user.getPoint())
                 .lastLoginDate(user.getLastActivityDate())
+                .levels(
+                        authorities.stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .toList()
+                )
                 .build();
     }
 
