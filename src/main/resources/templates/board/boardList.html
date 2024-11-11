@@ -17,12 +17,18 @@
     .article_id {
         text-align: center;
         font-size: medium;
+        width: 30px;
     }
     .article_title{
         text-align: left;
         font-size: medium;
     }
     .article_header{
+        text-align: center;
+        font-size: small;
+        width: 70px;
+    }
+    .article_tail{
         text-align: right;
         font-size: small;
         color: #555555;
@@ -45,8 +51,9 @@
             <table id="board-table">
                     <tr>
                         <td class="article_id" th:text="${article.articleId}"></td>
+                        <td class="article_header" th:text="${article.header}"></td>
                         <td class="article_title"><a th:href="@{/board/article/{id}(id=${article.articleId})}" th:text="${article.title} + '  ['+${article.commentCount}+']'"></a></td>
-                        <td class="article_header" th:text="${article.header} + ' | ' +${article.updatedAt}"></td>
+                        <td class="article_tail" th:text="${article.writerNickname} +' | ' +${article.updatedAt}"></td>
                     </tr>
             </table>
         </div>

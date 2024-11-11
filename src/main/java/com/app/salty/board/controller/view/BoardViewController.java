@@ -24,6 +24,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -111,11 +112,11 @@ public class BoardViewController {
     public String saveComment(
             SaveCommentRequestDto requestDto
             , Long articleId
+            , @AuthenticationPrincipal CustomUserDetails user
+            , Model model) {
 
-            , @AuthenticationPrincipal CustomUserDetails user, Model model) {
         requestDto.setUserId(user.getId());
         SaveCommentResponseDto responseDto = commentService.saveComment(requestDto,articleId);
-
 
         String href = "/board/article/" + articleId;
         MessageDto message = new MessageDto("댓글 작성 완료!", href);
@@ -125,10 +126,11 @@ public class BoardViewController {
     // 댓글 좋아요
     @GetMapping("/comment/like/{articleId}/{commentId}")
     public String likeComment(@PathVariable Long commentId, @PathVariable Long articleId
-            , @AuthenticationPrincipal Users user, Model model) {
+            , @AuthenticationPrincipal CustomUserDetails user, Model model) {
         LikeRequestDto requestDto = new LikeRequestDto();
         requestDto.setContentType(ContentType.COMMENT);
         requestDto.setContentId(commentId);
+        requestDto.setUser_id(user.getId());
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
         requestDto.setComment(comment);
@@ -161,5 +163,22 @@ public class BoardViewController {
         model.addAttribute("article", responseDto);
 
         return "board/updateArticle";
+    }
+
+    // 게시물(articleId) 삭제
+    @GetMapping("/delete/article/{articleId}")
+    public String deleteArticle(@PathVariable Long articleId
+            ,  @AuthenticationPrincipal CustomUserDetails user, Model model) {
+        Long writerID = articleService.getArticleById(articleId).getWriterId();
+        if(!writerID.equals(user.getId())) {
+            MessageDto message = new MessageDto("작성자만 삭제할 수 있습니다.", "/board/article/" + articleId);
+            model.addAttribute("data", message);
+            return showMessageAndRedirect(message, model);
+
+        }
+        articleService.deleteArticle(articleId);
+        MessageDto message = new MessageDto("삭제 완료.", "/board/article/" + articleId);
+        model.addAttribute("data", message);
+        return showMessageAndRedirect(message, model);
     }
 }

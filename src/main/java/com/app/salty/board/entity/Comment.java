@@ -26,6 +26,7 @@ public class Comment {
     @Column(name="comment_id")
     private Long commentId;
 
+    @Column(name="user_id", nullable = false)
     private Long userId;
 
     @Enumerated(EnumType.STRING)

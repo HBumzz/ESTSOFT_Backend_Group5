@@ -1,6 +1,7 @@
 package com.app.salty.board.controller;
 
 import com.app.salty.board.dto.article.*;
+import com.app.salty.board.entity.Article;
 import com.app.salty.board.entity.ArticleHeader;
 import com.app.salty.board.service.ArticleServiceImpl;
 import com.app.salty.user.entity.CustomUserDetails;
@@ -134,7 +135,12 @@ public class ArticleController {
     // 게시물(articleId) 삭제
     @DeleteMapping("/article/{articleId}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long articleId
-            ,  @AuthenticationPrincipal Users user) {
+            ,  @AuthenticationPrincipal CustomUserDetails user) {
+        Long writerID = articleService.getArticleById(articleId).getWriterId();
+        if(!writerID.equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         articleService.deleteArticle(articleId);
         return ResponseEntity.ok().build();
     }

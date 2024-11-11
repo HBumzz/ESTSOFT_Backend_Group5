@@ -38,7 +38,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<GetArticleResponseDto> getArticleList() {
-        List<Article> articleList = articleRepository.findAll();
+        List<Article> articleList = articleRepository.findAllByOrderByCreatedAtDesc();
 
         return articleList.stream().map(GetArticleResponseDto::new).toList();
     }
