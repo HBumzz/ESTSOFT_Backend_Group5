@@ -110,9 +110,11 @@ public class BoardViewController {
     public String saveComment(
             SaveCommentRequestDto requestDto
             , Long articleId
+
             , @AuthenticationPrincipal CustomUserDetails user, Model model) {
         requestDto.setUserId(user.getId());
         SaveCommentResponseDto responseDto = commentService.saveComment(requestDto,articleId);
+
 
         String href = "/board/article/" + articleId;
         MessageDto message = new MessageDto("댓글 작성 완료!", href);

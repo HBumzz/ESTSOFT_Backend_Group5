@@ -49,39 +49,83 @@
     border-bottom: 1px solid #eee;
 }
 
-/* 오른쪽 사이드바 (유저 정보) */
-.user-sidebar {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+ /* 유저 사이드바 스타일 */
+ .user-sidebar {
+     background: white;
+     padding: 20px;
+     border-radius: 10px;
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ }
 
-.user-info {
-    text-align: center;
-    padding: 20px 0;
-}
+ .user-info {
+     text-align: center;
+     padding: 20px 0;
+ }
 
-.user-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
+ .user-avatar {
+     width: 80px;
+     height: 80px;
+     border-radius: 50%;
+     margin-bottom: 15px;
+ }
 
-/* 로그인 버튼 */
-.login-button {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background: #4AADAD;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 10px;
-}
+ .user-nickname {
+     margin: 0 0 20px 0;
+     font-size: 1.2em;
+     color: #333;
+ }
 
-.login-button:hover {
-    background: #3d9191;
-}
+ /* 유저 메뉴 스타일 */
+ .user-menu {
+     display: flex;
+     flex-direction: column;
+     gap: 10px;
+     margin-top: 20px;
+ }
+
+ .menu-item {
+     display: block;
+     padding: 12px;
+     color: #333333;
+     text-decoration: none;
+     font-size: 14px;
+     transition: all 0.2s ease;
+     border-radius: 5px;
+     background-color: #f8f9fa;
+ }
+
+ .menu-item:hover {
+     background-color: #4AADAD;
+     color: white;
+ }
+
+ /* 로그아웃 버튼 특별 스타일 */
+ .logout-btn {
+     color: #ff4444;
+     background-color: #fff5f5;
+ }
+
+ .logout-btn:hover {
+     background-color: #ff4444;
+     color: white;
+ }
+
+ /* 로그인 버튼 (비로그인 상태) */
+ .login-button {
+     display: block;
+     width: 100%;
+     padding: 12px;
+     background: #4AADAD;
+     color: white;
+     text-align: center;
+     text-decoration: none;
+     border-radius: 5px;
+     margin-top: 10px;
+     transition: background-color 0.2s ease;
+ }
+
+ .login-button:hover {
+     background: #3d9191;
+ }
+
+

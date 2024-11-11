@@ -1,77 +1,227 @@
+<!-- user-profile.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로필 설정 - SALTY</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/profile.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/footer.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/profileSidebar.css}" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<div class="profile-container">
-    <h2>프로필 설정</h2>
-    <form class="profile-form" id="profileForm" enctype="multipart/form-data">
-        <div class="profile-image-section">
-            <div class="profile-image-wrapper">
-                <img th:src="${user?.profileImageUrl ?: '/images/default-avatar.png'}"
-                     alt="프로필 이미지"
-                     id="profilePreview"
-                     class="profile-image">
-                <label for="profileImage" class="image-upload-label">
-                    <i class="fas fa-camera"></i>
-                    사진 변경
-                </label>
-                <input type="file"
-                       id="profileImage"
-                       name="profileImage"
-                       accept="image/*"
-                       class="hidden">
+<div th:replace="~{common/header :: header}"></div>
+<div th:replace="~{user/profileSidebar :: div}"></div>
+
+<!-- 메인 컨텐츠 영역 -->
+<div class="profile-content">
+    <h2 class="profile-title">프로필 설정</h2>
+
+    <!-- 프로필 이미지 섹션  -->
+    <form id="profileImageForm" class="profile-image-section" enctype="multipart/form-data">
+        <div class="profile-image-wrapper">
+            <img th:src="${user.profile.path}"
+                 alt="프로필 이미지" class="profile-image" id="profilePreview">
+            <label for="profileImage" class="image-upload-label">
+                <i class="fas fa-camera"></i>
+            </label>
+            <input type="file" id="profileImage" name="profileImage"
+                   accept="image/*" class="hidden" onchange="handleImageChange()">
+        </div>
+        <!-- 이미지 업로드 중 표시할 로딩 스피너 -->
+        <div id="imageUploadSpinner" class="spinner hidden">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    </form>
+
+    <!-- 기본 정보 폼 -->
+    <form id="profileInfoForm" class="profile-form"
+          method="POST">
+        <div class="info-section">
+            <div class="form-group">
+                <label>이메일</label>
+                <input type="email" th:value="${user.email}" readonly class="form-input readonly">
+            </div>
+
+            <div class="form-group">
+                <label>닉네임</label>
+                <div class="input-with-button">
+                    <input type="text"
+                           name="nickname"
+                           id="nickname"
+                           th:value="${user.nickname}"
+                           class="form-input" placeholder="닉네임을 입력해주세요">
+                    <button type="button" class="check-button" onclick="checkNickname()">
+                        중복확인
+                    </button>
+                </div>
+                <span class="validation-message" id="nicknameMessage"></span>
+            </div>
+
+            <div class="form-group">
+                <label>자기소개</label>
+                <textarea name="bio"
+                          id="bio"
+                          class="form-input bio"
+                          placeholder="자기소개를 입력해주세요"
+                          th:text="${user.bio ?: ''}"
+                ></textarea>
+            </div>
+
+            <!-- 읽기 전용 정보는 하단에 배치 -->
+            <div class="readonly-info">
+                <div class="form-group">
+                    <label>포인트</label>
+                    <input type="text" th:value="${user.point + ' P'}" readonly class="form-input readonly">
+                </div>
+
+                <div class="form-group">
+                    <label>마지막 로그인</label>
+                    <input type="text"
+                           th:value="${#temporals.format(user.lastLoginDate, 'yyyy-MM-dd HH:mm')}"
+                           readonly class="form-input readonly">
+                </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="nickname">닉네임</label>
-            <input type="text"
-                   id="nickname"
-                   name="nickname"
-                   th:value="${user?.nickname}"
-                   class="form-input">
+        <div class="button-group">
+            <button type="submit" class="save-button">저장하기</button>
+            <a href="/" class="cancel-button">취소</a>
         </div>
-
-        <div class="form-group">
-            <label for="email">이메일</label>
-            <input type="email"
-                   id="email"
-                   name="email"
-                   th:value="${user?.email}"
-                   readonly
-                   class="form-input">
-        </div>
-
-        <div class="form-group">
-            <label for="currentPassword">현재 비밀번호</label>
-            <input type="password"
-                   id="currentPassword"
-                   name="currentPassword"
-                   class="form-input">
-        </div>
-
-        <div class="form-group">
-            <label for="newPassword">새 비밀번호</label>
-            <input type="password"
-                   id="newPassword"
-                   name="newPassword"
-                   class="form-input">
-        </div>
-
-        <div class="form-group">
-            <label for="confirmPassword">새 비밀번호 확인</label>
-            <input type="password"
-                   id="confirmPassword"
-                   name="confirmPassword"
-                   class="form-input">
-        </div>
-
-        <button type="submit" class="save-button">저장하기</button>
     </form>
+
+    <div class="footer-links">
+        <a href="/user/withdrawal" class="withdrawal-link">회원탈퇴</a>
+    </div>
 </div>
 
+
+
+<div th:replace="~{common/footer :: footer}"></div>
+<script>
+    let checkedNickname = false;
+
+    document.querySelector("#profileInfoForm").addEventListener("submit",(e) => {
+        e.preventDefault();
+        if (!checkedNickname){
+            showNicknameMessage("아이디 중복체크를 해주세요");
+        }
+        const nickname = document.querySelector("#nickname");
+        const bio = document.querySelector("#bio");
+
+        $.ajax({
+            url: '/api/auth/userUpdate',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                nickname : nickname.value,
+                bio : bio.value
+            }),
+            success: (data) =>{
+                nickname.value = data.nickname;
+                bio.value = data.bio;
+                checkedNickname =false;
+                nickname.removeAttribute('readonly');
+                showNicknameMessage('');
+                alert("회원수정 성공");
+            }
+
+        })
+    })
+
+    const showNicknameMessage = (msg) => {
+        document.querySelector("#nicknameMessage").innerHTML=msg;
+    }
+
+    const checkNickname = () => {
+        const nickname = document.querySelector("#nickname");
+        if(nickname.value.length >= 2){
+            $.ajax({
+                url: '/api/auth/nickname-verification',
+                type: 'POST',
+                data: {
+                    nickname: nickname.value
+                },
+                success: (isCheckedNickname) => {
+                    checkedNickname = isCheckedNickname;
+                    showNicknameMessage(
+                        isCheckedNickname ? '사용 가능한 닉네임입니다.' : '이미 사용중인 닉네임입니다.'
+                    );
+                    if(isCheckedNickname){
+                        nickname.setAttribute('readonly','readonly');
+                    }
+                }
+            })
+        }else{
+            showNicknameMessage('닉네임은 두글자 이상입니다.');
+        }
+
+    }
+
+
+    const handleImageChange =() => {
+        const fileInput = document.getElementById('profileImage');
+        const spinner = document.getElementById('imageUploadSpinner');
+
+        if (fileInput.files && fileInput.files[0]) {
+            const formData = new FormData();
+            formData.append('profileImage', fileInput.files[0]);
+
+            // 이미지 미리보기
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('profilePreview').src = e.target.result;
+            }
+            reader.readAsDataURL(fileInput.files[0]);
+
+            // 스피너 표시
+            spinner.classList.remove('hidden');
+
+            // 이미지 업로드 요청
+            fetch('/api/auth/profile', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('프로필 이미지가 업데이트되었습니다.');
+                    } else {
+                        showToast('이미지 업로드에 실패했습니다.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('이미지 업로드 중 오류가 발생했습니다.', 'error');
+                })
+                .finally(() => {
+                    spinner.classList.add('hidden');
+                });
+        }
+    }
+
+    // 토스트 메시지 표시 함수
+    const showToast = (message, type = 'success') => {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }, 100);
+    }
+
+
+</script>
 </body>
 </html>

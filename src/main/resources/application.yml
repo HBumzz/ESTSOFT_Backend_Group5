@@ -37,6 +37,11 @@ spring:
       platform: h2
       mode: always
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   mail:
     host: smtp.gmail.com
     port: 587

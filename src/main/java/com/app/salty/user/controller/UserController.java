@@ -1,20 +1,26 @@
 package com.app.salty.user.controller;
 
 import com.app.salty.user.common.social.KakaoAPI;
+import com.app.salty.user.dto.request.UserUpdateRequest;
 import com.app.salty.user.dto.request.UserSignupRequest;
 import com.app.salty.user.dto.response.TokenResponse;
 import com.app.salty.user.dto.response.UserResponse;
+import com.app.salty.user.dto.response.UsersResponse;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.service.AuthenticationService;
 import com.app.salty.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -34,12 +40,12 @@ public class UserController {
 
     //회원가입 페이지
     @GetMapping("/signup")
-    public String showSingup(){
+    public String showSingup() {
         return "/user/signup";
     }
 
     @PostMapping("/signup")
-    public String createUser(@RequestBody UserSignupRequest request){
+    public String createUser(@RequestBody UserSignupRequest request) {
         log.info("request: {}", request);
         UserResponse createdUser = userService.signup(request);
         return "/user/login";
@@ -63,11 +69,31 @@ public class UserController {
                                 HttpSession session) {
 
         Users socialLoginUser = userService.kakaoLogin(code);
-        TokenResponse tokenResponse= authenticationService.authenticateKakao(socialLoginUser);
+        TokenResponse tokenResponse = authenticationService.authenticateKakao(socialLoginUser);
         model.addAttribute("tokenResponse", tokenResponse);
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
         return "redirect:/";
+    }
+
+    //프로필 페이지
+    @GetMapping("/profile")
+    public String updateUser(Model model, @AuthenticationPrincipal UserDetails currentUser) {
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        UsersResponse usersResponse = userService.findByUserWithProfile(currentUser.getUsername());
+        model.addAttribute("user", usersResponse);
+        log.info("User: {}", usersResponse);
+
+        return "/user/profile";
+    }
+
+    //출석체크 페이지
+    @GetMapping("/attendance")
+    public String attendance(Model model, @AuthenticationPrincipal UserDetails currentUser) {
+
+        return "/user/attendance";
     }
 
 }

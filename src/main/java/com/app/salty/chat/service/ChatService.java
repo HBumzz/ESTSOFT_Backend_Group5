@@ -6,7 +6,7 @@ import com.app.salty.chat.entity.ChatMessage;
 import com.app.salty.chat.entity.ChatRoom;
 import com.app.salty.chat.repository.ChatMessageRepository;
 import com.app.salty.chat.repository.ChatRoomRepository;
-import com.app.salty.user.dto.response.AttachmentResponse;
+import com.app.salty.user.dto.response.ProfileResponse;
 import com.app.salty.user.dto.response.UsersResponse;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.repository.UserRepository;
@@ -35,14 +35,14 @@ public class ChatService {
                 .email(chatRoom.getUser1().getEmail())
                 .nickname(chatRoom.getUser1().getNickname())
                 .profile(
-                        chatRoom.getUser1().getAttachment() != null
-                                ? AttachmentResponse.builder()
-                                .type(chatRoom.getUser1().getAttachment().getId().getType().toString()) // AttachmentType이 enum이라면 String으로 변환
-                                .id(chatRoom.getUser1().getAttachment().getId().getUserId())
-                                .originalFilename(chatRoom.getUser1().getAttachment().getOriginalFilename())
-                                .path(chatRoom.getUser1().getAttachment().getPath())
+                        chatRoom.getUser1().getProfile() != null
+                                ? ProfileResponse.builder()
+                                .type(chatRoom.getUser1().getProfile().getId().getType().toString()) // AttachmentType이 enum이라면 String으로 변환
+                                .id(chatRoom.getUser1().getProfile().getId().getUserId())
+                                .originalFilename(chatRoom.getUser1().getProfile().getOriginalFilename())
+                                .path(chatRoom.getUser1().getProfile().getPath())
                                 .build()
-                                : AttachmentResponse.builder()
+                                : ProfileResponse.builder()
                                 .path("/images/default-profile.png") // 기본 프로필 이미지 설정
                                 .build()
                 )
@@ -53,14 +53,14 @@ public class ChatService {
                 .email(chatRoom.getUser2().getEmail())
                 .nickname(chatRoom.getUser2().getNickname())
                 .profile(
-                        chatRoom.getUser2().getAttachment() != null
-                                ? AttachmentResponse.builder()
-                                .type(chatRoom.getUser2().getAttachment().getId().getType().toString())
-                                .id(chatRoom.getUser2().getAttachment().getId().getUserId())
-                                .originalFilename(chatRoom.getUser2().getAttachment().getOriginalFilename())
-                                .path(chatRoom.getUser2().getAttachment().getPath())
+                        chatRoom.getUser2().getProfile() != null
+                                ? ProfileResponse.builder()
+                                .type(chatRoom.getUser2().getProfile().getId().getType().toString())
+                                .id(chatRoom.getUser2().getProfile().getId().getUserId())
+                                .originalFilename(chatRoom.getUser2().getProfile().getOriginalFilename())
+                                .path(chatRoom.getUser2().getProfile().getPath())
                                 .build()
-                                : AttachmentResponse.builder()
+                                : ProfileResponse.builder()
                                 .path("/images/default-profile.png")
                                 .build()
                 )

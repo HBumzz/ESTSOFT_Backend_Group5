@@ -37,15 +37,15 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         log.debug(" WebSecurityConfig Start !!! ");
 
-        LoginFilter loginFilter = new LoginFilter(
-                authenticationManager(authenticationConfiguration),
-                jwtUtil
-        );
+//        LoginFilter loginFilter = new LoginFilter(
+//                authenticationManager(authenticationConfiguration),
+//                jwtUtil
+//        );
 
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(
-                jwtUtil,
-                customUserDetailsService
-        );
+//        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(
+//                jwtUtil,
+//                customUserDetailsService
+//        );
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -81,6 +81,7 @@ public class WebSecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/auth/logout")
                         .invalidateHttpSession(true)
+                        .logoutSuccessUrl("/auth/login")
                 )
                 .build();
     }
