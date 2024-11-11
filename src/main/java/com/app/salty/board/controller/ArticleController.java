@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -103,7 +104,8 @@ public class ArticleController {
 
     // 게시물 전체 조회
     @GetMapping("/article")
-    public ResponseEntity<List<GetArticleResponseDto>> getArticleAll() {
+    public ResponseEntity<List<GetArticleResponseDto>> getArticleAll(@AuthenticationPrincipal UserDetails user) {
+        log.info(user.toString());
         List<GetArticleResponseDto> list = articleService.getArticleList();
         return ResponseEntity.ok(list);
     }

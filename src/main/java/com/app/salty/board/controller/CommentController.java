@@ -38,22 +38,22 @@ public class CommentController {
     }
 
     // 게시판에 댓글 달기
-    @PostMapping("/comment")
-    public ResponseEntity<SaveCommentResponseDto> saveComment(
-            SaveCommentRequestDto requestDto
-            , Long articleId
-            , @AuthenticationPrincipal Users user) {
-
-        // 임의의 유저 생성 - test
+//    @PostMapping("/comment")
+//    public ResponseEntity<SaveCommentResponseDto> saveComment(
+//            SaveCommentRequestDto requestDto
+//            , Long articleId
+//            , @AuthenticationPrincipal Users user) {
+//
+//        // 임의의 유저 생성 - test
 //        Users tempUser = new Users();
 //        tempUser.setId(1L);
-        // ==============================
+//        // ==============================
 //        requestDto.setUser(tempUser);
-
-        SaveCommentResponseDto responseDto = commentService.saveComment(requestDto,articleId);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
-    }
+//
+//        SaveCommentResponseDto responseDto = commentService.saveComment(requestDto,articleId);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+//    }
 
     // 댓글(commentId) 수정하기
     @PutMapping("/comment/{commentId}")
