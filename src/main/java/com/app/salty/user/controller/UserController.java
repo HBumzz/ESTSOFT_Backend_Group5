@@ -106,4 +106,10 @@ public class UserController {
         return "/user/userDetails";
     }
 
+    //회원탈퇴 페이지
+    @GetMapping("/withdrawal")
+    public String withdrawal() {
+
+        return "/user/withdrawal";
+    }
 }
