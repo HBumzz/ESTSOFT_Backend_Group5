@@ -24,11 +24,6 @@ import java.util.Map;
 public class ChecklistController {
     private final ChecklistService checklistService;
 
-//    @PostMapping
-//    public ResponseEntity<ChecklistResponseDTO> createChecklist(@Valid @RequestBody ChecklistRequestDTO requestDTO) {
-//        return ResponseEntity.ok(checklistService.createChecklist(requestDTO));
-//    }
-
     //체크리스트 조회
     @GetMapping("/{userId}")
     public ResponseEntity<ChecklistResponseDTO> getChecklist(
@@ -87,7 +82,6 @@ public class ChecklistController {
             @PathVariable Long itemId) {
         return ResponseEntity.ok(checklistService.toggleItemCompletion(itemId));
     }
-
 
 }
 

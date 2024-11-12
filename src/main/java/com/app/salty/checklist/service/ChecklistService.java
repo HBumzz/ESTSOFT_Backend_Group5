@@ -2,7 +2,6 @@ package com.app.salty.checklist.service;
 
 import com.app.salty.checklist.dto.request.ChecklistItemRequestDTO;
 import com.app.salty.checklist.dto.request.ChecklistItemUpdateDTO;
-import com.app.salty.checklist.dto.request.ChecklistRequestDTO;
 import com.app.salty.checklist.dto.response.ChecklistItemResponseDTO;
 import com.app.salty.checklist.dto.response.ChecklistResponseDTO;
 import com.app.salty.checklist.entity.*;
@@ -37,8 +36,22 @@ public class ChecklistService {
 
     @Transactional
     public ChecklistResponseDTO getOrCreateChecklist(Long userId, ChecklistType type, LocalDateTime targetDate) {
-        LocalDateTime startDate = DateUtils.getStartDate(type, targetDate);
-        LocalDateTime endDate = DateUtils.getEndDate(type, targetDate);
+        LocalDateTime startDate, endDate;
+        switch (type) {
+            case DAILY -> {
+                startDate = targetDate.toLocalDate().atStartOfDay();
+                endDate = startDate.plusDays(1).minusNanos(1);
+            }
+            case WEEKLY -> {
+                startDate = targetDate.with(DayOfWeek.MONDAY).toLocalDate().atStartOfDay();
+                endDate = startDate.plusWeeks(1).minusNanos(1);
+            }
+            case MONTHLY -> {
+                startDate = targetDate.withDayOfMonth(1).toLocalDate().atStartOfDay();
+                endDate = startDate.plusMonths(1).minusNanos(1);
+            }
+            default -> throw new IllegalArgumentException("Invalid checklist type");
+        }
 
         List<Checklist> existingChecklists = checklistRepository
                 .findByUserIdAndTypeNameAndDateRangeOrderByCreatedAtDesc(userId, type, startDate, endDate);
@@ -63,14 +76,6 @@ public class ChecklistService {
         newChecklist.setCompletionRate(0);
 
         return convertToResponseDTO(checklistRepository.save(newChecklist));
-    }
-
-    private Checklist createNewChecklist(Long userId, ChecklistType type) {
-        Checklist newChecklist = new Checklist();
-        newChecklist.setUserId(userId);
-        newChecklist.setTypeName(type);
-        newChecklist.setCompletionRate(0);  // BigDecimal.ZERO 대신 0 사용
-        return checklistRepository.save(newChecklist);
     }
 
     @Transactional
@@ -146,7 +151,6 @@ public class ChecklistService {
         return dto;
     }
 
-
     private ChecklistItem createChecklistItem(ChecklistItemRequestDTO requestDTO, Checklist checklist, Category category) {
         ChecklistItem item = new ChecklistItem();
         item.setChecklist(checklist);
@@ -156,7 +160,6 @@ public class ChecklistService {
         item.setSavedAmount(requestDTO.getSavedAmount());
         return item;
     }
-
 
     private ChecklistItemResponseDTO convertToItemResponseDTO(ChecklistItem item) {
         ChecklistItemResponseDTO dto = new ChecklistItemResponseDTO();
@@ -183,17 +186,6 @@ public class ChecklistService {
         };
     }
 
-    @Transactional
-    public ChecklistResponseDTO createChecklist(ChecklistRequestDTO requestDTO) {
-        Checklist checklist = new Checklist();
-        checklist.setUserId(requestDTO.getUserId());
-        checklist.setTypeName(requestDTO.getTypeName());
-        checklist.setCompletionRate(0);  // BigDecimal.ZERO 대신 0 사용
-
-        Checklist savedChecklist = checklistRepository.save(checklist);
-        return convertToResponseDTO(savedChecklist);
-    }
-
     public ChecklistItemResponseDTO getChecklistItem(Long itemId) {
         ChecklistItem item = checklistItemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Checklist item not found"));
@@ -205,8 +197,7 @@ public class ChecklistService {
         ChecklistItem item = checklistItemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Checklist item not found"));
 
-        // 과거 데이터 수정 방지
-        if (isPastDate(item.getChecklist().getTypeName(), item.getChecklist().getChecklistCreatedAt())) {
+        if (DateUtils.isPastDate(item.getChecklist().getTypeName(), item.getChecklist().getChecklistCreatedAt())) {
             throw new IllegalStateException("Cannot modify past checklist items");
         }
 
@@ -242,7 +233,6 @@ public class ChecklistService {
         updateCompletionRate(checklist);
     }
 
-
     private BigDecimal calculateTotalAmount(Long userId, ChecklistType type, LocalDateTime currentDate) {
         LocalDateTime startDate, endDate;
 
@@ -269,53 +259,4 @@ public class ChecklistService {
                 .map(ChecklistItem::getSavedAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
-    public List<Checklist> findByUserIdAndTypeAndDate(Long userId, ChecklistType type, LocalDateTime targetDate) {
-        LocalDateTime startDate = targetDate.withHour(0).withMinute(0).withSecond(0);
-        LocalDateTime endDate = targetDate.withHour(23).withMinute(59).withSecond(59);
-
-        // 기존 repository 메서드 사용
-        return checklistRepository.findByUserIdAndTypeNameAndDateRangeOrderByCreatedAtDesc(
-                userId, type, startDate, endDate);
-    }
-
-
-
-    // 현재 시점 기준으로 과거 날짜인지 확인
-    private boolean isPastDate(ChecklistType type, LocalDateTime targetDate) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startOfToday = now.toLocalDate().atStartOfDay();
-
-        return switch (type) {
-            case DAILY -> targetDate.isBefore(startOfToday);
-            case WEEKLY -> {
-                LocalDateTime startOfWeek = now.with(DayOfWeek.MONDAY).toLocalDate().atStartOfDay();
-                yield targetDate.isBefore(startOfWeek);
-            }
-            case MONTHLY -> {
-                LocalDateTime startOfMonth = now.withDayOfMonth(1).toLocalDate().atStartOfDay();
-                yield targetDate.isBefore(startOfMonth);
-            }
-        };
-    }
-
-    private LocalDateTime getStartDate(ChecklistType type, LocalDateTime date) {
-        return switch (type) {
-            case DAILY -> date.toLocalDate().atStartOfDay();
-            case WEEKLY -> date.with(DayOfWeek.MONDAY).toLocalDate().atStartOfDay();
-            case MONTHLY -> date.withDayOfMonth(1).toLocalDate().atStartOfDay();
-        };
-    }
-
-    private LocalDateTime getEndDate(ChecklistType type, LocalDateTime date) {
-        return switch (type) {
-            case DAILY -> date.toLocalDate().atTime(23, 59, 59);
-            case WEEKLY -> date.with(DayOfWeek.SUNDAY).toLocalDate().atTime(23, 59, 59);
-            case MONTHLY -> date.withDayOfMonth(date.toLocalDate().lengthOfMonth())
-                    .toLocalDate().atTime(23, 59, 59);
-        };
-    }
-
-
-
 }

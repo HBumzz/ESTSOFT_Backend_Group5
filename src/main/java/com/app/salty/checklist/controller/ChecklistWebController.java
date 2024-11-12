@@ -16,12 +16,7 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.WeekFields;
 import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 @Controller
@@ -100,53 +95,5 @@ public class ChecklistWebController {
             model.addAttribute("checklistItems", Collections.emptyList());
             model.addAttribute("savingTitle", "님의 절약 금액");
         }
-    }
-
-    private String formatDisplayDate(LocalDateTime date, ChecklistType type) {
-        return switch (type) {
-            case DAILY -> date.format(DateTimeFormatter.ofPattern("M월 d일 (E)", Locale.KOREAN));
-            case WEEKLY -> {
-                LocalDateTime firstDayOfMonth = date.withDayOfMonth(1);
-                LocalDateTime targetMonday = date;
-
-                // 해당 날짜의 월요일 찾기
-                while (targetMonday.getDayOfWeek() != DayOfWeek.MONDAY) {
-                    targetMonday = targetMonday.minusDays(1);
-                }
-
-                // 첫 번째 월요일 찾기
-                LocalDateTime firstMonday = firstDayOfMonth;
-                while (firstMonday.getDayOfWeek() != DayOfWeek.MONDAY) {
-                    firstMonday = firstMonday.plusDays(1);
-                }
-
-                // 주차 계산
-                long weekNumber = ChronoUnit.WEEKS.between(firstMonday, targetMonday) + 1;
-
-                yield targetMonday.format(DateTimeFormatter.ofPattern("M월 ")) + weekNumber + "주차";
-            }
-            case MONTHLY -> date.format(DateTimeFormatter.ofPattern("M월"));
-        };
-    }
-
-    private void setChecklistModelAttributes(Model model, ChecklistResponseDTO checklist) {
-        if (checklist != null) {
-            model.addAttribute("checklistId", checklist.getChecklistId());
-            model.addAttribute("totalAmount", checklist.getTotalAmount());
-            model.addAttribute("completionRate", checklist.getCompletionRate());
-            model.addAttribute("checklistItems", checklist.getItems());
-            // savingTitle 추가
-            model.addAttribute("savingTitle", checklist.getSavingTitle());
-        } else {
-            model.addAttribute("checklistId", null);
-            model.addAttribute("totalAmount", BigDecimal.ZERO);
-            model.addAttribute("completionRate", BigDecimal.ZERO);
-            model.addAttribute("checklistItems", Collections.emptyList());
-            model.addAttribute("savingTitle", "님의 절약 금액");
-        }
-    }
-
-    private String formatCurrentDate(LocalDateTime now) {
-        return now.format(DateTimeFormatter.ofPattern("M월 d일 (E)", Locale.KOREAN));
     }
 }

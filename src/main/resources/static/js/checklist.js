@@ -369,37 +369,6 @@ const DatePickerUtils = {
     }
 };
 
-function getSelectedDate(type) {
-    switch(type) {
-        case 'DAILY':
-            return document.getElementById('dailyDate')?.value || DateUtils.formatDate(new Date());
-        case 'WEEKLY':
-            const weekYear = document.getElementById('weeklyYear')?.value;
-            const weekMonth = document.getElementById('weeklyMonth')?.value;
-            const week = document.getElementById('weeklyWeek')?.value;
-            if (weekYear && weekMonth && week) {
-                // 주의 시작일 계산
-                const firstDayOfMonth = new Date(weekYear, weekMonth - 1, 1);
-                let weekStart = new Date(firstDayOfMonth);
-                while (weekStart.getDay() !== 1) { // 월요일이 될 때까지
-                    weekStart.setDate(weekStart.getDate() + 1);
-                }
-                weekStart.setDate(weekStart.getDate() + (week - 1) * 7);
-                return DateUtils.formatDate(weekStart);
-            }
-            return DateUtils.formatDate(new Date());
-        case 'MONTHLY':
-            const monthYear = document.getElementById('monthlyYear')?.value;
-            const month = document.getElementById('monthlyMonth')?.value;
-            if (monthYear && month) {
-                return DateUtils.formatDate(new Date(monthYear, month - 1, 1));
-            }
-            return DateUtils.formatDate(new Date());
-        default:
-            return DateUtils.formatDate(new Date());
-    }
-}
-
 const DateDisplayUtils = {
     parseDisplayDate() {
         const displayDate = document.querySelector('.date-display span').textContent;
@@ -579,23 +548,6 @@ function updateWeeksForYearMonth() {
     } else {
         weekSelect.value = 1;  // 범위를 벗어나면 1주차로 설정
     }
-}
-
-function updateWeekOptions(date) {
-    const weekSelect = document.getElementById('weeklyWeek');
-    weekSelect.innerHTML = '';
-
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const totalWeeks = DatePickerUtils.getWeeksInMonth(year, month);
-
-    for (let week = 1; week <= totalWeeks; week++) {
-        weekSelect.add(new Option(week + '주차', week));
-    }
-
-    // 현재 선택된 날짜의 주차 계산
-    const currentWeek = DatePickerUtils.getCurrentWeek(date);
-    weekSelect.value = currentWeek;
 }
 
 function applyDateFilter() {
