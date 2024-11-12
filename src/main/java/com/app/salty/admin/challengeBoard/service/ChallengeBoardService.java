@@ -39,6 +39,7 @@ public class ChallengeBoardService {
     }
 
     // 챌린지 삭제
+    @Transactional
     public void deleteBy(Long id) {
         repository.deleteById(id);
     }

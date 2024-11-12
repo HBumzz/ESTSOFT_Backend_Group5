@@ -4,62 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원 관리 - 어드민 페이지</title>
-    <link rel="stylesheet" href="styles.css"> <!-- 필요한 스타일 시트 링크 -->
 </head>
 <body>
 <header>
     <h1>어드민 페이지 - 회원 관리</h1>
-    <nav>
-        <a href="/admin/users">회원 목록</a>
-    </nav>
 </header>
 
-<section class="user-detail">
-    <h2>회원 정보 조회하기</h2>
-    <form action="/admin/user/update" method="post">
-        <!-- hidden 필드에 userId를 넣어야 합니다. -->
-        <input type="hidden" name="userId" th:value="${user.id}">
-
+<section class="user-search">
+    <h2>회원 검색</h2>
+    <form action="/admin/users/search" method="get">
+        <!-- 닉네임/이메일 검색 입력 필드 -->
         <div class="form-group">
-            <label for="username">사용자 닉네임</label>
-            <!-- 사용자 이름을 th:value로 채웁니다. -->
-            <input type="text" id="username" name="username" th:value="${user.username}" required>
+            <label for="searchNickname">닉네임</label>
+            <input type="text" id="searchNickname" name="nickname" placeholder="닉네임으로 검색">
         </div>
 
         <div class="form-group">
-            <label for="email">이메일</label>
-            <!-- 이메일을 th:value로 채웁니다. -->
-            <input type="email" id="email" name="email" th:value="${user.email}" required>
+            <label for="searchEmail">이메일</label>
+            <input type="email" id="searchEmail" name="email" placeholder="이메일로 검색">
         </div>
 
         <div class="form-group">
-            <label for="role">회원 역할</label>
-            <select id="role" name="role" required>
-                <!-- 사용자 역할을 th:selected로 설정합니다. -->
-                <option value="USER" th:selected="${user.role == 'USER1'}">소금</option>
-                <option value="USER" th:selected="${user.role == 'USER2'}">왕소금</option>
-                <option value="USER" th:selected="${user.role == 'USER3'}">소금소금</option>
-                <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">관리자</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="status">회원 상태</label>
-            <select id="status" name="status" required>
-                <!-- 사용자 상태를 th:selected로 설정합니다. -->
-                <option value="ACTIVE" th:selected="${user.activated == true}">활성</option>
-                <option value="INACTIVE" th:selected="${user.activated == false}">비활성</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <button type="submit">회원 찾기</button>
+            <button type="submit">검색</button>
         </div>
     </form>
+
+    <!-- 검색된 유저가 없을 때 메시지 출력 -->
+    <div th:if="${error}">
+        <p style="color: red;" th:text="${error}"></p>
+    </div>
+
 </section>
 
-<footer>
-    <p>푸터</p>
-</footer>
+<section>
+    <h2>전체 회원 목록</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>닉네임</th>
+            <th>이메일</th>
+            <th>포인트</th>
+            <th>설명</th>
+            <th>최근 활동일</th>
+            <th>로그인 횟수</th>
+            <th>활성화 여부</th>
+            <th>가입일</th>
+            <th>최종 수정일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.nickname}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.point}"></td>
+            <td th:text="${user.description}"></td>
+            <td th:text="${user.lastActivityDate}"></td>
+            <td th:text="${user.loginCount}"></td>
+            <td th:text="${user.activated ? '활성' : '비활성'}"></td>
+            <td th:text="${user.createdAt}"></td>
+            <td th:text="${user.updatedAt}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
 </body>
 </html>

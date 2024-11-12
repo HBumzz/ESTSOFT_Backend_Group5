@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 상세 정보</title>
+</head>
+<body>
+<header>
+    <h1>회원 상세 정보</h1>
+    <nav>
+        <a href="/admin">회원 검색</a>
+    </nav>
+</header>
+
+<section class="user-detail">
+    <h2>회원 정보</h2>
+
+    <!-- 유저 정보 표시 -->
+    <div>
+        <p><strong>닉네임:</strong> <span th:text="${user.nickname}"></span></p>
+        <p><strong>이메일:</strong> <span th:text="${user.email}"></span></p>
+        <p><strong>포인트:</strong> <span th:text="${user.point}"></span></p>
+        <p><strong>설명:</strong> <span th:text="${user.description}"></span></p>
+        <p><strong>최근 활동일:</strong> <span th:text="${user.lastActivityDate}"></span></p>
+        <p><strong>로그인 횟수:</strong> <span th:text="${user.loginCount}"></span></p>
+        <p><strong>활성화 여부:</strong> <span th:text="${user.activated ? '활성화됨' : '비활성화됨'}"></span></p>
+        <p><strong>가입일:</strong> <span th:text="${user.createdAt}"></span></p>
+        <p><strong>최종 수정일:</strong> <span th:text="${user.updatedAt}"></span></p>
+    </div>
+
+    <h3>수정하기</h3>
+    <!-- 포인트와 활성화 상태 수정 폼 -->
+    <form action="/admin/users/update" method="post">
+        <input type="hidden" name="userId" th:value="${user.id}">
+
+        <div class="form-group">
+            <label for="newPoint">포인트</label>
+            <input type="number" id="newPoint" name="point" value="${user.point}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="activated">활성화 여부</label>
+            <select id="activated" name="activated">
+                <option th:value="true" th:text="'활성화'" th:selected="${user.activated}"></option>
+                <option th:value="false" th:text="'비활성화'" th:selected="${user.activated == false}"></option>
+            </select>
+        </div>
+
+        <button type="submit">수정</button>
+    </form>
+
+    <!-- 에러 메시지 -->
+    <div th:if="${error}">
+        <p style="color: red;" th:text="${error}"></p>
+    </div>
+</section>
+
+</body>
+</html>
