@@ -2,7 +2,9 @@ package com.app.salty.admin.challengeBoard.controller;
 
 import com.app.salty.admin.challengeBoard.dto.response.ChallengeViewResponse;
 import com.app.salty.admin.challengeBoard.entity.Challenge;
+import com.app.salty.admin.challengeBoard.entity.ChallengeComment;
 import com.app.salty.admin.challengeBoard.service.ChallengeBoardService;
+import com.app.salty.admin.challengeBoard.service.ChallengeCommentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +18,11 @@ import java.util.List;
 public class ChallengeBoardPageController {
 
     public final ChallengeBoardService challengeBoardService;
+    private final ChallengeCommentService challengeCommentService;
 
-    public ChallengeBoardPageController(ChallengeBoardService challengeBoardService) {
+    public ChallengeBoardPageController(ChallengeBoardService challengeBoardService, ChallengeCommentService challengeCommentService) {
         this.challengeBoardService = challengeBoardService;
+        this.challengeCommentService = challengeCommentService;
     }
 
     @GetMapping("/chboard")
@@ -43,7 +47,7 @@ public class ChallengeBoardPageController {
         model.addAttribute("weeklyChallenges", weeklyChallenges);
         model.addAttribute("monthlyChallenges", monthlyChallenges);
 
-        return "/chboard/challengeList";  // challengeList.html
+        return "chboard/challengeList";  // challengeList.html
     }
 
     //GET 상세페이지 리턴
@@ -51,8 +55,10 @@ public class ChallengeBoardPageController {
     public String showDetails(@PathVariable Long id, Model model) {
         Challenge challenge = challengeBoardService.findBy(id);
         model.addAttribute("challenge", new ChallengeViewResponse(challenge));
+        List<ChallengeComment> comments = challengeCommentService.findCommentsByChallengeId(id);
+        model.addAttribute("comments", comments);
 
-        return "/chboard/challenge";
+        return "chboard/challenge";
     }
 
     //GET /new-challenge?id=1
@@ -64,7 +70,9 @@ public class ChallengeBoardPageController {
             Challenge challenge = challengeBoardService.findBy(id);
             model.addAttribute("challenge", new ChallengeViewResponse(challenge));
         }
-        return "/chboard/newChallenge";
+        return "chboard/newChallenge";
     }
+
+
 
 }

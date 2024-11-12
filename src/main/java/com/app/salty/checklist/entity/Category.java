@@ -24,7 +24,7 @@ public class Category {
     private CategoryType categoryType;
 
     @Column(nullable = false, length = 100)
-    private String categoryDescription; // 카테고리 설명
+    private String categoryDescription;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<ChecklistItem> items = new ArrayList<>();

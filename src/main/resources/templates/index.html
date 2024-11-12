@@ -15,26 +15,20 @@
 
 <!-- 메인 컨테이너 -->
 <div class="container">
-    <!-- 왼쪽 사이드바 (카테고리) -->
-    <aside class="sidebar">
-        <ul class="category-list">
-            <li>공지사항</li>
-            <li><a href="/board">자유게시판</a></li>
-            <li>절약팁</li>
-            <li>지출내역</li>
-            <li>목표달성</li>
-        </ul>
-    </aside>
-
     <!-- 메인 컨텐츠 -->
     <main class="main-content">
+        <!-- 대표 이미지와 멘트 -->
+        <div class="intro-section">
+            <img th:src="@{/uploads/indexBg.jpg}" alt="SALTY 대표 이미지" class="intro-image">
+            <div class="intro-text">
+                <p>매일의 작은 절약을 통해 큰 미래를 만들어봐요.</p>
+                <p>함께하는 절약 생활, 작은 행동이 모여 큰 변화를 만들거에요.</p>
+            </div>
+        </div>
+
+        <!-- 게시물 리스트 -->
         <div class="post-list">
-            <!-- 게시글 아이템 -->
-<!--            <div th:each="post : ${posts}" class="post-item">-->
-<!--                <h3 th:text="${post.title}">게시글 제목</h3>-->
-<!--                <p th:text="${post.content}">게시글 내용...</p>-->
-<!--                <small th:text="${post.author + ' | ' + post.date}">작성자 | 날짜</small>-->
-<!--            </div>-->
+            <!-- 게시물 리스트 내용 -->
         </div>
     </main>
 
@@ -57,15 +51,8 @@
                 <a href="/auth/logout" class="menu-item logout-btn">로그아웃</a>
             </div>
         </div>
-<!--            <p>님의 절약 일지</p>-->
-            <div class="user-stats">
-<!--                <p>이번 달 목표 달성률: <span th:text="${user.achievementRate}">33.33%</span></p>-->
-<!--                <p>총 절약액: <span th:text="${user.totalSavings}">77,777원</span></p>-->
-            </div>
-
     </aside>
 </div>
-
 
 <div th:replace="~{common/footer :: footer}"></div>
 <script>

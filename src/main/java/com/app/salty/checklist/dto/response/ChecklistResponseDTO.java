@@ -18,8 +18,4 @@ public class ChecklistResponseDTO {
     private LocalDateTime checklistCreatedAt;
     private String displayDate;
     private String savingTitle;
-
-    public String getFormattedTotalAmount() {
-        return String.format("%,d원", totalAmount != null ? totalAmount.intValue() : 0);
-    }
 }

@@ -1,5 +1,6 @@
 package com.app.salty.user.entity;
 
+import com.app.salty.common.aop.PointUpdateAspect;
 import com.app.salty.common.entity.Profile;
 import com.app.salty.user.dto.kakao.KakaoUserInfo;
 import com.app.salty.common.entity.Profile;
@@ -56,9 +57,6 @@ public class Users extends BaseTimeEntity {
     @Column(name = "last_activity_date", nullable = false)
     private LocalDateTime lastActivityDate;
 
-    @Column(name = "login_count")
-    private int loginCount;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<UserRoleMapping> userRoleMappings = new ArrayList<>();
 
@@ -70,6 +68,7 @@ public class Users extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
+
 
     //연관 관계 method
     public void addRoleMappings(UserRoleMapping roleMapping) {
@@ -102,6 +101,11 @@ public class Users extends BaseTimeEntity {
     public void updateLastActivityDate() {this.lastActivityDate = LocalDateTime.now();}
     public void addPoint(Long rewardPoint) {
     this.point += rewardPoint;}
+
+    public void updatePoint(Long newPoint) {
+        this.point = newPoint;  // 입력된 포인트 값으로 갱신 - 어드민 페이지 코드
+    }
+    
     public void withdrawal(withdrawalRequest request){
         this.activated = false;
         this.email += "[탈퇴 회원]";
@@ -123,6 +127,7 @@ public class Users extends BaseTimeEntity {
             this.attendances.forEach(Attendance::deleteUser);
             this.attendances.clear();
         }
+
     }
 
     @Override
