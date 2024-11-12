@@ -11,8 +11,9 @@ public class ChecklistItemUpdateDTO {
     @Size(max = 50)
     private String itemContent;
 
-    @Size(max = 50)
+    @Size(max = 100)
     private String itemMemo;
+
     private BigDecimal savedAmount;
     private Boolean isCompleted;
 }

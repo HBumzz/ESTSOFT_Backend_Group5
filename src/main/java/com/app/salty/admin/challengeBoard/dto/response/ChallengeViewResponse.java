@@ -27,6 +27,8 @@ public class ChallengeViewResponse {
 
     private Challenge.ChallengeStatus status;
 
+    private Challenge.ChallengeType type;
+
     public ChallengeViewResponse(Challenge challenge) {
         id = challenge.getId();
         title = challenge.getTitle();
@@ -36,5 +38,6 @@ public class ChallengeViewResponse {
         startDate = challenge.getStartDate();
         endDate = challenge.getEndDate();
         status = challenge.getStatus();
+        type = challenge.getType();
     }
 }

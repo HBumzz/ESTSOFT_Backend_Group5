@@ -11,17 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @Table(name="checklist")
 public class Checklist {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long checklistId;
 
-    @Column(nullable = false) // 나중에 user 테이블과 연결해서 손보기
+    @Column(nullable = false)
     private Long userId;
 
     @Enumerated(EnumType.STRING)
@@ -29,10 +27,7 @@ public class Checklist {
     private ChecklistType typeName;
 
     @Column(nullable = false)
-    private boolean checklistIsPublic = false;
-
-    @Column(precision = 3, scale = 2)
-    private BigDecimal completionRate;
+    private Integer completionRate = 0;
 
     @Column(nullable = false)
     private LocalDateTime checklistCreatedAt;

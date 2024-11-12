@@ -33,6 +33,8 @@ public class ChallengeResponse {
 
     private Challenge.ChallengeStatus status;
 
+    private Challenge.ChallengeType type;
+
     public ChallengeResponse(Challenge challenge) {
         id = challenge.getId();
         title = challenge.getTitle();
@@ -42,12 +44,13 @@ public class ChallengeResponse {
         startDate = challenge.getStartDate();
         endDate = challenge.getEndDate();
         status = challenge.getStatus();
+        type = challenge.getType();
     }
 
-    public ChallengeResponse(Long id, String title, String content) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-    }
+//    public ChallengeResponse(Long id, String title, String content) {
+//        this.id = id;
+//        this.title = title;
+//        this.content = content;
+//    }
 
 }

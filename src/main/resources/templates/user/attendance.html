@@ -12,7 +12,6 @@
     <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.css' rel='stylesheet' />
 
     <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/common/footer.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/user/attendance.css}" />
 </head>
 <body>
@@ -43,7 +42,6 @@
     <button class="attendance-btn" id="attendanceBtn">출석체크</button>
     <div id="calendar"></div>
 </div>
-<div th:replace="~{common/footer :: footer}"></div>
 <script>
     let calendar;
 

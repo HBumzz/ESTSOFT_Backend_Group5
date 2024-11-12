@@ -9,13 +9,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ChecklistItemRepository extends JpaRepository<ChecklistItem, Long> {
-    List<ChecklistItem> findByChecklist_ChecklistId(Long checklistId);
-
     long countByChecklist_ChecklistId(Long checklistId);
 
-    @Query("SELECT SUM(ci.savedAmount) FROM ChecklistItem ci WHERE ci.checklist.checklistId = :checklistId")
-    BigDecimal calculateTotalAmountByChecklistId(@Param("checklistId") Long checklistId);
-
-    @Query("SELECT COUNT(ci) FROM ChecklistItem ci WHERE ci.checklist.checklistId = :checklistId AND ci.isCompleted = true")
+    @Query("SELECT COUNT(ci) FROM ChecklistItem ci " +
+            "WHERE ci.checklist.checklistId = :checklistId " +
+            "AND ci.isCompleted = true")
     long countCompletedItemsByChecklistId(@Param("checklistId") Long checklistId);
+
+
+
 }

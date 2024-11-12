@@ -1,33 +1,12 @@
- /* 메인 컨테이너 */
-
+/* 메인 컨테이너 */
 .container {
     display: grid;
-    grid-template-columns: 250px 1fr 300px;
+    grid-template-columns: 1fr 300px; /* 왼쪽 사이드바 제거 후 메인 콘텐츠와 오른쪽 사이드바만 남김 */
     gap: 20px;
     max-width: 1400px;
     margin: 20px auto;
     padding: 0 20px;
-}
-
-/* 왼쪽 사이드바 (카테고리) */
-.sidebar {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.category-list {
-    list-style: none;
-}
-
-.category-list li {
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.category-list li:last-child {
-    border-bottom: none;
+    justify-content: space-between;
 }
 
 /* 메인 컨텐츠 */
@@ -36,96 +15,116 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 100%;
 }
 
-.post-list {
+/* 인트로 섹션 */
+.intro-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    text-align: center;
+
+}
+
+.intro-image {
+    width: 60%; /* 원하는 크기 비율로 조절 */
+    max-width: 400px; /* 최대 크기 설정 */
+    height: auto;
+    border-radius: 10px;
+    margin: 0 auto 10px auto;
+}
+.intro-text p {
+    font-size: 1.4em; /* 글꼴 크기 조절 */
+    font-weight: 600; /* 글꼴 두께 강조 */
+    color: #333333; /* 텍스트 색상 변경 */
+    line-height: 1.6; /* 줄 간격 조정 */
+    margin: 10px 0;
+}
+
+.intro-text p:first-child {
+    color: #4AADAD; /* 첫 번째 문구를 색상 강조 */
+}
+
+
+
+/* 유저 사이드바 스타일 */
+.user-sidebar {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 유저 정보 스타일 */
+.user-info {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.user-nickname {
+    margin: 0 0 20px 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+/* 유저 메뉴 스타일 */
+.user-menu {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
+    margin-top: 20px;
 }
 
-.post-item {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
+.menu-item {
+    display: block;
+    padding: 12px;
+    color: #333333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border-radius: 5px;
+    background-color: #f8f9fa;
 }
 
- /* 유저 사이드바 스타일 */
- .user-sidebar {
-     background: white;
-     padding: 20px;
-     border-radius: 10px;
-     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
- }
+.menu-item:hover {
+    background-color: #4AADAD;
+    color: white;
+}
 
- .user-info {
-     text-align: center;
-     padding: 20px 0;
- }
+/* 로그아웃 버튼 특별 스타일 */
+.logout-btn {
+    color: #ff4444;
+    background-color: #fff5f5;
+}
 
- .user-avatar {
-     width: 80px;
-     height: 80px;
-     border-radius: 50%;
-     margin-bottom: 15px;
- }
+.logout-btn:hover {
+    background-color: #ff4444;
+    color: white;
+}
 
- .user-nickname {
-     margin: 0 0 20px 0;
-     font-size: 1.2em;
-     color: #333;
- }
+/* 로그인 버튼 (비로그인 상태) */
+.login-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #4AADAD;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.2s ease;
+}
 
- /* 유저 메뉴 스타일 */
- .user-menu {
-     display: flex;
-     flex-direction: column;
-     gap: 10px;
-     margin-top: 20px;
- }
-
- .menu-item {
-     display: block;
-     padding: 12px;
-     color: #333333;
-     text-decoration: none;
-     font-size: 14px;
-     transition: all 0.2s ease;
-     border-radius: 5px;
-     background-color: #f8f9fa;
- }
-
- .menu-item:hover {
-     background-color: #4AADAD;
-     color: white;
- }
-
- /* 로그아웃 버튼 특별 스타일 */
- .logout-btn {
-     color: #ff4444;
-     background-color: #fff5f5;
- }
-
- .logout-btn:hover {
-     background-color: #ff4444;
-     color: white;
- }
-
- /* 로그인 버튼 (비로그인 상태) */
- .login-button {
-     display: block;
-     width: 100%;
-     padding: 12px;
-     background: #4AADAD;
-     color: white;
-     text-align: center;
-     text-decoration: none;
-     border-radius: 5px;
-     margin-top: 10px;
-     transition: background-color 0.2s ease;
- }
-
- .login-button:hover {
-     background: #3d9191;
- }
-
-
+.login-button:hover {
+    background: #3d9191;
+}

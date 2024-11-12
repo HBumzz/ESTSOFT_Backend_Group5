@@ -26,7 +26,6 @@ import java.util.List;
 
 @Entity
 @Getter
-//@Setter //임시 세터 주석했습니다.
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -102,6 +101,11 @@ public class Users extends BaseTimeEntity {
     public void updateLastActivityDate() {this.lastActivityDate = LocalDateTime.now();}
     public void addPoint(Long rewardPoint) {
     this.point += rewardPoint;}
+
+    public void updatePoint(Long newPoint) {
+        this.point = newPoint;  // 입력된 포인트 값으로 갱신 - 어드민 페이지 코드
+    }
+    
     public void withdrawal(withdrawalRequest request){
         this.activated = false;
         this.email += "[탈퇴 회원]";
@@ -123,6 +127,7 @@ public class Users extends BaseTimeEntity {
             this.attendances.forEach(Attendance::deleteUser);
             this.attendances.clear();
         }
+
     }
 
     @Override
