@@ -103,9 +103,19 @@ public class ArticleServiceImpl implements ArticleService {
             requestDto.setComment(comment);
             Integer count = likeService.countLike(requestDto);
             getCommentResponseDto.setLikeCount(count);
-            getCommentResponseDto.setWriterNickname(user.getNickname());
-            getCommentResponseDto.setWriterName(user.getUsername());
+
+            Users tempUser = userRepository.findById(getCommentResponseDto.getWriterId()).orElseThrow(IllegalArgumentException::new);
+
+            getCommentResponseDto.setWriterNickname(tempUser.getNickname());
+            getCommentResponseDto.setWriterName(tempUser.getEmail());
         }
         return new GetArticleWithCommentResponseDto(article,commentResponseDtoList);
+    }
+
+    @Override
+    public void hideArticle(Long articleId) {
+        Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
+        article.setShow(!article.isShow());
+        articleRepository.save(article);
     }
 }

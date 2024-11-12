@@ -17,4 +17,6 @@ public interface ArticleService {
     List<GetArticleResponseDto> getArticlesByUserId(Long Id);
 
     GetArticleWithCommentResponseDto getArticleWithCommentByArticleId(Long Id, CustomUserDetails user);
+
+    void hideArticle(Long articleId);
 }

@@ -159,5 +159,11 @@ public class ArticleController {
         return ResponseEntity.ok(dtoList);
     }
 
-
+    //게시글 숨김처리
+    @GetMapping("/article/hide")
+    public ResponseEntity<Void> hideArticle(@RequestParam Long id
+            , @AuthenticationPrincipal CustomUserDetails user) {
+        articleService.hideArticle(id);
+        return ResponseEntity.ok().build();
+    }
 }

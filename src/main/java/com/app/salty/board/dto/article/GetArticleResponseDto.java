@@ -26,6 +26,7 @@ public class GetArticleResponseDto {
     private String updatedAt;
     private Integer likeCount;
     private Integer commentCount;
+    private boolean show;
 
 
     public GetArticleResponseDto(Article article) {
@@ -38,6 +39,7 @@ public class GetArticleResponseDto {
         this.content= article.getContent();
         this.createdAt =article.getCreatedAt().format(formatter);
         this.updatedAt =article.getUpdatedAt().format(formatter);
+        this.show= article.isShow();
     }
 
 }
