@@ -169,16 +169,21 @@
 
       fetch(`/api/article/like/${articleId}`, {
         method: 'GET'
+      }).then(response => {
+        if (response.ok) {
+          window.location.href = `/board/article/${articleId}`;
+        } else {
+          console.error('Failed to like the article');
+        }
+        // // Fetch the updated like count
+        // const response = await fetch(`/api/article/like/count/${articleId}`, {
+        //   method: 'GET'
+        // });
+        // const likeCount = await response.json();
+        // const commentCount = document.getElementById('comment_count').value;
+        //
+        // likeButton.innerText = `[좋아요] ${likeCount} | [댓글] ${commentCount}`;
       });
-
-      // Fetch the updated like count
-      const response = await fetch(`/api/article/like/count/${articleId}`, {
-        method: 'GET'
-      });
-      const likeCount = await response.json();
-      const commentCount = document.getElementById('comment_count').value;
-
-      likeButton.innerText = `[좋아요] ${likeCount} | [댓글] ${commentCount}`;
     });
   }
 
