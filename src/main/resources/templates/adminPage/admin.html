@@ -13,17 +13,19 @@
 <section class="user-search">
     <h2>회원 검색</h2>
     <form action="/admin/users/search" method="get">
-        <!-- 닉네임/이메일 검색 입력 필드 -->
+        <!-- 닉네임 검색 입력 필드 -->
         <div class="form-group">
             <label for="searchNickname">닉네임</label>
             <input type="text" id="searchNickname" name="nickname" placeholder="닉네임으로 검색">
         </div>
 
+        <!-- 이메일 검색 입력 필드 -->
         <div class="form-group">
             <label for="searchEmail">이메일</label>
             <input type="email" id="searchEmail" name="email" placeholder="이메일로 검색">
         </div>
 
+        <!-- 검색 버튼 -->
         <div class="form-group">
             <button type="submit">검색</button>
         </div>
@@ -33,7 +35,6 @@
     <div th:if="${error}">
         <p style="color: red;" th:text="${error}"></p>
     </div>
-
 </section>
 
 <section>
@@ -46,10 +47,10 @@
             <th>포인트</th>
             <th>설명</th>
             <th>최근 활동일</th>
-            <th>로그인 횟수</th>
             <th>활성화 여부</th>
             <th>가입일</th>
             <th>최종 수정일</th>
+            <th>조회</th>
         </tr>
         </thead>
         <tbody>
@@ -59,10 +60,13 @@
             <td th:text="${user.point}"></td>
             <td th:text="${user.description}"></td>
             <td th:text="${user.lastActivityDate}"></td>
-            <td th:text="${user.loginCount}"></td>
             <td th:text="${user.activated ? '활성' : '비활성'}"></td>
             <td th:text="${user.createdAt}"></td>
             <td th:text="${user.updatedAt}"></td>
+            <td>
+                <!-- 조회 버튼 -->
+                <a th:href="@{/admin/users/search(nickname=${user.nickname}, email='')}" class="btn btn-info btn-sm">조회</a>
+            </td>
         </tr>
         </tbody>
     </table>

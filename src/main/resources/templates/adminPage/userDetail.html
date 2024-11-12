@@ -15,46 +15,57 @@
 
 <section class="user-detail">
     <h2>회원 정보</h2>
-
-    <!-- 유저 정보 표시 -->
     <div>
         <p><strong>닉네임:</strong> <span th:text="${user.nickname}"></span></p>
         <p><strong>이메일:</strong> <span th:text="${user.email}"></span></p>
         <p><strong>포인트:</strong> <span th:text="${user.point}"></span></p>
         <p><strong>설명:</strong> <span th:text="${user.description}"></span></p>
         <p><strong>최근 활동일:</strong> <span th:text="${user.lastActivityDate}"></span></p>
-        <p><strong>로그인 횟수:</strong> <span th:text="${user.loginCount}"></span></p>
         <p><strong>활성화 여부:</strong> <span th:text="${user.activated ? '활성화됨' : '비활성화됨'}"></span></p>
         <p><strong>가입일:</strong> <span th:text="${user.createdAt}"></span></p>
         <p><strong>최종 수정일:</strong> <span th:text="${user.updatedAt}"></span></p>
     </div>
 
-    <h3>수정하기</h3>
-    <!-- 포인트와 활성화 상태 수정 폼 -->
+    <h3>포인트 및 활성화 상태 수정하기</h3>
     <form action="/admin/users/update" method="post">
         <input type="hidden" name="userId" th:value="${user.id}">
+        <label for="newPoint">포인트</label>
+        <input type="number" id="newPoint" name="point" value="${user.point}" required>
 
-        <div class="form-group">
-            <label for="newPoint">포인트</label>
-            <input type="number" id="newPoint" name="point" value="${user.point}" required>
-        </div>
-
-        <div class="form-group">
-            <label for="activated">활성화 여부</label>
-            <select id="activated" name="activated">
-                <option th:value="true" th:text="'활성화'" th:selected="${user.activated}"></option>
-                <option th:value="false" th:text="'비활성화'" th:selected="${user.activated == false}"></option>
-            </select>
-        </div>
+        <label for="activated">활성화 여부</label>
+        <select id="activated" name="activated">
+            <option th:value="true" th:text="'활성화'" th:selected="${user.activated}"></option>
+            <option th:value="false" th:text="'비활성화'" th:selected="${user.activated == false}"></option>
+        </select>
 
         <button type="submit">수정</button>
     </form>
 
-    <!-- 에러 메시지 -->
+    <h3>역할 부여하기</h3>
+    <form action="/admin/users/addRole" method="post">
+        <input type="hidden" name="userId" th:value="${user.id}">
+
+        <label for="role">역할 선택</label>
+        <select id="role" name="role">
+            <option th:each="role : ${allRoles}" th:value="${role.name}" th:text="${role.name}"></option>
+        </select>
+
+        <button type="submit">역할 추가</button>
+    </form>
+
+    <!-- 현재 유저의 역할 목록 표시 -->
+    <div>
+        <h3>현재 역할</h3>
+        <ul>
+            <li th:each="roleMapping : ${user.userRoleMappings}">
+                <span th:text="${roleMapping.role.role}"></span>
+            </li>
+        </ul>
+    </div>
+
     <div th:if="${error}">
         <p style="color: red;" th:text="${error}"></p>
     </div>
 </section>
-
 </body>
 </html>
