@@ -35,10 +35,11 @@
 <h2 style="text-align: left; margin-left: 50px">update Article</h2>
 
 <select id="article-header">
-    <option value="DAILY" selected>일상</option>
-    <option value="SHARE">나눔</option>
-    <option value="TRADE">중고거래</option>
+    <option value="DAILY" th:selected="${#strings.equals(article.getHeader(),'일상')}">일상</option>
+    <option value="SHARE" th:selected="${#strings.equals(article.getHeader(),'나눔')}">나눔</option>
+    <option value="TRADE" th:selected="${#strings.equals(article.getHeader(),'중고거래')}">중고거래</option>
 </select>
+
 <input type="text" id="title" name="title" style="height: 20px; width: 50%; margin-left: 10px; margin-top: 20px;" th:value="${article.title}">
 
 
@@ -106,7 +107,14 @@
             let title = document.getElementById('title').value;
             let header = document.getElementById('article-header').value;
 
-            console.log(id)
+            if (editor.getMarkdown().length < 1) {
+                alert('에디터 내용을 입력해 주세요.');
+                throw new Error('editor content is required!');
+            }
+            if (document.getElementById('title').value.length < 1) {
+                alert('제목을 입력해 주세요.');
+                throw new Error('title is required!');
+            }
 
             const params = {
                 articleId: id,
@@ -128,52 +136,6 @@
         });
     }
 
-
-
-
-    // 게시글 저장
-    async function savePost() {
-        // 1. 콘텐츠 입력 유효성 검사
-        if (editor.getMarkdown().length < 1) {
-            alert('에디터 내용을 입력해 주세요.');
-            throw new Error('editor content is required!');
-        }
-        if (document.getElementById('title').value.length < 1) {
-            alert('제목을 입력해 주세요.');
-            throw new Error('title is required!');
-        }
-        let id = document.getElementById('article-id').value;
-        let title = document.getElementById('title').value;
-        let header = document.getElementById('article-header').value;
-
-        console.log(header);
-
-        // 2. url, parameter 세팅
-        const url = `/api/article/${id}`;
-        const params = {
-            artistId: id,
-            title: title,
-            content: editor.getHTML(),
-            header: header,
-        }
-
-        // 3. API 호출
-        try {
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(params),
-            });
-
-            alert('게시글이 수정됐습니다.');
-            location.href = '/board';
-
-        } catch (error) {
-            console.error('저장 실패 : ', error)
-        }
-    }
 </script>
 </body>
 </html>

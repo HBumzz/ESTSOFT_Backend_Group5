@@ -18,6 +18,7 @@ public class UserResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long point;
+    private boolean active;
 
     @Override
     public String toString() {

@@ -7,11 +7,15 @@
     </a>
     <nav class="nav-menu">
         <a th:href="@{/}" th:classappend="${requestURI == '/' ? 'active' : ''}">HOME</a>
-        <a th:href="@{/trade}" th:classappend="${requestURI == '/trade' ? 'active' : ''}">COMMUNITY</a>
+        <a th:href="@{/board}" th:classappend="${requestURI.contains('/board') ? 'active' : ''}">BOARD</a>
         <a th:href="@{/chat}" th:classappend="${requestURI == '/chat' ? 'active' : ''}">CHAT</a>
         <a th:href="@{/checklist}" th:classappend="${requestURI == '/checklist' ? 'active' : ''}">CHECKLIST</a>
-        <a th:href="@{'/auth/userDetails/' + ${#authentication.principal.id}}"
-           th:classappend="${requestURI.contains('/auth/userDetails') ? 'active' : ''}">USER</a>
+<!--        수정해야댐-->
+        <a th:if="${#authentication != null and #authentication.principal instanceof T(org.springframework.security.core.userdetails.UserDetails)}"
+           th:href="@{'/auth/userDetails/' + ${#authentication.principal.id}}"
+           th:classappend="${requestURI.contains('/auth/userDetails') ? 'active' : ''}">
+            USER
+        </a>
     </nav>
 </header>
 
