@@ -3,20 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>SALTY - 절약하는 일상</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
     <link rel="stylesheet" th:href="@{/css/checklist.css}">
 </head>
 <body>
 <!-- 헤더 -->
-<header class="header">
-    <img src="/images/logo.png" alt="SALTY" class="logo">
-    <nav class="nav-menu">
-        <a href="/home">HOME</a>
-        <a href="/trade">TRADE</a>
-        <a href="/chat">CHAT</a>
-        <a href="/checklist" class="active">CHECKLIST</a>
-        <a href="/user">USER</a>
-    </nav>
-</header>
+<div th:replace="~{common/header :: header}"></div>
 
 <!-- 메인 컨테이너 -->
 <div class="checklist-container">

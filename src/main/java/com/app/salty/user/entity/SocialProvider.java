@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Entity
 @Getter
-@Table(name = "social_providers")
+@Table(name = "social_provider")
 @NoArgsConstructor
 public class SocialProvider extends BaseTimeEntity {
 
