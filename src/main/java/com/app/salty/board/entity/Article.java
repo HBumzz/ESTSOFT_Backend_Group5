@@ -18,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "Article")
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +47,7 @@ public class Article {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="show", nullable = false)
+    @Column(name = "`show`", nullable = false)
     private boolean show;
 
 

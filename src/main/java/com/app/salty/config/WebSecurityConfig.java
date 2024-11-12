@@ -57,8 +57,8 @@ public class WebSecurityConfig {
                                 "/static/**",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**",
-                                "/h2-console/**" //임시
+                                "/images/**"
+//                                "/h2-console/**" //임시
                         ).permitAll()
                         .requestMatchers("/api/auth/**","/auth/**").permitAll()
                         .requestMatchers("/api/boards/**").permitAll()
@@ -99,6 +99,6 @@ public class WebSecurityConfig {
 
     @Bean
     public WebSecurityCustomizer configure() {
-        return web -> web.ignoring().requestMatchers(toH2Console());
+        return web -> web.ignoring();
     }
 }
