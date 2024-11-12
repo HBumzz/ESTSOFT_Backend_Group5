@@ -33,8 +33,6 @@ public class UserRoleMapping {
     }
 
     //연관 메서드
-
-
     @Override
     public String toString() {
         return "UserRoleMapping{" +
@@ -43,4 +41,5 @@ public class UserRoleMapping {
                 ", role=" + role +
                 '}';
     }
+
 }

@@ -13,6 +13,34 @@ if (deleteButton) {
     });
 }
 
+// 생성 기능
+const createButton = document.getElementById('create-btn');
+
+if (createButton) {
+    createButton.addEventListener('click', event => {
+        fetch(`/api/chboard/write`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify({
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value,
+                startDate: document.getElementById('start-date').value,
+                endDate: document.getElementById('end-date').value,
+                status: document.getElementById('status').value,
+                type: document.getElementById('type').value
+            }),
+        }).then(() => {
+            alert('등록 완료되었습니다');
+            location.replace("/chboard");
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('챌린지 등록에 실패했습니다');
+        });
+    })
+}
+
 // 수정 버튼 클릭 이벤트
 const modifyButton = document.getElementById('modify-btn');
 
@@ -27,7 +55,11 @@ if (modifyButton) {
             },
             body: JSON.stringify({
                 title: document.getElementById('title').value,
-                content: document.getElementById('content').value
+                content: document.getElementById('content').value,
+                startDate: document.getElementById('start-date').value,
+                endDate: document.getElementById('end-date').value,
+                status: document.getElementById('status').value,
+                type: document.getElementById('type').value
             })
         }).then(() => {
             alert('수정이 완료되었습니다');

@@ -102,6 +102,11 @@ public class Users extends BaseTimeEntity {
     public void updateLastActivityDate() {this.lastActivityDate = LocalDateTime.now();}
     public void addPoint(Long rewardPoint) {
     this.point += rewardPoint;}
+
+    public void updatePoint(Long newPoint) {
+        this.point = newPoint;  // 입력된 포인트 값으로 갱신 - 어드민 페이지 코드
+    }
+
     @Override
     public String toString() {
         return "Users{" +

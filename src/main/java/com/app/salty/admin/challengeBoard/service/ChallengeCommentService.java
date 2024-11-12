@@ -5,10 +5,13 @@ import com.app.salty.admin.challengeBoard.entity.Challenge;
 import com.app.salty.admin.challengeBoard.entity.ChallengeComment;
 import com.app.salty.admin.challengeBoard.repository.ChallengeBoardRepository;
 import com.app.salty.admin.challengeBoard.repository.ChallengeCommentRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Service
 public class ChallengeCommentService {
     private final ChallengeBoardRepository blogRepository;
@@ -36,6 +39,10 @@ public class ChallengeCommentService {
         return optionalComment.orElseThrow(() -> new IllegalArgumentException("Comment not found"));
     }
 
+    public List<ChallengeComment> findCommentsByChallengeId(Long challengeId) {
+        return commentRepository.findByChallengeId(challengeId);
+    }
+
     // 댓글 수정
     public ChallengeComment update(Long commentId, CommentRequestDTO request) {
         ChallengeComment comment = commentRepository.findById(commentId)
@@ -52,4 +59,6 @@ public class ChallengeCommentService {
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found")); // 예외 처리 추가
         commentRepository.delete(comment); // 객체를 직접 삭제
     }
+
+
 }

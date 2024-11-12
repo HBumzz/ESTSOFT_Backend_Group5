@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.web.ErrorResponse;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -42,6 +43,9 @@ public class Challenge {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true) // Cascade 추가
+    private List<ChallengeComment> comments = new ArrayList<>();
+
     public enum ChallengeStatus {
         PENDING,
         ONGOING,
@@ -65,12 +69,13 @@ public class Challenge {
 
     // 생성자
     @Builder
-    public Challenge(String title, String content, LocalDateTime startDate, LocalDateTime endDate, ChallengeStatus status) {
+    public Challenge(String title, String content, LocalDateTime startDate, LocalDateTime endDate, ChallengeStatus status, ChallengeType type) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
+        this.type = type;
     }
 
     public ChallengeResponse convert() {
