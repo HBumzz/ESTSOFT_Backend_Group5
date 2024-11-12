@@ -140,26 +140,20 @@
     </div>
   </div>
 </div>
-
 <script th:inline="javascript">
   window.onload = async () => {
     findPost();
-  }
+  };
 
   // 게시글 상세정보 조회
   async function findPost() {
-
-    // 1. URL 쿼리 스트링에서 게시글 번호 조회
     const articleId = document.getElementById('article-id').value;
-    // 2. API 호출
     const url = `/api/article/${articleId}`;
     const response = await fetch(url);
     const post = await response.json();
 
-    // 3. 에디터 콘텐츠 렌더링
     document.querySelector('#editorContent').innerHTML = post.content;
   }
-
 
   const likeButton = document.getElementById('article-info-02');
 
@@ -167,26 +161,29 @@
     likeButton.addEventListener('click', async event => {
       let articleId = document.getElementById('article-id').value;
 
-      fetch(`/api/article/like/${articleId}`, {
+      // 좋아요 증가 요청
+      await fetch(`/api/article/like/${articleId}`, {
         method: 'GET'
       });
 
-      // Fetch the updated like count
+      // 업데이트된 좋아요 개수 가져오기
       const response = await fetch(`/api/article/like/count/${articleId}`, {
         method: 'GET'
       });
       const likeCount = await response.json();
       const commentCount = document.getElementById('comment_count').value;
 
+      // 화면에 좋아요 개수 업데이트
       likeButton.innerText = `[좋아요] ${likeCount} | [댓글] ${commentCount}`;
     });
   }
 
-  // 상대방 프로필 이동
+  // 작성자 프로필 페이지로 이동
   function redirectToUserDetails(writerId) {
     window.location.href = `/auth/userDetails/${writerId}`;
   }
 
 </script>
+
 </body>
 </html>

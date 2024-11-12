@@ -4,6 +4,8 @@ import com.app.salty.chat.dto.ChatMessageDto;
 import com.app.salty.chat.dto.ChatRoomDto;
 import com.app.salty.chat.entity.ChatRoom;
 import com.app.salty.chat.service.ChatService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
 
+@Tag(name = "Salty - 채팅 관련 API")
 @RestController
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
@@ -19,6 +22,8 @@ public class ChatApiController {
     private static final Logger logger = LoggerFactory.getLogger(ChatApiController.class);
     private final ChatService chatService;
 
+
+    @Operation(summary = "채팅방 생성 API")
     @PostMapping("/rooms")
     public RedirectView createRoom(@RequestParam Long user1Id, @RequestParam Long user2Id) {
         Long roomId;
@@ -41,24 +46,27 @@ public class ChatApiController {
         return redirectView;
     }
 
+    @Operation(summary = "유저1, 유저2의 채팅방 조회")
     @GetMapping("/rooms/id")
     public ResponseEntity<Long> getRoomId(@RequestParam Long user1Id, @RequestParam Long user2Id) {
         Long roomId = chatService.getExistingRoomId(user1Id, user2Id);
         return ResponseEntity.ok(roomId);
     }
 
+    @Operation(summary = "유저의 채팅방 리스트 조회")
     @GetMapping("/rooms")
     public List<ChatRoomDto> getChatRoomsByUser(@RequestParam Long userId) {
         return chatService.getChatRoomsByUser(userId);
     }
 
+    @Operation(summary = "채팅 메세지 보내기")
     @PostMapping("/message")
     public ResponseEntity<ChatMessageDto> sendMessage(@RequestBody ChatMessageDto chatMessageDto) {
         ChatMessageDto savedMessage = chatService.sendMessage(chatMessageDto);
         return ResponseEntity.ok(savedMessage);
     }
 
-
+    @Operation(summary = "채팅방 메세지 조회")
     @GetMapping("/rooms/{chatRoomId}/messages")
     public ResponseEntity<List<ChatMessageDto>> getMessagesByChatRoom(@PathVariable Long chatRoomId) {
         List<ChatMessageDto> messages = chatService.getMessagesByChatRoom(chatRoomId);
