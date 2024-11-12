@@ -3,6 +3,7 @@ package com.app.salty.user.entity;
 import com.app.salty.common.entity.Profile;
 import com.app.salty.user.dto.kakao.KakaoUserInfo;
 import com.app.salty.common.entity.Profile;
+import com.app.salty.user.dto.request.withdrawalRequest;
 import com.app.salty.util.BaseTimeEntity;
 import jakarta.persistence.*;
 
@@ -61,13 +62,13 @@ public class Users extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<UserRoleMapping> userRoleMappings = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private SocialProvider socialProvider;  // 소셜 로그인 정보와 1:1 관계
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile Profile;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
 
     //연관 관계 method
@@ -91,7 +92,6 @@ public class Users extends BaseTimeEntity {
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
-
     public void updateNickname(String newNickname) {
         this.nickname = newNickname;
     }
@@ -102,6 +102,29 @@ public class Users extends BaseTimeEntity {
     public void updateLastActivityDate() {this.lastActivityDate = LocalDateTime.now();}
     public void addPoint(Long rewardPoint) {
     this.point += rewardPoint;}
+    public void withdrawal(withdrawalRequest request){
+        this.activated = false;
+        this.email += "[탈퇴 회원]";
+        this.nickname += "[탈퇴 회원]:";
+        this.description ="[탈퇴 사유]:"+request.getReason()+"\n[탈퇴 사유]:"+request.getReasonDetail();
+    }
+
+    public void deleteUsersMapping() {
+        this.userRoleMappings.forEach(UserRoleMapping::deleteUser);
+        this.userRoleMappings.clear();
+        if(this.socialProvider != null){
+            this.socialProvider.deleteUser();
+            this.socialProvider = null;
+        }
+        this.Profile.deleteUser();
+        this.Profile = null;
+
+        if(this.attendances != null){
+            this.attendances.forEach(Attendance::deleteUser);
+            this.attendances.clear();
+        }
+    }
+
     @Override
     public String toString() {
         return "Users{" +

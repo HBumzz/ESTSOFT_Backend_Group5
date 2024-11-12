@@ -14,9 +14,10 @@ public class FilePathConfig {
 
     // 실제 파일이 저장될 외부 경로 (일단 제 기준으로 했습니다 : yoon)
     private final String baseUploadPath = System.getProperty("user.home") + "/Desktop/WorkSpace/Salty/src/main/resources/static/uploads";
+//    private final String baseUploadPath = "classpath:/resources/static/uploads/";
 
     // 각 저장 경로
-    private final String userProfilePath = baseUploadPath + "/user/";
+    private final String userProfilePath = baseUploadPath + "user/";
 
 
     //접근 경로
