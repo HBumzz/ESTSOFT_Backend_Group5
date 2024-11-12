@@ -52,4 +52,7 @@ public class Profile extends BaseTimeEntity {
        return this.renamedFileName.equals("default-profile.png");
     }
 
+    public void deleteUser() {
+        this.user = null;
+    }
 }

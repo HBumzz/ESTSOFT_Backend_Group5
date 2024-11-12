@@ -5,10 +5,15 @@ spring:
     name: Salty
 
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:file:~/testdb1234567
     driver-class-name: org.h2.Driver
     username: sa
     password: ''
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
 
   h2:
     console:
@@ -31,6 +36,7 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
+        dialect: org.hibernate.dialect.H2Dialect
 
   sql:
     init:
@@ -98,6 +104,8 @@ logging:
   level:
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql: TRACE
+    com.app.salty.checklist: DEBUG
+    org.springframework.web: DEBUG
 
 server:
   port: 8080

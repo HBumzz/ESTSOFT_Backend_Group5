@@ -1,6 +1,5 @@
 package com.app.salty.board.dto.article;
 
-import com.app.salty.board.dto.ImagesDto.ImagesResponseDto;
 import com.app.salty.board.entity.Article;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,9 +24,9 @@ public class GetArticleResponseDto {
     private String content;
     private String createdAt;
     private String updatedAt;
-    private List<ImagesResponseDto> imageList;
     private Integer likeCount;
     private Integer commentCount;
+    private boolean show;
 
 
     public GetArticleResponseDto(Article article) {
@@ -40,6 +39,7 @@ public class GetArticleResponseDto {
         this.content= article.getContent();
         this.createdAt =article.getCreatedAt().format(formatter);
         this.updatedAt =article.getUpdatedAt().format(formatter);
+        this.show= article.isShow();
     }
 
 }

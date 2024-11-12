@@ -7,6 +7,7 @@ import com.app.salty.board.entity.Comment;
 import com.app.salty.board.repository.ArticleRepository;
 import com.app.salty.board.repository.CommentRepository;
 import com.app.salty.board.service.LikeServiceImpl;
+import com.app.salty.user.entity.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,15 +34,13 @@ public class LikeController {
 
     @GetMapping("/article/like/{articleId}")
     public ResponseEntity<Void> likeArticle(@PathVariable Long articleId
-            , @AuthenticationPrincipal UserDetails user) {
+            , @AuthenticationPrincipal CustomUserDetails user) {
         LikeRequestDto requestDto = new LikeRequestDto();
         requestDto.setContentType(ContentType.ARTICLE);
         requestDto.setContentId(articleId);
+        requestDto.setUser_id(user.getId());
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
         requestDto.setArticle(article);
-
-        // 임시
-        requestDto.setUser_id(1L);
 
         likeService.Like(requestDto);
 
@@ -50,15 +49,13 @@ public class LikeController {
 
     @GetMapping("/comment/like/{commentId}")
     public ResponseEntity<Void> likeComment(@PathVariable Long commentId
-            ,@AuthenticationPrincipal UserDetails user) {
+            ,@AuthenticationPrincipal CustomUserDetails user) {
         LikeRequestDto requestDto = new LikeRequestDto();
         requestDto.setContentType(ContentType.COMMENT);
         requestDto.setContentId(commentId);
+        requestDto.setUser_id(user.getId());
         Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
         requestDto.setComment(comment);
-
-        // 임시
-        requestDto.setUser_id(1L);
 
         likeService.Like(requestDto);
 
@@ -66,12 +63,13 @@ public class LikeController {
     }
 
     @GetMapping("/article/like/count/{articleId}")
-    public ResponseEntity<Integer> CountArticleLike(@PathVariable Long articleId) {
+    public ResponseEntity<Integer> CountArticleLike(@PathVariable Long articleId
+            ,@AuthenticationPrincipal CustomUserDetails user ) {
         LikeRequestDto requestDto = new LikeRequestDto();
         requestDto.setContentType(ContentType.ARTICLE);
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
         requestDto.setArticle(article);
-        requestDto.setUser_id(1L);
+        requestDto.setUser_id(user.getId());
 
         Integer count = likeService.countLike(requestDto);
 
@@ -79,12 +77,13 @@ public class LikeController {
     }
 
     @GetMapping("/comment/like/count/{commentId}")
-    public ResponseEntity<Integer> CountCommentLike(@PathVariable Long commentId) {
+    public ResponseEntity<Integer> CountCommentLike(@PathVariable Long commentId
+            ,@AuthenticationPrincipal CustomUserDetails user) {
         LikeRequestDto requestDto = new LikeRequestDto();
         requestDto.setContentType(ContentType.COMMENT);
         Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
         requestDto.setComment(comment);
-        requestDto.setUser_id(1L);
+        requestDto.setUser_id(user.getId());
 
         Integer count = likeService.countLike(requestDto);
 

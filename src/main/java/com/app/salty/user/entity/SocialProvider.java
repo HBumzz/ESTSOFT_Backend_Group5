@@ -54,6 +54,10 @@ public class SocialProvider extends BaseTimeEntity {
     public void addUser(Users user) {
         this.user = user;
     }
+    public void deleteUser() {
+        this.user = null;
+    }
+
 
     @Override
     public String toString() {
@@ -66,6 +70,5 @@ public class SocialProvider extends BaseTimeEntity {
                 ", profileImage='" + profileImage + '\'' +
                 '}';
     }
-
 
 }

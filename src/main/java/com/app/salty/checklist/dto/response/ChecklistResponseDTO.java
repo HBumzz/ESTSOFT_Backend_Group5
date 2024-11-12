@@ -12,9 +12,14 @@ import java.util.List;
 public class ChecklistResponseDTO {
     private Long checklistId;
     private ChecklistType typename;
-    private BigDecimal completionRate;
+    private Integer completionRate;
     private BigDecimal totalAmount;
     private List<ChecklistItemResponseDTO> items;
     private LocalDateTime checklistCreatedAt;
     private String displayDate;
+    private String savingTitle;
+
+    public String getFormattedTotalAmount() {
+        return String.format("%,d원", totalAmount != null ? totalAmount.intValue() : 0);
+    }
 }

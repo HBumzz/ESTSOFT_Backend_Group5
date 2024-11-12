@@ -6,6 +6,7 @@
 
     <!-- TUI 에디터 CSS CDN -->
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
     <!-- 버튼 영역 CSS -->
     <style>
         #btnDiv { text-align: center; margin-top: 20px; }
@@ -27,6 +28,7 @@
     </style>
 </head>
 <body th:object="${article}">
+<div th:replace="~{common/header :: header}"></div>
 <input type = "hidden" id="article-id" th:value="${article.articleId}">
 <input type = "hidden" id="article-content" th:value="${article.content}">
 <h1 style="text-align: left; margin-left: 50px">Salty</h1>

@@ -23,15 +23,27 @@ public class ChallengeBoardPageController {
 
     @GetMapping("/chboard")
     public String showChallenge(Model model) {
-        List<Challenge> challengeList = challengeBoardService.findAll();
-
-        List<ChallengeViewResponse> list = challengeList.stream()
+        // 각 챌린지 종류별 리스트를 조회하여 모델에 추가
+        List<ChallengeViewResponse> dailyChallenges = challengeBoardService.getChallengesByType(Challenge.ChallengeType.DAILY)
+                .stream()
                 .map(ChallengeViewResponse::new)
                 .toList();
 
-        model.addAttribute("challenges", list);
+        List<ChallengeViewResponse> weeklyChallenges = challengeBoardService.getChallengesByType(Challenge.ChallengeType.WEEKLY)
+                .stream()
+                .map(ChallengeViewResponse::new)
+                .toList();
 
-        return "/chboard/challengeList";  //challengeList.html
+        List<ChallengeViewResponse> monthlyChallenges = challengeBoardService.getChallengesByType(Challenge.ChallengeType.MONTHLY)
+                .stream()
+                .map(ChallengeViewResponse::new)
+                .toList();
+
+        model.addAttribute("dailyChallenges", dailyChallenges);
+        model.addAttribute("weeklyChallenges", weeklyChallenges);
+        model.addAttribute("monthlyChallenges", monthlyChallenges);
+
+        return "/chboard/challengeList";  // challengeList.html
     }
 
     //GET 상세페이지 리턴

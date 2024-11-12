@@ -1,6 +1,7 @@
 package com.app.salty.board.service;
 
 import com.app.salty.board.dto.article.*;
+import com.app.salty.user.entity.CustomUserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -15,5 +16,7 @@ public interface ArticleService {
 
     List<GetArticleResponseDto> getArticlesByUserId(Long Id);
 
-    GetArticleWithCommentResponseDto getArticleWithCommentByArticleId(Long Id);
+    GetArticleWithCommentResponseDto getArticleWithCommentByArticleId(Long Id, CustomUserDetails user);
+
+    void hideArticle(Long articleId);
 }

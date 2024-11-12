@@ -1,15 +1,17 @@
 <!-- 헤더 -->
 <header class="header">
-
+<link rel="stylesheet" th:href="@{/css/common/header.css}" />
     <a href="/" class="logo">
         <img src="/uploads/salty-logo.png" alt="SALTY">
         SALTY
     </a>
     <nav class="nav-menu">
-        <a href="/" class="active">HOME</a>
-        <a href="/trade">TRADE</a>
-        <a href="/chat">CHAT</a>
-        <a href="/checklist">CHECKLIST</a>
-        <a href="/auth/userDetails">USER</a>
+        <a th:href="@{/}" th:classappend="${requestURI == '/' ? 'active' : ''}">HOME</a>
+        <a th:href="@{/trade}" th:classappend="${requestURI == '/trade' ? 'active' : ''}">COMMUNITY</a>
+        <a th:href="@{/chat}" th:classappend="${requestURI == '/chat' ? 'active' : ''}">CHAT</a>
+        <a th:href="@{/checklist}" th:classappend="${requestURI == '/checklist' ? 'active' : ''}">CHECKLIST</a>
+        <a th:href="@{'/auth/userDetails/' + ${#authentication.principal.id}}"
+           th:classappend="${requestURI.contains('/auth/userDetails') ? 'active' : ''}">USER</a>
     </nav>
 </header>
+

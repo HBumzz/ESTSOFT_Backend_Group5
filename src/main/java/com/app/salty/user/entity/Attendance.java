@@ -37,4 +37,7 @@ public class Attendance {
         this.user = user;
     }
 
+    public void deleteUser() {
+        this.user = null;
+    }
 }

@@ -29,6 +29,7 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
 
+
     public ChatRoomDto convertToChatRoomDto(ChatRoom chatRoom) {
         UsersResponse user1Response = UsersResponse.builder()
                 .userId(chatRoom.getUser1().getId())
@@ -43,7 +44,7 @@ public class ChatService {
                                 .path(chatRoom.getUser1().getProfile().getPath())
                                 .build()
                                 : ProfileResponse.builder()
-                                .path("/images/default-profile.png") // 기본 프로필 이미지 설정
+                                .path("/uploads/user/default-profile.png")
                                 .build()
                 )
                 .build();
@@ -61,16 +62,21 @@ public class ChatService {
                                 .path(chatRoom.getUser2().getProfile().getPath())
                                 .build()
                                 : ProfileResponse.builder()
-                                .path("/images/default-profile.png")
+                                .path("/uploads/user/default-profile.png")
                                 .build()
                 )
                 .build();
+        Optional<ChatMessage> lastMessageOpt = chatMessageRepository.findFirstByChatRoomOrderByCreatedAtDesc(chatRoom);
+        String lastMessage = lastMessageOpt.map(ChatMessage::getMessage).orElse("");
+        LocalDateTime lastMessageTime = lastMessageOpt.map(ChatMessage::getCreatedAt).orElse(null);
 
         return new ChatRoomDto(
                 chatRoom.getId(),
                 user1Response,
                 user2Response,
-                chatRoom.getCreatedAt()
+                chatRoom.getCreatedAt(),
+                lastMessage,
+                lastMessageTime
         );
     }
     public List<ChatRoomDto> getChatRoomsByUser(Long userId) {
@@ -113,6 +119,14 @@ public class ChatService {
                 .build();
 
         return chatRoomRepository.save(chatRoom);
+    }
+
+    // 기존 채팅방 ID 반환
+    public Long getExistingRoomId(Long user1Id, Long user2Id) {
+        return chatRoomRepository
+                .findByUser1_IdAndUser2_IdOrUser2_IdAndUser1_Id(user1Id, user2Id, user1Id, user2Id)
+                .map(ChatRoom::getId)
+                .orElse(null);
     }
 
     @Transactional
