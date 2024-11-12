@@ -1,4 +1,3 @@
-// 날짜 관련 유틸리티
 const DateUtils = {
     formatDate(date) {
         return date.toISOString().split('T')[0];
@@ -12,14 +11,26 @@ const DateUtils = {
         switch(type) {
             case 'DAILY':
                 return target < today;
-            case 'WEEKLY':
-                const startOfWeek = new Date(now);
-                startOfWeek.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
-                startOfWeek.setHours(0, 0, 0, 0);
-                return target < startOfWeek;
-            case 'MONTHLY':
+            case 'WEEKLY': {
+                // 현재 날짜의 월요일 찾기
+                const currentMonday = new Date(now);
+                currentMonday.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
+                currentMonday.setHours(0, 0, 0, 0);
+
+                // 선택한 날짜의 월요일 찾기
+                const targetMonday = new Date(target);
+                while (targetMonday.getDay() !== 1) {
+                    targetMonday.setDate(targetMonday.getDate() - 1);
+                }
+                targetMonday.setHours(0, 0, 0, 0);
+
+                // 월요일 기준으로 비교
+                return targetMonday < currentMonday;
+            }
+            case 'MONTHLY': {
                 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                return target < startOfMonth;
+                return new Date(target.getFullYear(), target.getMonth(), 1) < startOfMonth;
+            }
             default:
                 return false;
         }
@@ -36,26 +47,8 @@ const DateUtils = {
                 return `${month}월 ${day}일 (${dayOfWeek})`;
             }
             case 'WEEKLY': {
-                let weekStart = new Date(date);
-                // 월요일로 조정
-                while (weekStart.getDay() !== 1) {
-                    weekStart.setDate(weekStart.getDate() - 1);
-                }
-                const month = weekStart.getMonth() + 1;
-
-                // 해당 월의 첫 날
-                const firstDayOfMonth = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1);
-
-                // 첫 번째 월요일 찾기
-                const firstMonday = new Date(firstDayOfMonth);
-                while (firstMonday.getDay() !== 1) {
-                    firstMonday.setDate(firstMonday.getDate() + 1);
-                }
-
-                // 주차 계산
-                const diffDays = Math.floor((weekStart - firstMonday) / (1000 * 60 * 60 * 24));
-                const weekNumber = Math.floor(diffDays / 7) + 1;
-
+                const month = date.getMonth() + 1;
+                const weekNumber = this.getWeekOfMonth(date);
                 return `${month}월 ${weekNumber}주차`;
             }
             case 'MONTHLY': {
@@ -65,67 +58,67 @@ const DateUtils = {
             default:
                 return '';
         }
+    },
+
+    getWeekOfMonth(date) {
+        const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        const firstMonday = new Date(firstDayOfMonth);
+        while (firstMonday.getDay() !== 1) {
+            firstMonday.setDate(firstMonday.getDate() + 1);
+        }
+        return Math.ceil((date.getDate() - firstMonday.getDate() + 1) / 7);
+    },
+
+    // DatePickerUtils의 기능을 통합
+    createYearOptions(select, currentYear) {
+        select.innerHTML = '';
+        for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+            select.add(new Option(year + '년', year));
+        }
+        select.value = currentYear;
+    },
+
+    createMonthOptions(select, currentMonth) {
+        select.innerHTML = '';
+        for (let month = 1; month <= 12; month++) {
+            select.add(new Option(month + '월', month));
+        }
+        select.value = currentMonth;
+    },
+
+    getWeeksInMonth(year, month) {
+        const firstDay = new Date(year, month - 1, 1);
+        const lastDay = new Date(year, month, 0);
+        const firstWeekday = firstDay.getDay();
+        return Math.ceil((lastDay.getDate() + firstWeekday) / 7);
     }
 };
 
+/**
+ * 모달 관련 유틸리티
+ */
 const ModalUtils = {
     show(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
-            if (modalId === 'addItemModal') {
-                const currentType = document.querySelector('.type-tab.active').textContent.trim();
-                const targetDate = document.querySelector('.date-display span').textContent;
-                const parsedDate = new Date();
-
-                switch(currentType) {
-                    case 'DAILY': {
-                        const match = targetDate.match(/(\d+)월 (\d+)일/);
-                        if (match) {
-                            parsedDate.setMonth(parseInt(match[1]) - 1);
-                            parsedDate.setDate(parseInt(match[2]));
-                        }
-                        if (DateUtils.isPastDate(currentType, DateUtils.formatDate(parsedDate))) {
-                            alert('지나간 날짜는 수정할 수 없습니다.');
-                            return;
-                        }
-                        break;
-                    }
-                    case 'WEEKLY': {
-                        const match = targetDate.match(/(\d+)월\s+(\d+)주차/);
-                        if (match) {
-                            parsedDate.setMonth(parseInt(match[1]) - 1);
-                            const weekNumber = parseInt(match[2]);
-                            // 해당 월의 첫날로 설정
-                            parsedDate.setDate(1);
-                            // 첫 번째 월요일을 찾음
-                            while (parsedDate.getDay() !== 1) {
-                                parsedDate.setDate(parsedDate.getDate() + 1);
-                            }
-                            // 선택된 주차로 이동
-                            parsedDate.setDate(parsedDate.getDate() + (weekNumber - 1) * 7);
-                        }
-                        if (DateUtils.isPastDate(currentType, DateUtils.formatDate(parsedDate))) {
-                            alert('지나간 주차는 수정할 수 없습니다.');
-                            return;
-                        }
-                        break;
-                    }
-                    case 'MONTHLY': {
-                        const match = targetDate.match(/(\d+)월/);
-                        if (match) {
-                            parsedDate.setMonth(parseInt(match[1]) - 1);
-                            parsedDate.setDate(1); // 월의 첫날로 설정
-                        }
-                        if (DateUtils.isPastDate(currentType, DateUtils.formatDate(parsedDate))) {
-                            alert('지나간 월은 수정할 수 없습니다.');
-                            return;
-                        }
-                        break;
-                    }
-                }
+            if (this.validateModalAccess(modalId)) {
+                modal.style.display = 'block';
             }
-            modal.style.display = 'block';
         }
+    },
+
+    validateModalAccess(modalId) {
+        if (modalId === 'addItemModal') {
+            const currentType = document.querySelector('.type-tab.active').textContent.trim();
+            const targetDate = document.querySelector('.date-display span').textContent;
+            const parsedDate = this.parseDisplayDate(targetDate, currentType);
+
+            if (DateUtils.isPastDate(currentType, parsedDate)) {
+                alert('지나간 날짜는 수정할 수 없습니다.');
+                return false;
+            }
+        }
+        return true;
     },
 
     close(modalId) {
@@ -137,31 +130,42 @@ const ModalUtils = {
         }
     },
 
-    setupListeners() {
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        };
+    parseDisplayDate(displayDate, type) {
+        const now = new Date();
+        const match = displayDate.match(/(\d+)월/);
+        const month = match ? parseInt(match[1]) - 1 : now.getMonth();
+        const year = now.getFullYear();
 
-        const datePickerBtn = document.querySelector('.date-picker-button');
-        if (datePickerBtn) {
-            datePickerBtn.addEventListener('click', () => {
-                this.show('datePickerModal');
-                initializeDatePicker();
-            });
+        switch(type) {
+            case 'DAILY': {
+                const dayMatch = displayDate.match(/(\d+)일/);
+                const day = dayMatch ? parseInt(dayMatch[1]) : now.getDate();
+                return new Date(year, month, day);
+            }
+            case 'WEEKLY': {
+                // 주차 정보 파싱
+                const weekMatch = displayDate.match(/(\d+)주차/);
+                if (weekMatch) {
+                    const weekNumber = parseInt(weekMatch[1]);
+                    // 해당 월의 첫 날
+                    const firstDay = new Date(year, month, 1);
+                    // 첫 번째 월요일 찾기
+                    let firstMonday = new Date(firstDay);
+                    while (firstMonday.getDay() !== 1) {
+                        firstMonday.setDate(firstMonday.getDate() + 1);
+                    }
+                    // 선택한 주차의 월요일로 설정
+                    const targetDate = new Date(firstMonday);
+                    targetDate.setDate(firstMonday.getDate() + (weekNumber - 1) * 7);
+                    return targetDate;
+                }
+                return now;
+            }
+            case 'MONTHLY':
+                return new Date(year, month, 1);
+            default:
+                return now;
         }
-
-        ['addItemForm', 'editItemForm'].forEach(formId => {
-            const form = document.getElementById(formId);
-            if (form) {
-                form.addEventListener('reset', () => {
-                    setTimeout(() => {
-                        this.close(formId.replace('Form', 'Modal'));
-                    }, 100);
-                });
-            }
-        });
     }
 };
 
@@ -648,19 +652,3 @@ document.addEventListener('DOMContentLoaded', function() {
     ModalUtils.setupListeners();
 });
 
-function getWeeksInMonth(year, month) {
-    const firstDay = new Date(year, month - 1, 1);
-    const lastDay = new Date(year, month, 0);
-
-    const firstWeek = getWeekOfMonth(firstDay);
-    const lastWeek = getWeekOfMonth(lastDay);
-
-    return lastWeek - firstWeek + 1;
-}
-
-function getWeekOfMonth(date) {
-    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-    const firstWeekday = firstDayOfMonth.getDay();
-
-    return Math.ceil((date.getDate() + firstWeekday) / 7);
-}

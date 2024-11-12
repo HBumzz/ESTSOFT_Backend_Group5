@@ -32,19 +32,22 @@ public class ChecklistController {
 //        return ResponseEntity.ok(checklistService.createChecklist(requestDTO));
 //    }
 
+    //체크리스트 조회
     @GetMapping("/{userId}")
     public ResponseEntity<ChecklistResponseDTO> getChecklist(
             @PathVariable Long userId,
             @RequestParam ChecklistType type,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
-        return ResponseEntity.ok(checklistService.getChecklist(userId, type, date));
+        return ResponseEntity.ok(checklistService.getOrCreateChecklist(userId, type, date));
     }
 
+    //체크리스트 항목 조회
     @GetMapping("/items/{itemId}")
     public ResponseEntity<ChecklistItemResponseDTO> getChecklistItem(@PathVariable Long itemId) {
         return ResponseEntity.ok(checklistService.getChecklistItem(itemId));
     }
 
+    //체크리스트 항목 추가
     @PostMapping("/items")
     public ResponseEntity<?> addChecklistItem(
             @Valid @RequestBody ChecklistItemRequestDTO requestDTO,
@@ -66,6 +69,7 @@ public class ChecklistController {
         }
     }
 
+    //체크리스트 항목 수정
     @PutMapping("/items/{itemId}")
     public ResponseEntity<ChecklistItemResponseDTO> updateChecklistItem(
             @PathVariable Long itemId,
@@ -73,6 +77,7 @@ public class ChecklistController {
         return ResponseEntity.ok(checklistService.updateChecklistItem(itemId, updateDTO));
     }
 
+    //체크리스트 항목 삭제
     @DeleteMapping("/items/{itemId}")
     public ResponseEntity<Void> deleteChecklistItem(@PathVariable Long itemId) {
         checklistService.deleteChecklistItem(itemId);
@@ -88,6 +93,7 @@ public class ChecklistController {
         return ResponseEntity.ok(checklistService.getChecklistSummary(userId, type, startDate, endDate));
     }
 
+    //체크리스트 항목 완료 토글
     @PatchMapping("/items/{itemId}/complete")
     public ResponseEntity<ChecklistItemResponseDTO> toggleItemCompletion(
             @PathVariable Long itemId) {
