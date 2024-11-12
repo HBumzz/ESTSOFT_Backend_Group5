@@ -5,7 +5,6 @@ import com.app.salty.checklist.dto.request.ChecklistItemUpdateDTO;
 import com.app.salty.checklist.dto.request.ChecklistRequestDTO;
 import com.app.salty.checklist.dto.response.ChecklistItemResponseDTO;
 import com.app.salty.checklist.dto.response.ChecklistResponseDTO;
-import com.app.salty.checklist.dto.response.ChecklistSummaryDTO;
 import com.app.salty.checklist.entity.*;
 import com.app.salty.checklist.repository.CategoryRepository;
 import com.app.salty.checklist.repository.ChecklistItemRepository;
@@ -21,7 +20,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -242,40 +240,6 @@ public class ChecklistService {
         Checklist checklist = item.getChecklist();
         checklistItemRepository.deleteById(itemId);
         updateCompletionRate(checklist);
-    }
-
-    public List<ChecklistSummaryDTO> getChecklistSummary(Long userId, ChecklistType type,
-                                                         LocalDateTime startDate, LocalDateTime endDate) {
-        List<Checklist> checklists = checklistRepository
-                .findByUserIdAndTypeNameAndDateRangeOrderByCreatedAtDesc(
-                        userId, type, startDate, endDate);
-
-        if (checklists.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return checklists.stream()
-                .map(this::convertToSummaryDTO)
-                .collect(Collectors.toList());
-    }
-
-    private ChecklistSummaryDTO convertToSummaryDTO(Checklist checklist) {
-        ChecklistSummaryDTO summaryDTO = new ChecklistSummaryDTO();
-        summaryDTO.setChecklistId(checklist.getChecklistId());
-        summaryDTO.setPeriodDisplay(formatDisplayDate(checklist));
-        summaryDTO.setCompletionRate(checklist.getCompletionRate());  // Integer로 자동 변환
-
-        long totalItems = checklistItemRepository.countByChecklist_ChecklistId(checklist.getChecklistId());
-        long completedItems = checklistItemRepository.countCompletedItemsByChecklistId(checklist.getChecklistId());
-
-        summaryDTO.setTotalItems((int) totalItems);
-        summaryDTO.setCompletedItems((int) completedItems);
-        summaryDTO.setTotalAmount(calculateTotalAmount(
-                checklist.getUserId(),
-                checklist.getTypeName(),
-                checklist.getChecklistCreatedAt()));
-
-        return summaryDTO;
     }
 
 

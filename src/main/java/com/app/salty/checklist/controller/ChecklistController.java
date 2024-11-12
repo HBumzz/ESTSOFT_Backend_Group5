@@ -2,10 +2,8 @@ package com.app.salty.checklist.controller;
 
 import com.app.salty.checklist.dto.request.ChecklistItemRequestDTO;
 import com.app.salty.checklist.dto.request.ChecklistItemUpdateDTO;
-import com.app.salty.checklist.dto.request.ChecklistRequestDTO;
 import com.app.salty.checklist.dto.response.ChecklistItemResponseDTO;
 import com.app.salty.checklist.dto.response.ChecklistResponseDTO;
-import com.app.salty.checklist.dto.response.ChecklistSummaryDTO;
 import com.app.salty.checklist.entity.ChecklistType;
 import com.app.salty.checklist.service.ChecklistService;
 import jakarta.validation.Valid;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -82,15 +79,6 @@ public class ChecklistController {
     public ResponseEntity<Void> deleteChecklistItem(@PathVariable Long itemId) {
         checklistService.deleteChecklistItem(itemId);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/{userId}/summary")
-    public ResponseEntity<List<ChecklistSummaryDTO>> getChecklistSummary(
-            @PathVariable Long userId,
-            @RequestParam ChecklistType type,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-        return ResponseEntity.ok(checklistService.getChecklistSummary(userId, type, startDate, endDate));
     }
 
     //체크리스트 항목 완료 토글
