@@ -15,4 +15,8 @@ public class ChecklistItemResponseDTO {
     private BigDecimal savedAmount;
     private CategoryType categoryType;
     private boolean isCompleted;
+
+    public String getFormattedAmount() {
+        return String.format("%,d원", savedAmount.intValue());
+    }
 }

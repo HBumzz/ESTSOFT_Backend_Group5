@@ -12,10 +12,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/checklists")
@@ -36,10 +40,30 @@ public class ChecklistController {
         return ResponseEntity.ok(checklistService.getChecklist(userId, type, date));
     }
 
+    @GetMapping("/items/{itemId}")
+    public ResponseEntity<ChecklistItemResponseDTO> getChecklistItem(@PathVariable Long itemId) {
+        return ResponseEntity.ok(checklistService.getChecklistItem(itemId));
+    }
+
     @PostMapping("/items")
-    public ResponseEntity<ChecklistItemResponseDTO> addChecklistItem(
-            @Valid @RequestBody ChecklistItemRequestDTO requestDTO) {
-        return ResponseEntity.ok(checklistService.addChecklistItem(requestDTO));
+    public ResponseEntity<?> addChecklistItem(
+            @Valid @RequestBody ChecklistItemRequestDTO requestDTO,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+            );
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        try {
+            ChecklistItemResponseDTO responseDTO = checklistService.addChecklistItem(requestDTO);
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
+        }
     }
 
     @PutMapping("/items/{itemId}")
@@ -69,5 +93,7 @@ public class ChecklistController {
             @PathVariable Long itemId) {
         return ResponseEntity.ok(checklistService.toggleItemCompletion(itemId));
     }
+
+
 }
 

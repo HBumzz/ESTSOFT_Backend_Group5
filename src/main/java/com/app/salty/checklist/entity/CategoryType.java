@@ -1,5 +1,19 @@
 package com.app.salty.checklist.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum CategoryType {
-    A, B, C, D // 임시
+    FOOD("식비"),
+    TRANSPORT("교통비"),
+    SNACK("간식비"),
+    ETC("기타");
+
+    private final String description;
+
+    CategoryType(String description) {
+        this.description = description;
+    }
+
 }
+

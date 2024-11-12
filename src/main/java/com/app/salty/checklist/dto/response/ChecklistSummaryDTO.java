@@ -12,7 +12,7 @@ public class ChecklistSummaryDTO {
 
     private Long checklistId;
     private String periodDisplay;
-    private BigDecimal completionRate;
+    private Integer completionRate;
     private BigDecimal totalAmount;
     private int totalItems;
     private int completedItems;

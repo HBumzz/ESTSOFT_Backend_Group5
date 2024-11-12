@@ -15,8 +15,7 @@ import java.math.BigDecimal;
 @Table(name = "checklist_item")
 public class ChecklistItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long itemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,10 +29,10 @@ public class ChecklistItem {
     @Column(nullable = false, length = 50)
     private String itemContent;
 
-    @Column(nullable = true, length = 100) // null 처리 주의
+    @Column(length = 100)
     private String itemMemo;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 0)  // 소수점 제거
     private BigDecimal savedAmount = BigDecimal.ZERO;
 
     @Column(nullable = false)
