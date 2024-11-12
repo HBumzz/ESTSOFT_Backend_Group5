@@ -25,6 +25,7 @@ public class GetArticleWithCommentResponseDto {
     private String updatedAt;
     private Integer likeCount;
     private Integer commentCount;
+    private boolean activeUser;
     private List<GetCommentResponseDto> commentList;
 
 
@@ -38,6 +39,7 @@ public class GetArticleWithCommentResponseDto {
         this.content= article.getContent();
         this.createdAt =article.getCreatedAt().format(formatter);
         this.updatedAt =article.getUpdatedAt().format(formatter);
+        this.activeUser = article.getUser().isActivated();
         this.commentList = commentList;
     }
 }

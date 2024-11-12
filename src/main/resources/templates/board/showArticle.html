@@ -23,8 +23,12 @@
     #article-info {
       border-bottom: 3px solid dimgrey;
     }
+    #article-info-01{
+      cursor: pointer;
+    }
     #article-info-02 {
       text-align: end;
+      cursor: pointer;
     }
     #comment-table {
       border: 1px solid olivedrab;
@@ -57,10 +61,6 @@
       justify-content: end;
       margin-top: 10px;
     }
-
-    #comment01 {
-      text-align: left;
-    }
     #comment02 {
       text-align: right;
     }
@@ -87,8 +87,10 @@
         <th colspan="2" id="title" th:text="${article.title} + '  /  ' + ${article.header}"></th>
       </tr>
       <tr id="article-info">
-        <td id="article-info-01" th:text="'작성자 : ' + ${article.writerNickname} + ' | '+${article.updatedAt}"></td>
+        <td id="article-info-00" th:if="${article.activeUser == false}" th:text="'탈퇴한 계정 ' +' | ' +${article.updatedAt}"></td>
+        <td id="article-info-01" th:onclick="|redirectToUserDetails(${article.writerId})|" th:if="${article.activeUser == true}" th:text="'작성자 : '+ ${article.writerNickname} +' | ' +${article.updatedAt}"></td>
         <td id="article-info-02" th:text="'[좋아요] ' + ${article.likeCount} + ' | [댓글] '+ ${article.commentCount}"></td>
+        <input type="hidden" id="comment_count" th:value="${article.commentCount}">
       </tr>
       <tr id="content-container">
         <td colspan="2">
@@ -120,7 +122,7 @@
     <div id="comment-list" th:each="comment : ${article.commentList}">
       <table id="comment-table">
         <tr>
-          <td id="comment02" th:text="'작성자 ' + ${comment.writerNickname} + ' | ' + ${comment.updatedAt}"></td>
+          <td id="comment02" th:onclick="|redirectToUserDetails(${comment.writerId})|" th:text="'작성자 ' + ${comment.writerNickname} + ' | ' + ${comment.updatedAt}"></td>
         </tr>
         <tr>
           <td colspan="2" th:text="${comment.content}" ></td>
@@ -139,7 +141,7 @@
   </div>
 </div>
 
-<script>
+<script th:inline="javascript">
   window.onload = async () => {
     findPost();
   }
@@ -160,17 +162,30 @@
 
 
   const likeButton = document.getElementById('article-info-02');
+
   if (likeButton) {
-    likeButton.addEventListener('click', event => {
+    likeButton.addEventListener('click', async event => {
       let articleId = document.getElementById('article-id').value;
+
       fetch(`/api/article/like/${articleId}`, {
         method: 'GET'
-      }).then(() => {
-        location.replace(`/board/article/${articleId}`);
       });
+
+      // Fetch the updated like count
+      const response = await fetch(`/api/article/like/count/${articleId}`, {
+        method: 'GET'
+      });
+      const likeCount = await response.json();
+      const commentCount = document.getElementById('comment_count').value;
+
+      likeButton.innerText = `[좋아요] ${likeCount} | [댓글] ${commentCount}`;
     });
   }
 
+  // 상대방 프로필 이동
+  function redirectToUserDetails(writerId) {
+    window.location.href = `/auth/userDetails/${writerId}`;
+  }
 
 </script>
 </body>

@@ -15,13 +15,10 @@ import com.app.salty.board.service.ArticleServiceImpl;
 import com.app.salty.board.service.CommentServiceImpl;
 import com.app.salty.board.service.LikeServiceImpl;
 import com.app.salty.user.entity.CustomUserDetails;
-import com.app.salty.user.entity.Users;
+import com.app.salty.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +34,8 @@ public class BoardViewController {
     @Autowired
     CommentServiceImpl commentService;
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     ArticleRepository articleRepository;
     @Autowired
     CommentRepository commentRepository;
@@ -49,6 +48,7 @@ public class BoardViewController {
     }
 
 
+    // 게시판 보기
     @GetMapping("/board")
     public String board(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         List<GetArticleResponseDto> dtoList = articleService.getArticleList();
@@ -57,7 +57,8 @@ public class BoardViewController {
             Integer count = commentService.countCommentByArticle(article);
             responseDto.setCommentCount(count);
         }
-        model.addAttribute("user", currentUser);
+
+        model.addAttribute("userAuth", currentUser);
         model.addAttribute("articles", dtoList);
         return "board/boardList";
     }
@@ -158,7 +159,7 @@ public class BoardViewController {
             model.addAttribute("data", message);
             return showMessageAndRedirect(message, model);
         }
-
+        log.info(responseDto.getHeader());
         model.addAttribute("article", responseDto);
 
         return "board/updateArticle";
