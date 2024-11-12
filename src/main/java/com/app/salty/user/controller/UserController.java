@@ -98,11 +98,19 @@ public class UserController {
     }
 
     //유저 상세 페이지
-    @GetMapping("/userDetails")
-    public String userDetails(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
-        UsersResponse usersResponse = userService.findByUserWithProfile(currentUser);
-        model.addAttribute("user", usersResponse);
+    @GetMapping("/userDetails/{userId}")
+    public String userDetails(@PathVariable Long userId, Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        UsersResponse usersResponse;
 
+        // 요청한 페이지가 본인의 것이면 currentUser 정보를 사용
+        if (currentUser.getId().equals(userId)) {
+            usersResponse = userService.findByUserWithProfile(currentUser);
+        } else {
+            // 다른 사용자의 정보 조회 시 userId를 사용하여 정보 조회
+            usersResponse = userService.findUserDetailsById(userId);
+        }
+
+        model.addAttribute("user", usersResponse);
         return "/user/userDetails";
     }
 

@@ -14,6 +14,7 @@ import com.app.salty.user.dto.kakao.KakaoUserInfo;
 import com.app.salty.user.dto.request.UserUpdateRequest;
 import com.app.salty.user.dto.request.UserSignupRequest;
 import com.app.salty.user.dto.kakao.KAKAOAuthResponse;
+import com.app.salty.user.dto.request.withdrawalRequest;
 import com.app.salty.user.dto.response.*;
 import com.app.salty.user.entity.*;
 import com.app.salty.user.repository.RolesRepository;
@@ -25,12 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -88,6 +91,15 @@ public class UserService {
             user.addProfile(Profile);
         }
         return userToUsersResponse(user,currentUser.getAuthorities());
+    }
+
+
+    @Transactional
+    public UsersResponse findUserDetailsById(Long userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
+        return userToUsersResponse(user, List.of());
     }
 
     //프로필 수정 -닉네임 및 소개글
@@ -183,6 +195,51 @@ public class UserService {
                 .filter(a -> !a.getAttendanceDate().isBefore(firstDayOfMonth)
                 && !a.getAttendanceDate().isAfter(lastDayOfMonth))
                 .toList();
+    }
+
+    //회원탈퇴
+    @Transactional
+    public UserResponse withdrawal(withdrawalRequest request, CustomUserDetails currentUser) throws IOException {
+        Users withdrawalUser = userRepository.findByEmailWithProfile(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("UserService.findByUserWithProfile::::::User not found with email: " + currentUser.getUsername()));
+
+        deleteUserRelatedData(withdrawalUser);
+        withdrawalUser.withdrawal(request);
+        SecurityContextHolder.clearContext();
+
+        return convertUserResponse(withdrawalUser);
+    }
+
+    //회원 관련 삭제 및 업데이트
+    private void deleteUserRelatedData(Users withdrawalUser) throws IOException {
+        deleteExistingProfile(withdrawalUser.getProfile());
+
+        //소셜 계정 연결 끊기
+        if(withdrawalUser.getSocialProvider() != null){
+            String unlinkUrl = kakaoAPI.getKAKAO_USER_WITHDRAWAL_URL();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "KakaoAK " + kakaoAPI.getAdminKey());
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("target_id_type","user_id");
+            params.add("target_id",withdrawalUser.getEmail());
+
+            HttpEntity<MultiValueMap<String, String>> request =
+                    new HttpEntity<>(params, headers);
+
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.postForObject(unlinkUrl, request, KakaoUserInfo.class);
+            } catch (RestClientException e) {
+                log.error("Kakao unlink failed: {}", e.getMessage());
+                throw new IllegalArgumentException("카카오 연동 해제 실패", e);
+            }
+
+            withdrawalUser.deleteUsersMapping();
+        }
+
+        //추가적인 게시글 및 댓글 관련 정책 필요
     }
 
     //이메일 중복 검사
@@ -354,7 +411,7 @@ public class UserService {
                 .point(user.getPoint())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
-
+                .active(user.isActivated())
                 .build();
     }
 

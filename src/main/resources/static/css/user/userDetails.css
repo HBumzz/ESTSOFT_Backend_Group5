@@ -108,4 +108,25 @@
     transition: all 0.2s ease;
 }
 
+.chat-button {
+    text-align: left;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 38px;
+}
+
+.chat-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #9AD0D0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-btn:hover {
+    background-color: #82b2b2;
+}
 

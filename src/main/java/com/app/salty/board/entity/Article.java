@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "Article")
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,11 +47,9 @@ public class Article {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="trade_price")
-    private Long price;
+    @Column(name = "`show`", nullable = false)
+    private boolean show;
 
-    @Column(name="trade_status")
-    private boolean status; // true(판매중), false(판매종료)
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "article")
     private List<Comment> commnetList;
@@ -64,6 +62,7 @@ public class Article {
         this.header=header;
         this.title=title;
         this.content=content;
+        this.show = true;
     }
 
     public Article(Long id, Users user, ArticleHeader header, String title, String content) {

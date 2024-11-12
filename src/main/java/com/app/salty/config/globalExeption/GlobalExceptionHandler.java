@@ -17,14 +17,14 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    protected ModelAndView illegalArgumentException(
-//            IllegalArgumentException e,
-//            Model model
-//    ) {
-//        model.addAttribute("error", new ErrorResponse("400","요청한 자료를 찾을 수 없습니다."));
-//        return new ModelAndView("error/error");
-//    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ModelAndView illegalArgumentException(
+            IllegalArgumentException e,
+            Model model
+    ) {
+        model.addAttribute("error", new ErrorResponse("400","요청한 자료를 찾을 수 없습니다."));
+        return new ModelAndView("error/error");
+    }
 
     @ExceptionHandler(AttendanceException.class)
     public ResponseEntity<ErrorResponse> handleAttendanceException(AttendanceException e) {

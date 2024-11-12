@@ -4,23 +4,29 @@ spring:
   application:
     name: Salty
 
+#  datasource:
+#    url: jdbc:h2:file:~/testdb12345678
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password: ''
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ''
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://salty.cd6ykcyi6r36.ap-northeast-2.rds.amazonaws.com:3306/salty_db?serverTimezone=Asia/Seoul
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
 
     ##MySQL ?? (???? ??, ??? ??? ? ?? /local)
-  #  datasource:
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
-  #    url: jdbc:mysql://localhost:3306/test_db
-  #    username: test
-  #    password: 1234
+
 
   jpa:
     defer-datasource-initialization: true
@@ -31,11 +37,9 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
-
-  sql:
-    init:
-      platform: h2
-      mode: always
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        use_second_level_cache: false
+        use_query_cache: false
 
   servlet:
     multipart:
@@ -98,6 +102,8 @@ logging:
   level:
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql: TRACE
+    com.app.salty.checklist: DEBUG
+    org.springframework.web: DEBUG
 
 server:
   port: 8080

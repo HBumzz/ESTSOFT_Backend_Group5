@@ -24,7 +24,9 @@
             </div>
         </div>
     </div>
-
+    <div class="chat-button" th:if="${#authentication.principal.id} != ${user.userId}">
+        <button class="chat-btn" onclick="createChatRoom()">채팅하기</button>
+    </div>
     <!-- 통계 섹션 -->
     <div class="stats-container">
         <div class="stat-item">
@@ -52,8 +54,30 @@
 
 </div>
 <div th:replace="~{common/footer :: footer}"></div>
-<script>
+<script th:inline="javascript">
+    async function createChatRoom() {
+        const user1Id =  [[${#authentication.principal.id}]];
+        const user2Id =  [[${user.userId}]];
 
+        try {
+            const response = await fetch(`/api/chat/rooms?user1Id=${user1Id}&user2Id=${user2Id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                window.location.href = "/chat";
+            } else {
+                console.error('채팅방 생성 실패:', response.statusText);
+                alert("채팅방 생성에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error('채팅방 생성 중 오류:', error);
+            alert("채팅방 생성 중 오류가 발생했습니다.");
+        }
+    }
     document.addEventListener('DOMContentLoaded', () => {
         const loadAttendanceData = async () => {
             try {

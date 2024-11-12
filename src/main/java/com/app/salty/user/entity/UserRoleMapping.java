@@ -33,6 +33,11 @@ public class UserRoleMapping {
     }
 
     //연관 메서드
+    public void deleteUser() {
+        this.user = null;
+        this.role = null;
+    }
+
     @Override
     public String toString() {
         return "UserRoleMapping{" +
