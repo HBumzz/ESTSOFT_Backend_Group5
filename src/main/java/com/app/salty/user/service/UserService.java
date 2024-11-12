@@ -20,6 +20,7 @@ import com.app.salty.user.entity.*;
 import com.app.salty.user.repository.RolesRepository;
 import com.app.salty.user.repository.SocialRepository;
 import com.app.salty.user.repository.UserRepository;
+import com.app.salty.util.S3Service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final KakaoAPI kakaoAPI;
     private final FilePathConfig filePathConfig;
+    private final S3Service s3Service;
 
     public Users findBy(Long userId) {
         return userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
@@ -114,33 +116,36 @@ public class UserService {
         Profile profile = user.getProfile();
         //기본 이미지 아닐 시 파일 삭제
         deleteExistingProfile(profile);
+        //file s3 uploads
+        String path = s3Service.uploadFile(file);
 
         //파일 업데이트
-        profile.profileUpdate(file.getOriginalFilename());
+        profile.profileUpdate(file.getOriginalFilename(),path);
 
-        return saveProfileImage(file,profile);
+        return path;
     }
 
     //파일 경로 생성 및 파일 추가 -경로 리턴
-    private String saveProfileImage(MultipartFile file, Profile profile) throws IOException {
-        Path targetPath = Paths.get(filePathConfig.getUserProfilePath(), profile.getRenamedFileName());
-        // 디렉토리 생성 확인
-        Files.createDirectories(targetPath.getParent());
-        // 파일 저장
-        Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-
-        return filePathConfig.getUserProfilePath()+profile.getRenamedFileName();
-    }
+//    private String saveProfileImage(MultipartFile file, Profile profile) throws IOException {
+//        Path targetPath = Paths.get(filePathConfig.getUserProfilePath(), profile.getRenamedFileName());
+//        // 디렉토리 생성 확인
+//        Files.createDirectories(targetPath.getParent());
+//        // 파일 저장
+//        Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+//
+//        return filePathConfig.getUserProfilePath()+profile.getRenamedFileName();
+//    }
 
     //기존 파일 데이터 삭제
     private void deleteExistingProfile(Profile profile) throws IOException {
         if(profile != null && !profile.isDefaultProfile()) {
-            Path existingFilePath = Paths.get(filePathConfig.getUserProfilePath(),
-                    profile.getRenamedFileName());
-
-            if (Files.deleteIfExists(existingFilePath)) {
-                log.info("Successfully deleted existing profile image: {}", existingFilePath);
-            }
+//            Path existingFilePath = Paths.get(filePathConfig.getUserProfilePath(),
+//                    profile.getRenamedFileName());
+//
+//            if (Files.deleteIfExists(existingFilePath)) {
+//                log.info("Successfully deleted existing profile image: {}", existingFilePath);
+//            }
+            s3Service.deleteFile(profile.getPath());
         }
     }
 
@@ -252,6 +257,18 @@ public class UserService {
                 .role(userRole)
                 .build();
         user.addRoleMappings(userRoleMapping);
+    }
+
+    //유저의 권한 업데이트
+    private void updateUserRole(CustomUserDetails customUserDetails,Long point) {
+        Users user = userRepository.findByEmailWithRoles(customUserDetails.getUsername())
+                .orElseThrow();
+        List<String>  getAuthorities = customUserDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        user.addPoint(point);
+
+
     }
 
     //빌드시
@@ -427,7 +444,7 @@ public class UserService {
     private ProfileResponse profileToResponse(Profile profile) {
         return ProfileResponse.builder()
                 .type(ProfileType.PROFILE.toString())
-                .path(filePathConfig.getUserProfileUrl()+profile.getRenamedFileName())
+                .path(profile.getPath())
                 .originalFilename(profile.getOriginalFilename())
                 .renamedFilename(profile.getRenamedFileName())
                 .id(profile.getId().getUserId())
@@ -437,8 +454,9 @@ public class UserService {
     private Profile createDefaultProfile(Users user) {
         return Profile.builder()
                 .id(new ProfileId(ProfileType.PROFILE,user.getId()))
-                .originalFilename("default-profile.png")
-                .renamedFileName("default-profile.png")
+                .originalFilename("user.png")
+                .renamedFileName("user.png")
+                .path(filePathConfig.getUserDefaultProfilePath())
                 .user(user)
                 .build();
     }

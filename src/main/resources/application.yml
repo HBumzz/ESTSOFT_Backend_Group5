@@ -99,5 +99,17 @@ logging:
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql: TRACE
 
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: est-team5-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
 server:
   port: 8080

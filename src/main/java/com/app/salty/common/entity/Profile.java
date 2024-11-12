@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 @Getter
@@ -26,16 +25,17 @@ public class Profile extends BaseTimeEntity {
     @Column(name = "Profile_renamed_filename")
     private String renamedFileName;
 
-    @Transient
+    @Column(name = "profile_path")
     private String path;
 
     //생성 메서드
     @Builder
-    public Profile(ProfileId id, Users user, String originalFilename, String renamedFileName) {
+    public Profile(ProfileId id, Users user, String originalFilename, String renamedFileName,String path) {
         this.id = id;
         this.user = user;
         this.originalFilename = originalFilename;
         this.renamedFileName = renamedFileName;
+        this.path = path;
     }
 
     //연관관계 메서드
@@ -44,9 +44,10 @@ public class Profile extends BaseTimeEntity {
     }
 
     //business method
-    public void profileUpdate(String fileName) {
+    public void profileUpdate(String fileName, String path) {
         this.originalFilename = fileName;
-        this.renamedFileName = SaltyUtils.getRenameFilename(fileName);
+        this.renamedFileName = path.substring(path.lastIndexOf("/") + 1);
+        this.path = path;
     }
     public Boolean isDefaultProfile(){
        return this.renamedFileName.equals("default-profile.png");
