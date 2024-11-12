@@ -249,7 +249,7 @@ public class UserService {
     }
 
     //기본 권환 추가
-    private void addUserRole(Users user, Role role) {
+    public void addUserRole(Users user, Role role) {
         Roles userRole = rolesRepository.findByRole(role)
                 .orElseThrow(() -> new RuntimeException("기본 역할이 없습니다."));
         UserRoleMapping userRoleMapping = UserRoleMapping.builder()

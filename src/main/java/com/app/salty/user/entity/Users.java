@@ -1,5 +1,6 @@
 package com.app.salty.user.entity;
 
+import com.app.salty.common.aop.PointUpdateAspect;
 import com.app.salty.common.entity.Profile;
 import com.app.salty.user.dto.kakao.KakaoUserInfo;
 import com.app.salty.common.entity.Profile;
@@ -57,9 +58,6 @@ public class Users extends BaseTimeEntity {
     @Column(name = "last_activity_date", nullable = false)
     private LocalDateTime lastActivityDate;
 
-    @Column(name = "login_count")
-    private int loginCount;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<UserRoleMapping> userRoleMappings = new ArrayList<>();
 
@@ -71,6 +69,7 @@ public class Users extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
+
 
     //연관 관계 method
     public void addRoleMappings(UserRoleMapping roleMapping) {
