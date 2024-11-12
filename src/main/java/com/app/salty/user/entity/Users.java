@@ -105,6 +105,7 @@ public class Users extends BaseTimeEntity {
 
     public void updatePoint(Long newPoint) {
         this.point = newPoint;  // 입력된 포인트 값으로 갱신 - 어드민 페이지 코드
+    }
     
     public void withdrawal(withdrawalRequest request){
         this.activated = false;
