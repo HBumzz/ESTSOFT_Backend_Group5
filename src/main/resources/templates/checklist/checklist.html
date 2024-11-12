@@ -3,21 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>SALTY - 절약하는 일상</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
     <link rel="stylesheet" th:href="@{/css/checklist.css}">
 </head>
 <body>
-<!-- 헤더 -->
-<header class="header">
-    <img src="/images/logo.png" alt="SALTY" class="logo">
-    <nav class="nav-menu">
-        <a href="/home">HOME</a>
-        <a href="/trade">TRADE</a>
-        <a href="/chat">CHAT</a>
-        <a href="/checklist" class="active">CHECKLIST</a>
-        <a href="/user">USER</a>
-    </nav>
-</header>
-
+<div th:replace="~{common/header :: header}"></div>
 <!-- 메인 컨테이너 -->
 <div class="checklist-container">
     <!-- 사용자 정보 -->
@@ -45,65 +35,63 @@
              onclick="location.href=this.getAttribute('data-url')">
         </div>
     </div>
+    <!-- 체크리스트 아이템들 -->
+    <div class="checklist-items">
+        <!-- 날짜 표시 -->
+        <div class="date-display">
+            <span th:text="${currentDate}">11월 1일 (금)</span>
+            <button onclick="showDatePicker()" class="date-picker-button">
+                <i class="calendar-icon">📅</i>
+            </button>
+        </div>
+        <div id="datePickerModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="ModalUtils.close('datePickerModal')">&times;</span>
+                <h2>날짜 선택</h2>
+                <div class="date-picker-container">
+                    <!-- DAILY -->
+                    <div class="date-picker-section" id="daily-picker" style="display: none;">
+                        <label for="dailyDate">날짜 선택</label>
+                        <input type="date" id="dailyDate" class="date-input">
+                    </div>
 
-    <!-- 날짜 표시 -->
-    <div class="date-display">
-        <span th:text="${currentDate}">11월 1일 (금)</span>
-        <button onclick="showDatePicker()" class="date-picker-button">
-            <i class="calendar-icon">📅</i>
-        </button>
-    </div>
-    <div id="datePickerModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="ModalUtils.close('datePickerModal')">&times;</span>
-            <h2>날짜 선택</h2>
-            <div class="date-picker-container">
-                <!-- DAILY -->
-                <div class="date-picker-section" id="daily-picker" style="display: none;">
-                    <label for="dailyDate">날짜 선택</label>
-                    <input type="date" id="dailyDate" class="date-input">
-                </div>
-
-                <!-- WEEKLY -->
-                <div class="date-picker-section" id="weekly-picker" style="display: none;">
-                    <div class="picker-row">
-                        <div class="picker-item">
-                            <label for="weeklyYear">년도</label>
-                            <select id="weeklyYear" class="date-select"></select>
-                        </div>
-                        <div class="picker-item">
-                            <label for="weeklyMonth">월</label>
-                            <select id="weeklyMonth" class="date-select"></select>
-                        </div>
-                        <div class="picker-item">
-                            <label for="weeklyWeek">주차</label>
-                            <select id="weeklyWeek" class="date-select"></select>
+                    <!-- WEEKLY -->
+                    <div class="date-picker-section" id="weekly-picker" style="display: none;">
+                        <div class="picker-row">
+                            <div class="picker-item">
+                                <label for="weeklyYear">년도</label>
+                                <select id="weeklyYear" class="date-select"></select>
+                            </div>
+                            <div class="picker-item">
+                                <label for="weeklyMonth">월</label>
+                                <select id="weeklyMonth" class="date-select"></select>
+                            </div>
+                            <div class="picker-item">
+                                <label for="weeklyWeek">주차</label>
+                                <select id="weeklyWeek" class="date-select"></select>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- MONTHLY -->
-                <div class="date-picker-section" id="monthly-picker" style="display: none;">
-                    <div class="picker-row">
-                        <div class="picker-item">
-                            <label for="monthlyYear">년도</label>
-                            <select id="monthlyYear" class="date-select"></select>
-                        </div>
-                        <div class="picker-item">
-                            <label for="monthlyMonth">월</label>
-                            <select id="monthlyMonth" class="date-select"></select>
+                    <!-- MONTHLY -->
+                    <div class="date-picker-section" id="monthly-picker" style="display: none;">
+                        <div class="picker-row">
+                            <div class="picker-item">
+                                <label for="monthlyYear">년도</label>
+                                <select id="monthlyYear" class="date-select"></select>
+                            </div>
+                            <div class="picker-item">
+                                <label for="monthlyMonth">월</label>
+                                <select id="monthlyMonth" class="date-select"></select>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="button-container">
-                    <button onclick="applyDateFilter()" class="apply-button">적용</button>
+                    <div class="button-container">
+                        <button onclick="applyDateFilter()" class="apply-button">적용</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- 체크리스트 아이템들 -->
-    <div class="checklist-items">
         <div th:if="${#lists.isEmpty(checklistItems)}" class="empty-checklist-message">
             <p>+ 버튼을 눌러 항목을 추가해보세요!</p>
         </div>

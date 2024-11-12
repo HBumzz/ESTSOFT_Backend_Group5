@@ -33,6 +33,7 @@
         text-align: right;
         font-size: small;
         color: #555555;
+        cursor: pointer;
     }
     #isShow-btn {
         font-size: smaller;
@@ -58,34 +59,33 @@
     <div class="row-3" th:each="article : ${articles}">
         <div class="card">
             <table id="board-table">
-                <tr th:if="${#strings.equals(user.getAuthorities(),'[ROLE_ADMIN]')}">
+                <tr th:if="${#strings.equals(userAuth.getAuthorities(),'[ROLE_ADMIN]')}">
                     <td class="hide-btn"><button type="button" id="isShow-btn" th:onclick="|location.href='@{/article/hide(id=${article.articleId})}'|">hide/show</button></td>
                     <td th:if="${article.show==false}">숨겨진 글</td>
                     <td class="article_id" th:text="${article.articleId}"></td>
                     <td class="article_header" th:text="${article.header}"></td>
                     <td class="article_title"><a th:href="@{/board/article/{id}(id=${article.articleId})}" th:text="${article.title} + '  ['+${article.commentCount}+']'"></a></td>
-                    <td class="article_tail" th:text="${article.writerNickname} +' | ' +${article.updatedAt}"></td>
+                    <td class="article_tail" th:if="${article.activeUser == false}" th:text="'탈퇴한 계정 ' +' | ' +${article.updatedAt}"></td>
+                    <td class="article_tail" th:onclick="|redirectToUserDetails(${article.writerId})|" th:if="${article.activeUser == true}" th:text="${article.writerNickname} +' | ' +${article.updatedAt}"></td>
                 </tr>
-                <tr th:if="${!#strings.equals(user.getAuthorities(),'[ROLE_ADMIN]')} and ${article.show==true}">
+                <tr th:if="${!#strings.equals(userAuth.getAuthorities(),'[ROLE_ADMIN]')} and ${article.show==true}">
                     <td class="article_id" th:text="${article.articleId}"></td>
                     <td class="article_header" th:text="${article.header}"></td>
                     <td class="article_title"><a th:href="@{/board/article/{id}(id=${article.articleId})}" th:text="${article.title} + '  ['+${article.commentCount}+']'"></a></td>
-                    <td class="article_tail" th:text="${article.writerNickname} +' | ' +${article.updatedAt}"></td>
+                    <td class="article_tail" th:if="${article.activeUser == false}" th:text="'탈퇴한 계정 ' +' | ' +${article.updatedAt}"></td>
+                    <td class="article_tail" th:onclick="|redirectToUserDetails(${article.writerId})|" th:if="${article.activeUser == true}" th:text="${article.writerNickname} +' | ' +${article.updatedAt}"></td>
                 </tr>
             </table>
         </div>
         <br>
     </div>
 </div>
-<script>
-    function hide(articleId) {
-        fetch(`/api/article/hide/${articleId}`, {
-            method: 'GET'
-        }).then(() =>{
-            alert("숨김 처리");
-        });
-    };
-
+<div th:replace="~{common/footer :: footer}"></div>
+<script th:inline="javascript">
+    // 상대방 프로필 이동
+    function redirectToUserDetails(writerId) {
+        window.location.href = `/auth/userDetails/${writerId}`;
+    }
 </script>
 </body>
 </html>

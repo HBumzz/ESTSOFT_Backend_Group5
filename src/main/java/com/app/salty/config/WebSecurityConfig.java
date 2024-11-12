@@ -57,12 +57,12 @@ public class WebSecurityConfig {
                                 "/static/**",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**",
-                                "/h2-console/**" //임시
+                                "/images/**"
+//                                "/h2-console/**" //임시
                         ).permitAll()
                         .requestMatchers("/api/auth/**","/auth/**").permitAll()
                         .requestMatchers("/api/boards/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").permitAll() //hasRole("ADMIN")
                         .requestMatchers("/ws/chat/**").permitAll()
                         .anyRequest().permitAll() //authenticated()
                 )
@@ -99,6 +99,6 @@ public class WebSecurityConfig {
 
     @Bean
     public WebSecurityCustomizer configure() {
-        return web -> web.ignoring().requestMatchers(toH2Console());
+        return web -> web.ignoring();
     }
 }

@@ -33,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public GetCommentResponseDto getCommentById(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
+
         return new GetCommentResponseDto(comment);
     }
 

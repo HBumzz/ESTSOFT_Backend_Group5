@@ -81,7 +81,7 @@
                 <div th:each="comment : ${comments}" class="mb-3">
                     <div class="card">
                         <div class="card-body">
-                            <p class="card-text" th:text="${comment.content}"></p>
+                            <p class="card-text" th:text="${comment.body}"></p>
                             <div class="text-muted fst-italic" th:text="|Posted on ${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}|"></div>
                         </div>
                     </div>

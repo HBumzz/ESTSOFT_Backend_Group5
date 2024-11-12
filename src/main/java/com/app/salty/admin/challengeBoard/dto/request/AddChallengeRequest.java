@@ -19,6 +19,7 @@ public class AddChallengeRequest {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Challenge.ChallengeStatus status;
+    private Challenge.ChallengeType type;
 
     public Challenge toEntity() {
         return Challenge.builder()
@@ -27,6 +28,7 @@ public class AddChallengeRequest {
                 .startDate(this.startDate)
                 .endDate(this.endDate)
                 .status(this.status)
+                .type(this.type)
                 .build();
     }
 }

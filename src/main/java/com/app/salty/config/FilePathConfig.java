@@ -12,16 +12,18 @@ import java.nio.file.Paths;
 @Configuration
 public class FilePathConfig {
 
-    // 실제 파일이 저장될 외부 경로 (일단 제 기준으로 했습니다 : yoon)
-    private final String baseUploadPath = System.getProperty("user.home") + "/Desktop/WorkSpace/Salty/src/main/resources/static/uploads";
+    private final String bucketName ="est-team5-bucket";
+    private final String region ="ap-northeast-2";
+    // 실제 파일이 저장될 외부 경로 (aws 파일 주소)
+    private final String basePath = String.format("https://%s.s3.%s.amazonaws.com/", bucketName, region);
 //    private final String baseUploadPath = "classpath:/resources/static/uploads/";
 
-    // 각 저장 경로
-    private final String userProfilePath = baseUploadPath + "user/";
+    // 기본이미지 저장
+    private final String userDefaultProfilePath = basePath + "user.png";
 
 
-    //접근 경로
-    private final String userProfileUrl = "/uploads/user/";
+//    //접근 경로
+//    private final String userProfileUrl = "/uploads/user/";
 
     //추 후 배포시 경로 맞춰 파일 생성
 //    @PostConstruct
