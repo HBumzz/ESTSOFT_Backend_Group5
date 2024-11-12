@@ -90,6 +90,7 @@
         <td id="article-info-00" th:if="${article.activeUser == false}" th:text="'탈퇴한 계정 ' +' | ' +${article.updatedAt}"></td>
         <td id="article-info-01" th:onclick="|redirectToUserDetails(${article.writerId})|" th:if="${article.activeUser == true}" th:text="'작성자 : '+ ${article.writerNickname} +' | ' +${article.updatedAt}"></td>
         <td id="article-info-02" th:text="'[좋아요] ' + ${article.likeCount} + ' | [댓글] '+ ${article.commentCount}"></td>
+        <input type="hidden" id="comment_count" th:value="${article.commentCount}">
       </tr>
       <tr id="content-container">
         <td colspan="2">
@@ -163,13 +164,21 @@
   const likeButton = document.getElementById('article-info-02');
 
   if (likeButton) {
-    likeButton.addEventListener('click', event => {
+    likeButton.addEventListener('click', async event => {
       let articleId = document.getElementById('article-id').value;
+
       fetch(`/api/article/like/${articleId}`, {
         method: 'GET'
-      }).then(() => {
-        location.replace(`/board/article/${articleId}`);
       });
+
+      // Fetch the updated like count
+      const response = await fetch(`/api/article/like/count/${articleId}`, {
+        method: 'GET'
+      });
+      const likeCount = await response.json();
+      const commentCount = document.getElementById('comment_count').value;
+
+      likeButton.innerText = `[좋아요] ${likeCount} | [댓글] ${commentCount}`;
     });
   }
 

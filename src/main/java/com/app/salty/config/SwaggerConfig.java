@@ -19,8 +19,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("Blog API 문서") // API 제목
-                .description("블로그 CRUD API 문서 입니다.") // API 설명
+                .title("EST SOFT BE[6] TEAM PROJECT #01 _5조_'Salty'") // API 제목
+                .description("5조의 project_Salty API 문서.") // API 설명
                 .version("1.0.0"); // 프로젝트 배포할 때 최초 API 버전
     }
 
