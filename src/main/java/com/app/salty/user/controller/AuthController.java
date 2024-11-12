@@ -3,8 +3,10 @@ package com.app.salty.user.controller;
 import com.app.salty.user.dto.request.EmailVerificationRequest;
 import com.app.salty.user.dto.request.LoginRequest;
 import com.app.salty.user.dto.request.UserUpdateRequest;
+import com.app.salty.user.dto.request.withdrawalRequest;
 import com.app.salty.user.dto.response.AttendanceResponse;
 import com.app.salty.user.dto.response.TokenResponse;
+import com.app.salty.user.dto.response.UserResponse;
 import com.app.salty.user.dto.response.UsersResponse;
 import com.app.salty.user.entity.CustomUserDetails;
 import com.app.salty.user.service.AuthenticationService;
@@ -120,7 +122,16 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    //회원탈퇴
+    @PostMapping("/withdrawal")
+    public ResponseEntity<?> withdrawal(
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            @RequestBody withdrawalRequest request
+    ) throws IOException {
+        UserResponse userResponse = userService.withdrawal(request,currentUser);
 
+        return ResponseEntity.ok().build();
+    }
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestHeader("Refresh-Token") String refreshToken) {

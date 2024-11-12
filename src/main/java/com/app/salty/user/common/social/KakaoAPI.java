@@ -23,6 +23,6 @@ public class KakaoAPI {
     private final String KAUTH_USER_URL_HOST = "https://kapi.kakao.com";
     private final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     private final String KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
-
+    private final String KAKAO_USER_WITHDRAWAL_URL = "https://kapi.kakao.com/v1/user/unlink";
 
 }
