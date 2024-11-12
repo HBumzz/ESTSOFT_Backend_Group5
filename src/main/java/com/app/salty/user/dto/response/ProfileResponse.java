@@ -16,7 +16,4 @@ public class ProfileResponse {
     private String path;
     private Long id;
 
-    public String getPath() {
-        return path != null ? path : "/uploads/user/default-profile.png";
-    }
 }
