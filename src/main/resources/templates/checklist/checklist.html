@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SALTY - 절약하는 일상</title>
+    <link rel="stylesheet" th:href="@{/css/checklist.css}">
+</head>
+<body>
+<!-- 헤더 -->
+<header class="header">
+    <img src="/images/logo.png" alt="SALTY" class="logo">
+    <nav class="nav-menu">
+        <a href="/home">HOME</a>
+        <a href="/trade">TRADE</a>
+        <a href="/chat">CHAT</a>
+        <a href="/checklist" class="active">CHECKLIST</a>
+        <a href="/user">USER</a>
+    </nav>
+</header>
+
+<!-- 메인 컨테이너 -->
+<div class="checklist-container">
+    <!-- 사용자 정보 -->
+    <div class="user-info">
+        <div class="profile-icon"></div>
+        <h2>
+            <span th:text="${userName}">닉네임</span>
+            <span th:text="${savingTitle}">님의 절약 금액</span>
+        </h2>
+        <div class="saving-amount" th:text="${totalAmount != null ? #numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT') + '원' : '0원'}">0원</div>
+        <div>염분농도 <span th:text="${completionRate != null ? completionRate : 0} + '%'">0%</span></div>
+        <div class="progress-bar">
+            <div class="progress" th:style="'width: ' + ${completionRate != null ? completionRate : 0} + '%'"></div>
+        </div>
+    </div>
+
+    <div th:if="${checklistId}" th:data-checklist-id="${checklistId}" id="checklistData"></div>
+    <input type="hidden" id="currentChecklistId" th:value="${checklistId}">
+    <!-- 체크리스트 타입 선택 -->
+    <div class="checklist-types">
+        <div th:each="type : ${types}"
+             th:class="${type == selectedType} ? 'type-tab active' : 'type-tab'"
+             th:text="${type}"
+             th:data-url="@{/checklist(type=${type})}"
+             onclick="location.href=this.getAttribute('data-url')">
+        </div>
+    </div>
+
+    <!-- 날짜 표시 -->
+    <div class="date-display">
+        <span th:text="${currentDate}">11월 1일 (금)</span>
+        <button onclick="showDatePicker()" class="date-picker-button">
+            <i class="calendar-icon">📅</i>
+        </button>
+    </div>
+    <div id="datePickerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="ModalUtils.close('datePickerModal')">&times;</span>
+            <h2>날짜 선택</h2>
+            <div class="date-picker-container">
+                <!-- DAILY -->
+                <div class="date-picker-section" id="daily-picker" style="display: none;">
+                    <label for="dailyDate">날짜 선택</label>
+                    <input type="date" id="dailyDate" class="date-input">
+                </div>
+
+                <!-- WEEKLY -->
+                <div class="date-picker-section" id="weekly-picker" style="display: none;">
+                    <div class="picker-row">
+                        <div class="picker-item">
+                            <label for="weeklyYear">년도</label>
+                            <select id="weeklyYear" class="date-select"></select>
+                        </div>
+                        <div class="picker-item">
+                            <label for="weeklyMonth">월</label>
+                            <select id="weeklyMonth" class="date-select"></select>
+                        </div>
+                        <div class="picker-item">
+                            <label for="weeklyWeek">주차</label>
+                            <select id="weeklyWeek" class="date-select"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MONTHLY -->
+                <div class="date-picker-section" id="monthly-picker" style="display: none;">
+                    <div class="picker-row">
+                        <div class="picker-item">
+                            <label for="monthlyYear">년도</label>
+                            <select id="monthlyYear" class="date-select"></select>
+                        </div>
+                        <div class="picker-item">
+                            <label for="monthlyMonth">월</label>
+                            <select id="monthlyMonth" class="date-select"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-container">
+                    <button onclick="applyDateFilter()" class="apply-button">적용</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 체크리스트 아이템들 -->
+    <div class="checklist-items">
+        <div th:if="${#lists.isEmpty(checklistItems)}" class="empty-checklist-message">
+            <p>+ 버튼을 눌러 항목을 추가해보세요!</p>
+        </div>
+        <div th:each="item, iterStat : ${checklistItems}" class="checklist-item">
+            <div class="item-number" th:text="${iterStat.count}">1</div>
+            <div class="item-content">
+                <!-- 카테고리 태그 추가 -->
+                <div class="category-tag" th:classappend="${'category-' + item.getCategoryType()}">
+                    <span th:text="${item.getCategoryType().getDescription()}">식비</span>
+                </div>
+                <div class="item-main">
+                    <div th:text="${item.getItemContent()}">도시락 싸기</div>
+                    <div class="item-amount" th:text="${item.getFormattedAmount()}">₩6,000</div>
+                    <div class="item-memo" th:if="${item.getItemMemo() != null}" th:text="${item.getItemMemo()}">외식 1만원 → 도시락 4천원</div>
+                </div>
+            </div>
+            <div class="item-actions">
+                <button class="edit-button" th:onclick="'editItem(' + ${item.getItemId()} + ')'">✎</button>
+                <button class="delete-button" th:onclick="'deleteItem(' + ${item.getItemId()} + ')'">🗑</button>
+            </div>
+            <div class="checkbox"
+                 th:classappend="${item.isCompleted()} ? 'checked' : ''"
+                 th:onclick="'toggleComplete(' + ${item.getItemId()} + ')'"></div>
+        </div>
+    </div>
+    <div id="addItemModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="ModalUtils.close('addItemModal')">&times;</span>
+            <h2>새로운 절약 항목 추가</h2>
+            <form id="addItemForm" onsubmit="submitAddItemForm(event)">
+                <input type="hidden" name="checklistId" th:value="${checklistId}">
+                <div class="form-group">
+                    <label for="itemContent">절약 항목 *</label>
+                    <input type="text" id="itemContent" name="itemContent" required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="categoryType">카테고리 *</label>
+                    <select id="categoryType" name="categoryType" required>
+                        <option value="">카테고리 선택</option>
+                        <option value="FOOD">식비</option>
+                        <option value="TRANSPORT">교통비</option>
+                        <option value="SNACK">간식비</option>
+                        <option value="ETC">기타</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="savedAmount">절약 금액 *</label>
+                    <input type="number" id="savedAmount" name="savedAmount" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="itemMemo">메모 (선택사항)</label>
+                    <textarea id="itemMemo" name="itemMemo" maxlength="100"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="cancel-button" onclick="ModalUtils.close('addItemModal')">취소</button>
+                    <button type="submit" class="submit-button">추가</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 아이템 수정 모달 -->
+    <div id="editItemModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="ModalUtils.close('editItemModal')">&times;</span>
+            <h2>절약 항목 수정</h2>
+            <form id="editItemForm" onsubmit="return submitEditItemForm(event)">  <!-- return 추가 -->
+                <input type="hidden" id="editItemId" name="itemId">
+                <div class="form-group">
+                    <label for="editItemContent">절약 항목</label>
+                    <input type="text" id="editItemContent" name="itemContent" required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="editSavedAmount">절약 금액</label>
+                    <input type="number" id="editSavedAmount" name="savedAmount" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="editItemMemo">메모</label>
+                    <textarea id="editItemMemo" name="itemMemo" maxlength="100"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="submit-button">수정</button>
+                    <button type="button" class="cancel-button" onclick="ModalUtils.close('editItemModal')">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 추가 버튼 -->
+    <button class="add-button" id="addButton" onclick="showAddItemForm()">+</button>
+</div>
+<script th:src="@{/js/checklist.js}"></script>
+
+</body>
+</html>
