@@ -116,8 +116,8 @@ function addCommentToList(comment) {
     cardText.classList.add("card-text");
 
     // 댓글 내용이 제대로 전달되었는지 확인
-    if (comment && comment.content) {
-        cardText.textContent = comment.content;
+    if (comment && comment.body) {
+        cardText.textContent = comment.body;
     } else {
         cardText.textContent = "댓글 내용이 없습니다."; // 디폴트 텍스트
     }

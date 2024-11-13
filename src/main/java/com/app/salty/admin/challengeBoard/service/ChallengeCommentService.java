@@ -14,18 +14,18 @@ import java.util.Optional;
 @Transactional
 @Service
 public class ChallengeCommentService {
-    private final ChallengeBoardRepository blogRepository;
+    private final ChallengeBoardRepository challengeBoardRepository;
     private final ChallengeCommentRepository commentRepository;
 
-    public ChallengeCommentService(ChallengeBoardRepository blogRepository, ChallengeCommentRepository commentRepository) {
-        this.blogRepository = blogRepository;
+    public ChallengeCommentService(ChallengeBoardRepository challengeBoardRepository, ChallengeCommentRepository commentRepository) {
+        this.challengeBoardRepository = challengeBoardRepository;
         this.commentRepository = commentRepository;
     }
 
     // 댓글 저장
     public ChallengeComment saveComment(Long challengeId, CommentRequestDTO requestDTO) {
         // 해당 챌린지 찾기
-        Challenge challenge = blogRepository.findById(challengeId)
+        Challenge challenge = challengeBoardRepository.findById(challengeId)
                 .orElseThrow(() -> new IllegalArgumentException("Challenge not found")); // 예외 처리 추가
 
         // 댓글 저장
