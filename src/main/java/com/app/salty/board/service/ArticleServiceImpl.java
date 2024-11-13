@@ -11,6 +11,7 @@ import com.app.salty.board.repository.CommentRepository;
 import com.app.salty.user.entity.CustomUserDetails;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.repository.UserRepository;
+import com.app.salty.util.PointService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
+    PointService pointService;
     ArticleRepository articleRepository;
     CommentRepository commentRepository;
     LikeServiceImpl likeService;
@@ -28,12 +30,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     ArticleServiceImpl(ArticleRepository articleRepository
             , CommentRepository commentRepository
-            , LikeServiceImpl likeService, UserRepository userRepository) {
+            , LikeServiceImpl likeService, UserRepository userRepository, PointService pointService) {
 
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
         this.likeService=likeService;
         this.userRepository=userRepository;
+        this.pointService = pointService;
     }
 
     @Override
@@ -50,10 +53,12 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional
     public SaveArticleResponseDto saveArticle(SaveArticleRequestDto dto) {
         Users user = userRepository.findById(dto.getUserId()).orElseThrow(IllegalArgumentException::new);
         dto.setUser(user);
         Article article = articleRepository.save(dto.toEntity());
+        pointService.addPoint(user,100L);
         return new SaveArticleResponseDto(article);
     }
 

@@ -60,11 +60,16 @@ public class WebSecurityConfig {
                                 "/images/**"
 //                                "/h2-console/**" //임시
                         ).permitAll()
-                        .requestMatchers("/api/auth/**","/auth/**").permitAll()
-                        .requestMatchers("/api/boards/**").permitAll()
+
+                          .requestMatchers("/api/auth/login,","/auth/signup"
+                                ,"/auth/login","/auth/signup"
+                           ).anonymous()
+                        .requestMatchers("/chboard/**").hasRole("USER4")
+                        .requestMatchers("/api/boards/**","/board/**").hasRole("USER2")
+                        .requestMatchers("/checklist/**", "/api/checklists/**").hasRole("USER3")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/ws/chat/**").permitAll()
-                        .anyRequest().permitAll() //authenticated()
+                        .anyRequest().permitAll()
                 )
 //                .oauth2Login(oauth2 -> oauth2
 //                        .authorizationEndpoint(authorization -> authorization

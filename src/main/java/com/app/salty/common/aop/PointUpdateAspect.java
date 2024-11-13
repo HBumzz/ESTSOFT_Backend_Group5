@@ -25,20 +25,21 @@ public class PointUpdateAspect {
     private final UserService userService;
 
     @AfterReturning(
-            pointcut ="execution(* com.app.salty.user.entity.Users.addPoint(..)) "
+            pointcut ="execution(* com.app.salty.util.PointService.addPoint(..)) && args(user, point)"
+            ,argNames = "joinPoint,user,point"
     )
-    public void afterPointUpdate(JoinPoint joinPoint) {
+    public void afterPointUpdate(JoinPoint joinPoint, Users user, Long point) {
         System.out.println("+++++++++++++=AOP 작동 확인+++++++++++++");
-        Users user = (Users) joinPoint.getTarget();
-        Long point = user.getPoint();
-        log.info(
-                "point : {} ++++++++++++++",point
-        );
+        Long currentPoint = user.getPoint();
+        log.info("Current point : {} ++++++++++++++", currentPoint);
+
         if (point == 100L) {
             userService.addUserRole(user, Role.USER2);
             System.out.println("권한 업데이트 완료");
-        } else if (point == 500L) {
+        } else if (point == 300L) {
             userService.addUserRole(user, Role.USER3);
+        } else if (point == 500L) {
+            userService.addUserRole(user, Role.USER4);
         }
 
     }

@@ -1,5 +1,7 @@
 package com.app.salty.util;
 
+import com.app.salty.user.entity.Users;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +21,5 @@ public class SaltyUtils {
         DecimalFormat df = new DecimalFormat("000");
         return sdf.format(new Date()) + df.format(Math.random() * 1000) + ext;
     }
-
 
 }

@@ -20,7 +20,9 @@ import com.app.salty.user.entity.*;
 import com.app.salty.user.repository.RolesRepository;
 import com.app.salty.user.repository.SocialRepository;
 import com.app.salty.user.repository.UserRepository;
+import com.app.salty.util.PointService;
 import com.app.salty.util.S3Service;
+import com.app.salty.util.SaltyUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +64,7 @@ public class UserService {
     private final KakaoAPI kakaoAPI;
     private final FilePathConfig filePathConfig;
     private final S3Service s3Service;
+    private final PointService pointService;
 
     public Users findBy(Long userId) {
         return userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
@@ -180,13 +183,13 @@ public class UserService {
     }
 
     //출석 중복 확인
-    private void todayAttendance(Users user) {
+    public void todayAttendance(Users user) {
         if(user.getAttendances().stream()
                 .anyMatch(attendance -> attendance.getAttendanceDate().equals(LocalDate.now()))){
             throw new AttendanceException("이미 출석체크를 하셨습니다.");
         }
         Attendance attendance = createAttendance();
-        user.addPoint(attendance.getRewardPoint());
+        pointService.addPoint(user,attendance.getRewardPoint());
         user.addAttendance(attendance);
     }
 
@@ -294,9 +297,9 @@ public class UserService {
         if (rolesRepository.count() == 0) {
             List<Roles> roles = Arrays.asList(
                     new Roles(Role.USER,"기본 사용자 권한",1),
-                    new Roles(Role.USER2,"레벨2 사용자 권한",2),
-                    new Roles(Role.USER3,"레벨3 사용자 권한",3),
-                    new Roles(Role.USER4,"레벨5 사용자 권한",4),
+                    new Roles(Role.USER2,"게시판 사용 가능",2),
+                    new Roles(Role.USER3,"check list 사용 가능",3),
+                    new Roles(Role.USER4,"challenge 도전 가능",4),
                     new Roles(Role.ADMIN,"관리자 권한",5)
             );
             rolesRepository.saveAll(roles);

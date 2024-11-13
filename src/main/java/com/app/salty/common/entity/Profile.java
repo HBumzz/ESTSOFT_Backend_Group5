@@ -50,7 +50,7 @@ public class Profile extends BaseTimeEntity {
         this.path = path;
     }
     public Boolean isDefaultProfile(){
-       return this.renamedFileName.equals("default-profile.png");
+       return this.renamedFileName.equals("user.png");
     }
 
     public void deleteUser() {
