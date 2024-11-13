@@ -5,6 +5,9 @@
 - 절약하는 일상을 공유하는 커뮤니티 SALTY
 - 개발 기간: 2024.10.28~2024.11.13
 
+# 배포 도메인 
+http://13.125.188.20:8080/
+
 <br>
 
 # Overview
@@ -239,6 +242,19 @@ sequenceDiagram
 
 <br>
 
+# api 기능명세서
+[[http://13.125.188.20:8080/](http://13.125.188.20:8080/swagger-ui/index.html)](http://13.125.188.20:8080/swagger-ui/index.html)
+<img style="width:400px" src="src/main/resources/static/README/swaager_1"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_2"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_3"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_4"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_5"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_6"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_7"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_8"/>
+
+
+
 # Members
 
 - [정상윤](https://github.com/afteryoon)(BE)
@@ -246,3 +262,5 @@ sequenceDiagram
 - [이진헌](https://github.com/sodami-hub)(BE)
 - [김근아](https://github.com/listoria)(BE)
 - [문규찬](https://github.com/gyuchanm)(BE)
+
+
