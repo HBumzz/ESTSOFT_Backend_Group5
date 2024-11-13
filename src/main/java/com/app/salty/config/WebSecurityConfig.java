@@ -64,6 +64,7 @@ public class WebSecurityConfig {
                           .requestMatchers("/api/auth/login,","/auth/signup"
                                 ,"/auth/login","/auth/signup"
                            ).anonymous()
+                                .requestMatchers("/chat").authenticated()
                         .requestMatchers("/chboard/**").hasRole("USER4")
                         .requestMatchers("/api/boards/**","/board/**").hasRole("USER2")
                         .requestMatchers("/checklist/**", "/api/checklists/**").hasRole("USER3")
