@@ -137,8 +137,8 @@
             socket.close();
         }
 
-        socket = new WebSocket(`ws://localhost:8080/ws/chat?roomId=${chatRoomId}&userId=${userId}`);
-        console.log('ws주소', `ws://localhost:8080/ws/chat?roomId=${chatRoomId}&userId=${userId}`);
+        socket = new WebSocket(`ws://13.125.188.20:8080/ws/chat?roomId=${chatRoomId}&userId=${userId}`);
+        console.log('ws주소', `ws://13.125.188.20:8080/ws/chat?roomId=${chatRoomId}&userId=${userId}`);
         // console.log("WebSocket Initial Ready State (CONNECTING):", socket.readyState);
 
         socket.onopen = () => {
