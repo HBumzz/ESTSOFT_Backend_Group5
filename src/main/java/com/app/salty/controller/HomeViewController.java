@@ -18,7 +18,7 @@ public class HomeViewController {
 
     private final UserService userService;
 
-    @GetMapping("/")
+    @GetMapping()
     public String showIndex(
             Model model,
             @AuthenticationPrincipal CustomUserDetails userDetails

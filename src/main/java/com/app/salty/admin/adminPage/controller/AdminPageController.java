@@ -25,7 +25,7 @@ public class AdminPageController {
     private final AdminUserRepository adminUserRepository;
 
 
-    @GetMapping("/admin/user")
+    @GetMapping("admin/user")
     public String getAllUsersPage(Model model, @RequestParam(required = false) String q) {
 
         String query = "%"+q+"%";
@@ -40,7 +40,7 @@ public class AdminPageController {
         return "adminPage/admin";  // 반환할 템플릿 파일 이름 (admin/users.html)
     }
 
-    @GetMapping("/admin/user/{userId}")
+    @GetMapping("admin/user/{userId}")
     public String getUsersPage(@PathVariable Long userId, Model model) {
         Users user = adminUserService.getUserById(userId).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
         model.addAttribute("user", user);  // users 데이터를 모델에 추가
@@ -49,7 +49,7 @@ public class AdminPageController {
     }
 
     // 닉네임 또는 이메일로 유저 개별 정보 조회
-    @GetMapping("/admin/users/search")
+    @GetMapping("admin/users/search")
     public String getUserByNicknameOrEmail(@RequestParam(required = false) String nickname,
                                            @RequestParam(required = false) String email,
                                            Model model) {
@@ -64,7 +64,7 @@ public class AdminPageController {
     }
 
 
-    @PostMapping("/admin/users/update")
+    @PostMapping("admin/users/update")
     public String updateUser(@RequestParam Long userId,
                              @RequestParam Long point,
                              @RequestParam boolean activated,

@@ -30,7 +30,7 @@ import java.util.UUID;
 @Tag(name = "Salty - 게시글 관련 API") // swagger에 들어갈 이름
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("api")
 public class ArticleController {
     ArticleServiceImpl articleService;
     S3Service s3Service;

@@ -25,7 +25,7 @@ public class ChatController {
     private final ChatService chatService;
     private static final Logger log = LoggerFactory.getLogger(ChatController.class);
 
-    @GetMapping("/chat")
+    @GetMapping("chat")
     public String chatMain(Model model,  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long userId = customUserDetails.getId();
         log.info("id값: {}", userId);
@@ -34,15 +34,15 @@ public class ChatController {
         List<ChatRoomDto> chatRooms = chatService.getChatRoomsByUser(userId);
         model.addAttribute("chatRooms", chatRooms);
 
-        return "/chat/chat";
+        return "chat/chat";
     }
 
-    @GetMapping("/rooms/{chatRoomId}")
+    @GetMapping("rooms/{chatRoomId}")
     public String chatRoom(@PathVariable Long chatRoomId, Model model) {
         List<ChatMessageDto> messages = chatService.getMessagesByChatRoom(chatRoomId);
         model.addAttribute("messages", messages);
         model.addAttribute("chatRoomId", chatRoomId);
-        return "chat/html/chatroom";
+        return "chat/chatroom";
     }
 }
 
