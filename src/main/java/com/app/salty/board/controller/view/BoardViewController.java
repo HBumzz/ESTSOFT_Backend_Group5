@@ -179,7 +179,7 @@ public class BoardViewController {
 
         }
         articleService.deleteArticle(articleId);
-        MessageDto message = new MessageDto("삭제 완료.", "/board/article/" + articleId);
+        MessageDto message = new MessageDto("삭제 완료.", "/board");
         model.addAttribute("data", message);
         return showMessageAndRedirect(message, model);
     }
