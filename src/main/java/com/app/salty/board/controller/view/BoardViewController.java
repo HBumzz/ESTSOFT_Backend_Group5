@@ -173,13 +173,13 @@ public class BoardViewController {
             , @AuthenticationPrincipal CustomUserDetails user, Model model) {
         Long writerID = articleService.getArticleById(articleId).getWriterId();
         if (!writerID.equals(user.getId())) {
-            MessageDto message = new MessageDto("작성자만 삭제할 수 있습니다.", "board/article/" + articleId);
+            MessageDto message = new MessageDto("작성자만 삭제할 수 있습니다.", "/board/article/" + articleId);
             model.addAttribute("data", message);
             return showMessageAndRedirect(message, model);
 
         }
         articleService.deleteArticle(articleId);
-        MessageDto message = new MessageDto("삭제 완료.", "board/article/" + articleId);
+        MessageDto message = new MessageDto("삭제 완료.", "/board/article/" + articleId);
         model.addAttribute("data", message);
         return showMessageAndRedirect(message, model);
     }
@@ -188,6 +188,6 @@ public class BoardViewController {
     @GetMapping("article/hide")
     public String hideArticle(@RequestParam Long id) {
         articleService.hideArticle(id);
-        return "redirect:board";
+        return "redirect:/board";
     }
 }
