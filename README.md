@@ -16,14 +16,7 @@
 
 <br>
 
-# Description
-
--
-
-<br>
-
 # Main Features
-
 
 ### FE
 
@@ -39,6 +32,9 @@
 
 ### INFRA
 
+1. 프로필 이미지와 게시글 이미지를 S3에 관리하여 이미지 업로드 및 접근 속도 향상
+2. RDS를 활용하여 MySQL을 연결
+3. EC2 인스턴스를 통해 배포
 
 
 <br>
@@ -52,7 +48,7 @@
 <img style="width:200px" src="src/main/resources/static/README/login.jpg"/>
 
 ## 메인 화면
-- 커뮤니티에서 제공하는 모든 서비스에 접근가능(사용자 정보, 게시판, 챌린지, 체크리스트)
+- 커뮤니티에서 제공하는 모든 서비스에 접근가능(사용자 정보, 게시판, 챌린지, 체크리스트, 채팅)
 
 <img style="width:400px" src="src/main/resources/static/README/main.jpg"/>
 
@@ -78,21 +74,21 @@
 - 게시글은 크게 일상, 나눔, 중고거래 카테고리로 구분됩니다. 사용자의 필요에 맞는 글을 작성할 수 있습니다.
 - 제목뒤에는 게시글의 댓글 수가 표시됩니다.
 
-<img style="width:400px" src="src/main/resources/static/README/boardlist.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/boardlist.jpg"/>
 
 #### 2. 게시판 리스트(관리자)
 - 관리자는 게시글을 관리할 수 있습니다.
 - 숨김 처리를 하면 일반 사용자는 해당 게시글을 확인할 수 없습니다.
 
-<img style="width:400px" src="src/main/resources/static/README/admin_board_list_01.gif"/>
-<img style="width:400px" src="src/main/resources/static/README/admin_board_list_02.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/admin_board_01.jpg"/>
+<img style="width:400px" src="src/main/resources/static/README/admin_board_02.jpg"/>
 
 #### 3. 게시글 작성/수정
 - 게시글을 작성(수정)할 수 있습니다.
 - text, image, video를 첨부할 수 있습니다.
 - 마크다운 형식으로도 작성 가능합니다.
 
-<img style="width:400px" src="src/main/resources/static/README/new-article.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/new-article.jpg"/>
 
 #### 4. 게시글 상세 보기
 - 선택한 게시물의 상세 내용을 확인할 수 있습니다.
@@ -100,17 +96,39 @@
 - 좋아요 기능을 통해 게시글과 댓글에 대한 호감을 표현할 수 있습니다.
 - 게시글의 수정/삭제, 댓글의 삭제 기능 또한 제공합니다.
 
-<img style="width:400px" src="src/main/resources/static/README/show_article.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/show_article.jpg"/>
 
 
 ## 채팅 서비스
+#### 1. 채팅방 참여
+- 유저프로필에서 채팅하기 버튼을 통해 채팅방에 참여할 수 있습니다.
 
+<img src="src/main/resources/static/README/profile-to-chat.gif"  width="500"/>
 
+#### 2. 채팅하기
+- 채팅방에서 상대방과의 1:1 채팅이 가능합니다.
+- 채팅을 통해 중고거래, 나눔 서비스를 이용할 수 있습니다.
 
+<img src="src/main/resources/static/README/chatting.gif"  width="500"/>
 
 
 ## 챌린지 서비스
+#### 1. 챌린지 등록
+- 어드민은 유저가 참여 가능한 챌린지를 생성,수정,삭제하고 관리합니다.
 
+<img src="src/main/resources/static/README/challengecreate.jpg"  width="500"/>
+
+#### 2. 챌린지 참여
+- 유저는 참여하기 버튼을 통해 글을 등록하여 챌린지에 참여할 수 있습니다.
+
+<img src="src/main/resources/static/README/challengeboardgif.gif"  width="500"/>
+
+#### 3. 유저 정보 관리 
+- 어드민만 접근 가능한 유저 관리 페이지입니다.
+- 유저의 아이디, 이메일, 소개글로 통합검색이 가능합니다.
+- 유저의 정보와 권한을 수정하고 저장할 수 있습니다.
+
+<img src="src/main/resources/static/README/adminpage.gif"  width="500"/>
 
 
 ## 체크 리스트

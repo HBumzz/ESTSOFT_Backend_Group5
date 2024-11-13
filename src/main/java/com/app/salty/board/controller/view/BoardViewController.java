@@ -52,6 +52,8 @@ public class BoardViewController {
     @GetMapping("/board")
     public String board(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         List<GetArticleResponseDto> dtoList = articleService.getArticleList();
+
+        log.info(currentUser.getAuthorities().toString());
         for (GetArticleResponseDto responseDto : dtoList) {
             Article article = articleRepository.findById(responseDto.getArticleId()).orElseThrow(IllegalArgumentException::new);
             Integer count = commentService.countCommentByArticle(article);

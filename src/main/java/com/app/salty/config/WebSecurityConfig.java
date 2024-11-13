@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                                 "/images/**"
 //                                "/h2-console/**" //임시
                         ).permitAll()
+
                           .requestMatchers("/api/auth/login,","/auth/signup"
                                 ,"/auth/login","/auth/signup"
                            ).anonymous()
