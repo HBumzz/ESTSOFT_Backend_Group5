@@ -47,16 +47,6 @@
 
 <img style="width:200px" src="src/main/resources/static/README/login.jpg"/>
 
-## 메인 화면
-- 커뮤니티에서 제공하는 모든 서비스에 접근가능(사용자 정보, 게시판, 챌린지, 체크리스트, 채팅)
-
-<img style="width:400px" src="src/main/resources/static/README/main.jpg"/>
-
-## 사용자 관련 서비스
-#### 1. 사용자 정보(User)
-- 사용자의 닉네임, 프로실 사진, 자기소개 와 서비스 이용과 관련된 권한과 포인트등을 확인할 수 있습니다.
-
-<img style="width:400px" src="src/main/resources/static/README/user_info.jpg"/>
 
 ```mermaid
 sequenceDiagram
@@ -90,6 +80,18 @@ sequenceDiagram
    
    Client-->>User: 로그인 완료
 ```
+
+## 메인 화면
+- 커뮤니티에서 제공하는 모든 서비스에 접근가능(사용자 정보, 게시판, 챌린지, 체크리스트, 채팅)
+
+<img style="width:400px" src="src/main/resources/static/README/main.jpg"/>
+
+## 사용자 관련 서비스
+#### 1. 사용자 정보(User)
+- 사용자의 닉네임, 프로실 사진, 자기소개 와 서비스 이용과 관련된 권한과 포인트등을 확인할 수 있습니다.
+
+<img style="width:400px" src="src/main/resources/static/README/user_info.jpg"/>
+
 
 #### 2. 프로필 설정
 - 사용자의 프로필을 설정합니다. 프로필 사진, 닉네임, 자기소개를 설정할 수 있습니다.
