@@ -25,7 +25,7 @@ public class ChallengeBoardPageController {
         this.challengeCommentService = challengeCommentService;
     }
 
-    @GetMapping("/chboard")
+    @GetMapping("chboard")
     public String showChallenge(Model model) {
         // 각 챌린지 종류별 리스트를 조회하여 모델에 추가
         List<ChallengeViewResponse> dailyChallenges = challengeBoardService.getChallengesByType(Challenge.ChallengeType.DAILY)
@@ -51,7 +51,7 @@ public class ChallengeBoardPageController {
     }
 
     //GET 상세페이지 리턴
-    @GetMapping("/chboard/{id}")
+    @GetMapping("chboard/{id}")
     public String showDetails(@PathVariable Long id, Model model) {
         Challenge challenge = challengeBoardService.findBy(id);
         model.addAttribute("challenge", new ChallengeViewResponse(challenge));
@@ -62,7 +62,7 @@ public class ChallengeBoardPageController {
     }
 
     //GET /new-challenge?id=1
-    @GetMapping("/new-challenge")
+    @GetMapping("new-challenge")
     public String newArticle(@RequestParam(required = false) Long id, Model model) {
         if (id == null) {
             model.addAttribute("challenge", new ChallengeViewResponse());

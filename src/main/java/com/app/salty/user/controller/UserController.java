@@ -42,7 +42,7 @@ public class UserController {
     //회원가입 페이지
     @GetMapping("/signup")
     public String showSingup() {
-        return "/user/signup";
+        return "user/signup";
     }
 
     @PostMapping("/signup")

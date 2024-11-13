@@ -13,7 +13,7 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/chboard/{challengeId}/comments")
+@RequestMapping("api/chboard/{challengeId}/comments")
 public class CommentChallengeController {
     private final ChallengeCommentService challengeCommentService;
 

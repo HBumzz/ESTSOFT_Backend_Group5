@@ -30,7 +30,7 @@ public class ChecklistWebController {
     private final UserService userService;
 
     // 체크리스트 페이지 표시
-    @GetMapping("/checklist")
+    @GetMapping("checklist")
     public String showChecklist(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(defaultValue = "DAILY") ChecklistType type,
