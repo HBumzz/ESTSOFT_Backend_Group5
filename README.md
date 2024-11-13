@@ -235,19 +235,34 @@ sequenceDiagram
 <br>
 
 # [기능 명세서 ](http://13.125.188.20:8080/swagger-ui/index.html)
-<img style="width:400px" src="src/main/resources/static/README/swaager_1.png" with=500/><img style="width:400px" src="src/main/resources/static/README/swaager_2.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_3.png" with=500/><img style="width:400px" src="src/main/resources/static/README/swaager_4.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_5.png" with=500/><img style="width:400px" src="src/main/resources/static/README/swaager_6.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_7.png" with=500/><img style="width:400px" src="src/main/resources/static/README/swaager_8.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_1.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_2.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_3.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_4.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_5.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_6.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_7.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_8.png" with=500/>
 
 
 
-# Members
+# Members & ROLE
 
 - [정상윤](https://github.com/afteryoon)(BE)
+  배포 및 설정(security,redis,queryDSL,SMTP,S3,globalExeption,EC2)+@JWT
+  회원 도메인 
 - [최홍준](https://github.com/HBumzz)(BE)
+  설정(webSocket,AWS RDS)
+  채팅
 - [이진헌](https://github.com/sodami-hub)(BE)
+  설정(Sawwger)
+  게시판
 - [김근아](https://github.com/listoria)(BE)
+  체크리스트
 - [문규찬](https://github.com/gyuchanm)(BE)
+  어드민 & 챌린지
+
+
+
 
 
