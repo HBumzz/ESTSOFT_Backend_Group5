@@ -33,5 +33,9 @@ public class HomeViewController {
 
         return "index";
     }
+    @GetMapping("/error/403")
+    public String showError() {
+        return "error/403";
+    }
 
 }
