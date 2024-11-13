@@ -5,6 +5,7 @@ import com.app.salty.board.entity.Article;
 import com.app.salty.board.entity.Comment;
 import com.app.salty.board.repository.ArticleRepository;
 import com.app.salty.board.repository.CommentRepository;
+import com.app.salty.user.entity.Users;
 import com.app.salty.user.repository.UserRepository;
 import com.app.salty.util.PointService;
 import jakarta.transaction.Transactional;
@@ -47,7 +48,8 @@ public class CommentServiceImpl implements CommentService {
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
         dto.setArticle(article);
         Comment comment = commentRepository.save(dto.toEntity());
-        pointService.addPoint(article.getUser(),100L);
+        Users user = userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new);
+        pointService.addPoint(user,100L);
         return new SaveCommentResponseDto(comment);
     }
 
