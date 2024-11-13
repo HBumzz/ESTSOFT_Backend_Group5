@@ -164,7 +164,22 @@
       // 좋아요 증가 요청
       await fetch(`/api/article/like/${articleId}`, {
         method: 'GET'
+      }).then(response => {
+        if (response.ok) {
+          window.location.href = `/board/article/${articleId}`;
+        } else {
+          console.error('Failed to like the article');
+        }
+        // // Fetch the updated like count
+        // const response = await fetch(`/api/article/like/count/${articleId}`, {
+        //   method: 'GET'
+        // });
+        // const likeCount = await response.json();
+        // const commentCount = document.getElementById('comment_count').value;
+        //
+        // likeButton.innerText = `[좋아요] ${likeCount} | [댓글] ${commentCount}`;
       });
+
 
       // 업데이트된 좋아요 개수 가져오기
       const response = await fetch(`/api/article/like/count/${articleId}`, {
@@ -175,6 +190,7 @@
 
       // 화면에 좋아요 개수 업데이트
       likeButton.innerText = `[좋아요] ${likeCount} | [댓글] ${commentCount}`;
+
     });
   }
 

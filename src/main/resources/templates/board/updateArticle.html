@@ -67,7 +67,6 @@
         initialEditType: 'wysiwyg',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
         initialValue: content,                       // 내용의 초기 값으로, 반드시 마크다운 문자열 형태여야 함
         previewStyle: 'vertical',               // 마크다운 프리뷰 스타일 (tab || vertical)
-        placeholder: '내용을 입력해 주세요.',
         hooks: {
             async addImageBlobHook(blob, callback) { // 이미지 업로드 로직 커스텀
                 try {
@@ -89,7 +88,7 @@
                     console.log('서버에 저장된 파일명 : ', filename);
 
                     // 4. addImageBlobHook의 callback 함수를 통해, 디스크에 저장된 이미지를 에디터에 렌더링
-                    const imageUrl = `/api/image-print?filename=${filename}`;
+                    const imageUrl = `${filename}`;
                     callback(imageUrl, 'image alt attribute');
 
                 } catch (error) {

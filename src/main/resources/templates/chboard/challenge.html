@@ -15,19 +15,30 @@
         .challenge-content {
             background-color: #ffffff;
         }
-        /* 부가적인 정보 스타일 */
+
         .challenge-meta {
-            color: #6c757d; /* 회색 */
+            color: #6c757d;
             margin-bottom: 1rem;
-            font-size: 0.875rem; /* 폰트 크기 줄임 */
+            font-size: 0.875rem;
         }
         .challenge-meta div {
             margin-bottom: 0.5rem;
         }
+
         /* 본문과 부가적인 정보 사이에 선 추가 */
         .challenge-divider {
             border-top: 1px solid #e0e0e0;
             margin: 1.5rem 0;
+        }
+
+        /* 버튼 색상 변경 */
+        .btn-primary, .btn-secondary {
+            background-color: #9AD0D0;
+            border-color: #9AD0D0;
+        }
+        .btn-primary:hover, .btn-secondary:hover {
+            background-color: #8AC2C2;
+            border-color: #8AC2C2;
         }
     </style>
 </head>
@@ -48,9 +59,6 @@
             <section class="challenge-content">
                 <input type="hidden" id="challenge-id" th:value="${challenge.id}">
                 <header class="mb-4">
-                    <h1 class="fw-bolder mb-3" th:text="${challenge.title}"></h1>
-                </header>
-
                 <!-- 부가적인 정보 (시작일, 종료일, 상태, 타입) -->
                 <section class="challenge-meta">
                     <div><strong>시작일:</strong> <span th:text="${#temporals.format(challenge.startDate, 'yyyy-MM-dd HH:mm')}"></span></div>
