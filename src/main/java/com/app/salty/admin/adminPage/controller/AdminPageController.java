@@ -1,10 +1,14 @@
 package com.app.salty.admin.adminPage.controller;
 
+import com.app.salty.admin.adminPage.repository.AdminUserRepository;
 import com.app.salty.admin.adminPage.service.AdminUserService;
 import com.app.salty.user.entity.Users;
+import com.app.salty.user.repository.RolesRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -13,19 +17,35 @@ import java.util.Optional;
 
 
 @Controller
+@RequiredArgsConstructor
 public class AdminPageController {
 
     public final AdminUserService adminUserService;
+    public final RolesRepository rolesRepository;
+    private final AdminUserRepository adminUserRepository;
 
-    public AdminPageController(AdminUserService adminService) {
-        this.adminUserService = adminService;
-    }
 
-    @GetMapping("/admin")
-    public String getAllUsersPage(Model model) {
-        List<Users> users = adminUserService.getAllUsers();
+    @GetMapping("/admin/user")
+    public String getAllUsersPage(Model model, @RequestParam(required = false) String q) {
+
+        String query = "%"+q+"%";
+        List<Users> users;
+
+        if (q == null)
+            users = adminUserService.getAllUsers();
+        else
+            users = adminUserRepository.findByEmailLikeOrNicknameLikeOrDescriptionLike(query, query, query);
+
         model.addAttribute("users", users);  // users 데이터를 모델에 추가
         return "adminPage/admin";  // 반환할 템플릿 파일 이름 (admin/users.html)
+    }
+
+    @GetMapping("/admin/user/{userId}")
+    public String getUsersPage(@PathVariable Long userId, Model model) {
+        Users user = adminUserService.getUserById(userId).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        model.addAttribute("user", user);  // users 데이터를 모델에 추가
+        model.addAttribute("roles", rolesRepository.findAll());
+        return "adminPage/userDetail";  // userDetail.html로 이동
     }
 
     // 닉네임 또는 이메일로 유저 개별 정보 조회

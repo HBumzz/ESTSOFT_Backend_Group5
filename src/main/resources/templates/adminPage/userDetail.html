@@ -9,7 +9,7 @@
 <header>
     <h1>회원 상세 정보</h1>
     <nav>
-        <a href="/admin">회원 검색</a>
+        <a href="/admin/user">회원 검색</a>
     </nav>
 </header>
 
@@ -41,27 +41,67 @@
         <button type="submit">수정</button>
     </form>
 
-    <h3>역할 부여하기</h3>
-    <form action="/admin/users/addRole" method="post">
-        <input type="hidden" name="userId" th:value="${user.id}">
-
-        <label for="role">역할 선택</label>
-        <select id="role" name="role">
-            <option th:each="role : ${allRoles}" th:value="${role.name}" th:text="${role.name}"></option>
-        </select>
-
-        <button type="submit">역할 추가</button>
-    </form>
-
     <!-- 현재 유저의 역할 목록 표시 -->
     <div>
-        <h3>현재 역할</h3>
+        <h3>현재 보유한 역할</h3>
         <ul>
             <li th:each="roleMapping : ${user.userRoleMappings}">
-                <span th:text="${roleMapping.role.role}"></span>
+                <span th:text="${roleMapping.role.description}"></span>
             </li>
         </ul>
     </div>
+
+    <h3>새롭게 변경할 역할 </h3>
+    <form id="updateRole">
+        <input type="hidden" name="userId" th:value="${user.id}">
+        <div style="display: flex; gap : 3px;">
+            <label th:each="one : ${roles}" style="display: inline-block">
+                <input type="checkbox" th:value="${one.role.name()}" name="role"/>
+                <span th:text="${one.description }"></span>
+            </label>
+
+        </div>
+        <button type="submit">역할 추가</button>
+    </form>
+
+
+    <div th:if="${error}">
+        <p style="color: red;" th:text="${error}"></p>
+    </div>
+</section>
+<script>
+    document.querySelector("#updateRole").addEventListener("submit", evt => {
+        evt.preventDefault();
+        const userId = evt.target.querySelector('input[name="userId"]').value; // userId 값 추출
+
+        // 체크된 role 값들 추출
+        const selectedRoles = Array.from(evt.target.querySelectorAll('input[name="role"]:checked'))
+            .map(checkbox => checkbox.value);
+
+        if (selectedRoles.length === 0) {
+            return alert("하나 이상의 역할은 반드시 부여되어야 합니다.");
+        }
+
+        fetch("/api/admin/users/roles", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({userId: userId, roles: selectedRoles})
+        }).then(response => {
+            if (response.ok) {
+                alert("사용자에게 새 역할이 설정되었습니다.");
+                location.reload();
+            } else {
+                throw new Error("Error updating roles");
+            }
+        })
+    });
+
+
+</script>
+</body>
+</html>
 
     <div th:if="${error}">
         <p style="color: red;" th:text="${error}"></p>

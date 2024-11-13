@@ -130,6 +130,11 @@ public class Users extends BaseTimeEntity {
 
     }
 
+    public void updateUsersMapping(List<UserRoleMapping> userRoleMappings) {
+        this.userRoleMappings.clear();
+        this.userRoleMappings.addAll(userRoleMappings);
+    }
+
     @Override
     public String toString() {
         return "Users{" +
