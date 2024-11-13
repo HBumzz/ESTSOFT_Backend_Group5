@@ -3,10 +3,14 @@ package com.app.salty.checklist.controller;
 import com.app.salty.checklist.dto.response.ChecklistResponseDTO;
 import com.app.salty.checklist.entity.ChecklistType;
 import com.app.salty.checklist.service.ChecklistService;
+import com.app.salty.user.dto.response.UsersResponse;
+import com.app.salty.user.entity.CustomUserDetails;
+import com.app.salty.user.service.UserService;
 import com.app.salty.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +27,12 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class ChecklistWebController {
     private final ChecklistService checklistService;
-
+    private final UserService userService;
 
     // 체크리스트 페이지 표시
     @GetMapping("/checklist")
     public String showChecklist(
-            @RequestParam(defaultValue = "1") Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(defaultValue = "DAILY") ChecklistType type,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) Integer year,
@@ -36,14 +40,16 @@ public class ChecklistWebController {
             @RequestParam(required = false) Integer week,
             Model model) {
 
-        LocalDateTime targetDate = determineTargetDate(type, date, year, month, week);
-        ChecklistResponseDTO checklist = checklistService.getOrCreateChecklist(userId, type, targetDate);
+        // 현재 사용자 정보 가져오기
+        UsersResponse userResponse = userService.findByUserWithProfile(userDetails);
 
-        setModelAttributes(model, targetDate, type, checklist);
+        LocalDateTime targetDate = determineTargetDate(type, date, year, month, week);
+        ChecklistResponseDTO checklist = checklistService.getOrCreateChecklist(userResponse.getUserId(), type, targetDate);
+
+        setModelAttributes(model, targetDate, type, checklist, userResponse);
 
         return "checklist/checklist";
     }
-
 
     //타입별 날짜 결정
     private LocalDateTime determineTargetDate(
@@ -72,9 +78,11 @@ public class ChecklistWebController {
     }
 
     // 모델 속성 설정
-    private void setModelAttributes(Model model, LocalDateTime date, ChecklistType type, ChecklistResponseDTO checklist) {
+    private void setModelAttributes(Model model, LocalDateTime date, ChecklistType type,
+                                    ChecklistResponseDTO checklist, UsersResponse userResponse) {
         // 기본 속성 설정
-        model.addAttribute("userName", "사용자");
+        model.addAttribute("userName", userResponse.getNickname());
+        model.addAttribute("profileImage", userResponse.getProfile().getPath());
         model.addAttribute("currentMonth", date.getMonthValue());
         model.addAttribute("currentDate", DateUtils.formatDisplayDate(date, type));
         model.addAttribute("types", ChecklistType.values());

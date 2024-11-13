@@ -2,25 +2,42 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>SALTY - 절약하는 일상</title>
+    <title>SALTY - 체크리스트</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
     <link rel="stylesheet" th:href="@{/css/checklist.css}">
 </head>
 <body>
+
 <div th:replace="~{common/header :: header}"></div>
 <!-- 메인 컨테이너 -->
 <div class="checklist-container">
+    <h1 class="checklist-title">
+        CHECKLIST
+    </h1>
     <!-- 사용자 정보 -->
     <div class="user-info">
-        <div class="profile-icon"></div>
+        <div class="profile-icon">
+            <img th:src="${profileImage}" alt="프로필 이미지" class="profile-image">
+        </div>
         <h2>
             <span th:text="${userName}">닉네임</span>
             <span th:text="${savingTitle}">님의 절약 금액</span>
         </h2>
         <div class="saving-amount" th:text="${totalAmount != null ? #numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT') + '원' : '0원'}">0원</div>
-        <div>염분농도 <span th:text="${completionRate != null ? completionRate : 0} + '%'">0%</span></div>
-        <div class="progress-bar">
-            <div class="progress" th:style="'width: ' + ${completionRate != null ? completionRate : 0} + '%'"></div>
+        <div class="progress-container">
+            <div class="progress-label">
+                염분농도 <span th:text="${completionRate != null ? completionRate : 0} + '%'">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" th:style="'width: ' + ${completionRate != null ? completionRate : 0} + '%'"></div>
+            </div>
+            <div class="progress-numbers-container">
+                <span>0</span>
+                <span>100</span>
+            </div>
         </div>
     </div>
 
@@ -37,84 +54,110 @@
     </div>
     <!-- 체크리스트 아이템들 -->
     <div class="checklist-items">
-        <!-- 날짜 표시 -->
         <div class="date-display">
             <span th:text="${currentDate}">11월 1일 (금)</span>
             <button onclick="showDatePicker()" class="date-picker-button">
                 <i class="calendar-icon">📅</i>
             </button>
         </div>
-        <div id="datePickerModal" class="modal">
-            <div class="modal-content">
-                <span class="close-button" onclick="ModalUtils.close('datePickerModal')">&times;</span>
-                <h2>날짜 선택</h2>
-                <div class="date-picker-container">
-                    <!-- DAILY -->
-                    <div class="date-picker-section" id="daily-picker" style="display: none;">
-                        <label for="dailyDate">날짜 선택</label>
-                        <input type="date" id="dailyDate" class="date-input">
-                    </div>
 
-                    <!-- WEEKLY -->
-                    <div class="date-picker-section" id="weekly-picker" style="display: none;">
-                        <div class="picker-row">
-                            <div class="picker-item">
-                                <label for="weeklyYear">년도</label>
-                                <select id="weeklyYear" class="date-select"></select>
+        <!-- 체크리스트 내용을 감싸는 컨테이너 -->
+        <div class="items-container">
+            <!-- 항목이 있는 경우 -->
+            <div th:if="${!#lists.isEmpty(checklistItems)}" class="items-list">
+                <!-- 체크리스트 아이템 -->
+                <div th:each="item, iterStat : ${checklistItems}" class="checklist-item">
+                    <!-- 왼쪽 섹션 -->
+                    <div class="left-section">
+                        <!-- 1번 줄: 번호, 제목, 체크박스 -->
+                        <div class="item-main-row">
+                            <div class="item-number" th:text="${iterStat.count}">1</div>
+                            <div class="title-container">
+                                <div class="item-title">
+                                    <span th:text="${item.getItemContent()}">도시락 싸기</span>
+                                    <button class="edit-button" th:onclick="'editItem(' + ${item.getItemId()} + ')'">✎</button>
+                                </div>
                             </div>
-                            <div class="picker-item">
-                                <label for="weeklyMonth">월</label>
-                                <select id="weeklyMonth" class="date-select"></select>
+                            <div class="checkbox" th:classappend="${item.isCompleted()} ? 'checked' : ''"
+                                 th:onclick="'toggleComplete(' + ${item.getItemId()} + ')'">
                             </div>
-                            <div class="picker-item">
-                                <label for="weeklyWeek">주차</label>
-                                <select id="weeklyWeek" class="date-select"></select>
+                        </div>
+
+                        <!-- 2번 줄: 카테고리, 금액, 삭제버튼 -->
+                        <div class="item-sub-row">
+                            <div class="category-tag" th:classappend="${'category-' + item.getCategoryType()}">
+                                <span th:text="${item.getCategoryType().getDescription()}">식비</span>
+                            </div>
+                            <div class="amount-delete-group">
+                                <div class="item-amount" th:text="${#numbers.formatDecimal(item.getSavedAmount(), 0, 'COMMA', 0, 'POINT') + '원'}">₩6,000</div>
+                                <button class="delete-button" th:onclick="'deleteItem(' + ${item.getItemId()} + ')'">🗑</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- MONTHLY -->
-                    <div class="date-picker-section" id="monthly-picker" style="display: none;">
-                        <div class="picker-row">
-                            <div class="picker-item">
-                                <label for="monthlyYear">년도</label>
-                                <select id="monthlyYear" class="date-select"></select>
-                            </div>
-                            <div class="picker-item">
-                                <label for="monthlyMonth">월</label>
-                                <select id="monthlyMonth" class="date-select"></select>
-                            </div>
+                    <!-- 오른쪽 섹션: 메모 -->
+                    <div class="right-section" th:if="${item.getItemMemo() != null}">
+                        <div class="item-memo" th:text="${item.getItemMemo()}">외식 1만원 → 도시락 4천원</div>
+                    </div>
+                </div>
+
+                <!-- 항목이 있는 경우의 추가 버튼 -->
+                <button class="add-button" onclick="showAddItemForm()">+</button>
+            </div>
+
+            <!-- 항목이 없는 경우 -->
+            <div th:if="${#lists.isEmpty(checklistItems)}" class="empty-state">
+                <button class="add-button" onclick="showAddItemForm()">+</button>
+                <div class="empty-checklist-message">
+                    <p>+ 버튼을 눌러 항목을 추가해보세요!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="datePickerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="ModalUtils.close('datePickerModal')">&times;</span>
+            <h2>날짜 선택</h2>
+            <div class="date-picker-container">
+                <!-- DAILY -->
+                <div class="date-picker-section" id="daily-picker" style="display: none;">
+                    <label for="dailyDate">날짜 선택</label>
+                    <input type="date" id="dailyDate" class="date-input">
+                </div>
+                <!-- WEEKLY -->
+                <div class="date-picker-section" id="weekly-picker" style="display: none;">
+                    <div class="picker-row">
+                        <div class="picker-item">
+                            <label for="weeklyYear">년도</label>
+                            <select id="weeklyYear" class="date-select"></select>
+                        </div>
+                        <div class="picker-item">
+                            <label for="weeklyMonth">월</label>
+                            <select id="weeklyMonth" class="date-select"></select>
+                        </div>
+                        <div class="picker-item">
+                            <label for="weeklyWeek">주차</label>
+                            <select id="weeklyWeek" class="date-select"></select>
                         </div>
                     </div>
-                    <div class="button-container">
-                        <button onclick="applyDateFilter()" class="apply-button">적용</button>
+                </div>
+                <!-- MONTHLY -->
+                <div class="date-picker-section" id="monthly-picker" style="display: none;">
+                    <div class="picker-row">
+                        <div class="picker-item">
+                            <label for="monthlyYear">년도</label>
+                            <select id="monthlyYear" class="date-select"></select>
+                        </div>
+                        <div class="picker-item">
+                            <label for="monthlyMonth">월</label>
+                            <select id="monthlyMonth" class="date-select"></select>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div th:if="${#lists.isEmpty(checklistItems)}" class="empty-checklist-message">
-            <p>+ 버튼을 눌러 항목을 추가해보세요!</p>
-        </div>
-        <div th:each="item, iterStat : ${checklistItems}" class="checklist-item">
-            <div class="item-number" th:text="${iterStat.count}">1</div>
-            <div class="item-content">
-                <!-- 카테고리 태그 추가 -->
-                <div class="category-tag" th:classappend="${'category-' + item.getCategoryType()}">
-                    <span th:text="${item.getCategoryType().getDescription()}">식비</span>
-                </div>
-                <div class="item-main">
-                    <div th:text="${item.getItemContent()}">도시락 싸기</div>
-                    <div class="item-amount" th:text="${item.getFormattedAmount()}">₩6,000</div>
-                    <div class="item-memo" th:if="${item.getItemMemo() != null}" th:text="${item.getItemMemo()}">외식 1만원 → 도시락 4천원</div>
+                <div class="button-container">
+                    <button onclick="applyDateFilter()" class="apply-button">적용</button>
                 </div>
             </div>
-            <div class="item-actions">
-                <button class="edit-button" th:onclick="'editItem(' + ${item.getItemId()} + ')'">✎</button>
-                <button class="delete-button" th:onclick="'deleteItem(' + ${item.getItemId()} + ')'">🗑</button>
-            </div>
-            <div class="checkbox"
-                 th:classappend="${item.isCompleted()} ? 'checked' : ''"
-                 th:onclick="'toggleComplete(' + ${item.getItemId()} + ')'"></div>
         </div>
     </div>
     <div id="addItemModal" class="modal">
@@ -180,8 +223,6 @@
         </div>
     </div>
 
-    <!-- 추가 버튼 -->
-    <button class="add-button" id="addButton" onclick="showAddItemForm()">+</button>
 </div>
 <script th:src="@{/js/checklist.js}"></script>
 

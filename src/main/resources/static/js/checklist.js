@@ -199,6 +199,21 @@ async function submitAddItemForm(event) {
         }
 
         ModalUtils.close('addItemModal');
+
+        // 첫 번째 아이템 추가 시 empty-state를 숨기고 items-list를 표시
+        const emptyState = document.querySelector('.empty-state');
+        if (emptyState) {
+            emptyState.style.display = 'none';
+
+            // items-list가 없다면 생성
+            if (!document.querySelector('.items-list')) {
+                const itemsContainer = document.querySelector('.items-container');
+                const itemsList = document.createElement('div');
+                itemsList.className = 'items-list';
+                itemsContainer.appendChild(itemsList);
+            }
+        }
+
         location.reload();
     } catch (error) {
         console.error('Error:', error);
@@ -235,7 +250,22 @@ async function deleteItem(itemId) {
                 throw new Error('삭제에 실패했습니다.');
             }
 
-            location.reload();
+            // 삭제 후 남은 아이템 수 확인
+            const remainingItems = document.querySelectorAll('.checklist-item');
+            if (remainingItems.length <= 1) {
+                // 마지막 아이템이 삭제된 경우, empty-state 표시
+                const itemsContainer = document.querySelector('.items-container');
+                itemsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <button class="add-button" onclick="showAddItemForm()">+</button>
+                        <div class="empty-checklist-message">
+                            <p>+ 버튼을 눌러 항목을 추가해보세요!</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                location.reload();
+            }
         } catch (error) {
             console.error('Error:', error);
             alert(error.message);
