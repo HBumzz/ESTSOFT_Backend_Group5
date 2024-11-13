@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SALTY - 절약하는 일상</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/header.css}" />
+</head>
+<body>
+
+<!-- 헤더 임포트 -->
+<div th:replace="~{common/header :: header}"></div>
+
+<!-- 메인 컨테이너 -->
+<div class="container">
+    <!-- 메인 컨텐츠 -->
+    <main class="main-content">
+        <!-- 대표 이미지와 멘트 -->
+        <div class="intro-section">
+            <img th:src="@{/uploads/indexBg.jpg}" alt="SALTY 대표 이미지" class="intro-image">
+            <h3>접근 권한이 아직 없습니다.</h3>
+        </div>
+
+        <!-- 게시물 리스트 -->
+        <div class="post-list">
+            <!-- 게시물 리스트 내용 -->
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{common/footer :: footer}"></div>
+<script>
+</script>
+</body>
+</html>

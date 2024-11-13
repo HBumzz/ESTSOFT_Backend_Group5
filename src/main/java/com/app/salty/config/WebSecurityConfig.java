@@ -87,7 +87,9 @@ public class WebSecurityConfig {
                 .logout(logout -> logout.logoutUrl("/auth/logout")
                         .invalidateHttpSession(true)
                         .logoutSuccessUrl("/auth/login")
-                )
+                ).exceptionHandling(config->{
+                    config.accessDeniedPage("/error/403");
+                })
                 .build();
     }
 
