@@ -58,48 +58,35 @@
 
 <img style="width:400px" src="src/main/resources/static/README/user_info.jpg"/>
 
-sequenceDiagram
-    actor User
-    participant Client
-    participant AuthController
-    participant AuthService
-    participant KakaoAPI
-    participant UserService
-    participant UserRepository
-    participant DB
+User->>Client: 카카오 로그인 클릭
+Client->>KakaoAPI: 인증 요청 (OAuth)
+KakaoAPI-->>Client: 인증 코드 반환
+Client->>AuthController: /api/auth/kakao/callback?code={인증코드}
 
-    User->>Client: 카카오 로그인 클릭
-    Client->>KakaoAPI: 인증 요청 (OAuth)
-    KakaoAPI-->>Client: 인증 코드 반환
-    Client->>AuthController: /api/auth/kakao/callback?code={인증코드}
-    
-    AuthController->>AuthService: authenticateKakao(code)
-    
-    AuthService->>KakaoAPI: 토큰 요청 (인증 코드)
-    KakaoAPI-->>AuthService: Access Token 반환
-    
-    AuthService->>KakaoAPI: 사용자 정보 요청 (Access Token)
-    KakaoAPI-->>AuthService: 카카오 사용자 정보 반환
-    
-    AuthService->>UserService: processKakaoUser(userInfo)
-    UserService->>UserRepository: findByProviderWithUser(KAKAO, providerId)
-    
-    alt 기존 회원
-        UserRepository-->>UserService: 기존 User 정보 반환
-    else 신규 회원
-        UserService->>UserService: createKakaoUser(userInfo)
-        UserService->>UserRepository: save(newUser)
-        UserRepository-->>DB: 사용자 저장
-        DB-->>UserService: 저장된 User 정보 반환
-    end
-    
-    UserService-->>AuthService: User 정보 반환
-    AuthService->>AuthService: generateToken(user)
-    AuthService-->>AuthController: JWT Token 반환
-    AuthController-->>Client: Token Response
-    
-    Client->>Client: JWT Token 저장
-    Client-->>User: 로그인 완료
+AuthController->>AuthService: authenticateKakao(code)
+
+AuthService->>KakaoAPI: 토큰 요청 (인증 코드)
+KakaoAPI-->>AuthService: Access Token 반환
+
+AuthService->>KakaoAPI: 사용자 정보 요청 (Access Token)
+KakaoAPI-->>AuthService: 카카오 사용자 정보 반환
+
+AuthService->>UserService: processKakaoUser(userInfo)
+UserService->>UserRepository: findByProviderWithUser(KAKAO, providerId)
+
+alt 기존 회원
+    UserRepository-->>UserService: 기존 User 정보 반환
+else 신규 회원
+    UserService->>UserService: createKakaoUser(userInfo)
+    UserService->>UserRepository: save(newUser)
+    UserRepository-->>DB: 사용자 저장
+    DB-->>UserService: 저장된 User 정보 반환
+end
+
+UserService-->>AuthService: User 정보 반환
+AuthService->>AuthService: generateToken(user)
+
+Client-->>User: 로그인 완료
 
 #### 2. 프로필 설정
 - 사용자의 프로필을 설정합니다. 프로필 사진, 닉네임, 자기소개를 설정할 수 있습니다.
