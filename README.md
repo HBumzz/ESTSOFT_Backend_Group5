@@ -58,6 +58,7 @@
 
 <img style="width:400px" src="src/main/resources/static/README/user_info.jpg"/>
 
+```mermaid
 User->>Client: 카카오 로그인 클릭
 Client->>KakaoAPI: 인증 요청 (OAuth)
 KakaoAPI-->>Client: 인증 코드 반환
@@ -87,6 +88,7 @@ UserService-->>AuthService: User 정보 반환
 AuthService->>AuthService: generateToken(user)
 
 Client-->>User: 로그인 완료
+```
 
 #### 2. 프로필 설정
 - 사용자의 프로필을 설정합니다. 프로필 사진, 닉네임, 자기소개를 설정할 수 있습니다.
