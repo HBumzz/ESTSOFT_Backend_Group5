@@ -4,6 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원 상세 정보</title>
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #9AD0D0;
+            padding: 1rem;
+            text-align: center;
+            color: #fff;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* 회원 상세 정보 스타일 */
+        .user-detail {
+            margin: 2rem auto;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 800px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .user-detail div p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        /* 폼 스타일 */
+        form {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="number"], select {
+            padding: 0.5rem;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+        input[type="number"]:focus, select:focus {
+            border-color: #9AD0D0;
+        }
+        button[type="submit"] {
+            background-color: #9AD0D0;
+            border: none;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #8AC2C2;
+        }
+
+        /* 역할 목록 스타일 */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            background-color: #f9f9f9;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        /* 체크박스 레이아웃 */
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        label[for="role"] {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+        input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        /* 에러 메시지 스타일 */
+        p[style="color: red;"] {
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 <body>
 <header>
