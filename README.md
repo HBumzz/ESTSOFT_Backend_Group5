@@ -113,7 +113,22 @@
 
 
 ## 챌린지 서비스
+#### 1. 챌린지 등록
+- 어드민은 유저가 참여 가능한 챌린지를 생성,수정,삭제하고 관리합니다.
 
+<img src="src/main/resources/static/README/challengecreate.jpg"  width="500"/>
+
+#### 2. 챌린지 참여
+- 유저는 참여하기 버튼을 통해 글을 등록하여 챌린지에 참여할 수 있습니다.
+
+<img src="src/main/resources/static/README/challengeboardgif.gif"  width="500"/>
+
+#### 3. 유저 정보 관리 
+- 어드민만 접근 가능한 유저 관리 페이지입니다.
+- 유저의 아이디, 이메일, 소개글로 통합검색이 가능합니다.
+- 유저의 정보와 권한을 수정하고 저장할 수 있습니다.
+
+<img src="src/main/resources/static/README/adminpage.gif"  width="500"/>
 
 
 ## 체크 리스트
