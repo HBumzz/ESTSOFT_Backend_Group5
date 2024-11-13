@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +24,19 @@ public class GlobalExceptionHandler {
             Model model
     ) {
         model.addAttribute("error", new ErrorResponse("400","요청한 자료를 찾을 수 없습니다."));
+        return new ModelAndView("error/error");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ModelAndView handleAccessDeniedException(
+            AccessDeniedException e,
+            Model model
+    ) {
+        log.error("Access Denied error: {}", e.getMessage());
+        model.addAttribute("error", new ErrorResponse(
+                "403",
+                "해당 기능에 대한 권한이 없습니다. 포인트를 모아 등급을 올려보세요!"
+        ));
         return new ModelAndView("error/error");
     }
 
