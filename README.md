@@ -78,21 +78,21 @@
 - 게시글은 크게 일상, 나눔, 중고거래 카테고리로 구분됩니다. 사용자의 필요에 맞는 글을 작성할 수 있습니다.
 - 제목뒤에는 게시글의 댓글 수가 표시됩니다.
 
-<img style="width:400px" src="src/main/resources/static/README/boardlist.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/boardlist.jpg"/>
 
 #### 2. 게시판 리스트(관리자)
 - 관리자는 게시글을 관리할 수 있습니다.
 - 숨김 처리를 하면 일반 사용자는 해당 게시글을 확인할 수 없습니다.
 
-<img style="width:400px" src="src/main/resources/static/README/admin_board_list_01.gif"/>
-<img style="width:400px" src="src/main/resources/static/README/admin_board_list_02.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/admin_board_01.jpg"/>
+<img style="width:400px" src="src/main/resources/static/README/admin_board_02.jpg"/>
 
 #### 3. 게시글 작성/수정
 - 게시글을 작성(수정)할 수 있습니다.
 - text, image, video를 첨부할 수 있습니다.
 - 마크다운 형식으로도 작성 가능합니다.
 
-<img style="width:400px" src="src/main/resources/static/README/new-article.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/new-article.jpg"/>
 
 #### 4. 게시글 상세 보기
 - 선택한 게시물의 상세 내용을 확인할 수 있습니다.
@@ -100,7 +100,7 @@
 - 좋아요 기능을 통해 게시글과 댓글에 대한 호감을 표현할 수 있습니다.
 - 게시글의 수정/삭제, 댓글의 삭제 기능 또한 제공합니다.
 
-<img style="width:400px" src="src/main/resources/static/README/show_article.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/show_article.jpg"/>
 
 
 ## 채팅 서비스
