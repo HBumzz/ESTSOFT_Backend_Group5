@@ -38,6 +38,10 @@ public class UserRoleMapping {
         this.role = null;
     }
 
+    public void removeRole(){
+        this.user.removeRoleMappings(this);
+    }
+
     @Override
     public String toString() {
         return "UserRoleMapping{" +

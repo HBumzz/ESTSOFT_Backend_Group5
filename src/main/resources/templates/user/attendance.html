@@ -44,6 +44,7 @@
 </div>
 <script>
     let calendar;
+    const userId=[[${#authentication.principal.id}]];
 
     document.addEventListener('DOMContentLoaded', () => {
         const calendarEl = document.getElementById('calendar');
@@ -103,7 +104,7 @@
 
     const loadAttendanceData = async () => {
         try {
-            const response = await fetch('/api/auth/attendance', {
+            const response = await fetch('/api/auth/attendance/'+userId, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -119,7 +120,7 @@
                 data.attendanceList.forEach(date => {
                     calendar.addEvent({
                         title: '출석',
-                        start: date,
+                        start: date.attendanceDate,
                         className: 'attendance-marked'
                     });
                 });
