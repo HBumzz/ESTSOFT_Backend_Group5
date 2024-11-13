@@ -222,9 +222,7 @@ sequenceDiagram
 
 ### INFRA
 
-<img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
-<img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
-<img src="https://img.shields.io/badge/AWS%20RDS-527FFF?style=for-the-badge&logo=amazonaws&logoColor=white">
+<img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"><img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"><img src="https://img.shields.io/badge/AWS%20RDS-527FFF?style=for-the-badge&logo=amazonaws&logoColor=white">
 
 <br><br>
 
@@ -237,14 +235,10 @@ sequenceDiagram
 <br>
 
 # [기능 명세서 ](http://13.125.188.20:8080/swagger-ui/index.html)
-<img style="width:400px" src="src/main/resources/static/README/swaager_1.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_2.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_3.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_4.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_5.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_6.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_7.png" with=500/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_8.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_1.png" with=500/><img style="width:400px" src="src/main/resources/static/README/swaager_2.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_3.png" with=500/><img style="width:400px" src="src/main/resources/static/README/swaager_4.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_5.png" with=500/><img style="width:400px" src="src/main/resources/static/README/swaager_6.png" with=500/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_7.png" with=500/><img style="width:400px" src="src/main/resources/static/README/swaager_8.png" with=500/>
 
 
 
