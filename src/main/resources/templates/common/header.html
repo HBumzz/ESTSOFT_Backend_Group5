@@ -11,7 +11,7 @@
         <a th:href="@{/chat}" th:classappend="${requestURI == '/chat' ? 'active' : ''}">CHAT</a>
         <a th:href="@{/chboard}" th:classappend="${requestURI == '/chboard' ? 'active' : ''}">CHALLENGE</a>
         <a href="#"
-           th:onclick="${userPoint != null && userPoint >= 500} ? 'window.location.href=\'/checklist\'' : 'alert(\'포인트 500점을 모아야 합니다.\')'"
+           th:onclick="${userPoint != null && userPoint >= 300} ? 'window.location.href=\'/checklist\'' : 'alert(\'포인트 300점을 모아야 합니다.\')'"
            th:classappend="${requestURI == '/checklist' ? 'active' : ''}">
             CHECKLIST
         </a>

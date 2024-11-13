@@ -52,7 +52,7 @@
     <!-- 챌린지 생성 버튼 -->
     <div class="text-right mb-3">
         <a href="#"
-           th:onclick="${userPoint != null && userPoint >= 700} ? 'window.location.href=\'/new-challenge\'' : 'alert(\'포인트 700점을 모아야 합니다.\')'"
+           th:onclick="${userPoint != null && userPoint >= 500} ? 'window.location.href=\'/new-challenge\'' : 'alert(\'포인트 500점을 모아야 합니다.\')'"
            class="btn btn-success">
             챌린지 생성
         </a>
