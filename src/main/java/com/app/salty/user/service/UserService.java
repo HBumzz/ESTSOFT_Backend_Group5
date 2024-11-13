@@ -21,6 +21,7 @@ import com.app.salty.user.repository.RolesRepository;
 import com.app.salty.user.repository.SocialRepository;
 import com.app.salty.user.repository.UserRepository;
 import com.app.salty.util.S3Service;
+import com.app.salty.util.SaltyUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -180,14 +181,21 @@ public class UserService {
     }
 
     //출석 중복 확인
-    private void todayAttendance(Users user) {
+    public void todayAttendance(Users user) {
         if(user.getAttendances().stream()
                 .anyMatch(attendance -> attendance.getAttendanceDate().equals(LocalDate.now()))){
             throw new AttendanceException("이미 출석체크를 하셨습니다.");
         }
         Attendance attendance = createAttendance();
-        user.addPoint(attendance.getRewardPoint());
+        addPoint(user,attendance.getRewardPoint());
         user.addAttendance(attendance);
+    }
+
+    public void addPoint(Users user, Long point) {
+        log.info("Before adding point - User: {}, Current point: {}, Adding: {}",
+                user.getId(), user.getPoint(), point);
+                user.addPoint(point);
+        log.info("After adding point - New total: {}", user.getPoint());
     }
 
     //이번달 출석일수 및 출석률
