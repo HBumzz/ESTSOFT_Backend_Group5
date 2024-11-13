@@ -17,7 +17,7 @@ import java.util.List;
 import static java.lang.String.valueOf;
 @Tag(name = "Salty - 댓글 관련 API")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("api")
 public class CommentController {
 
     CommentServiceImpl commentService;

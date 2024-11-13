@@ -16,7 +16,7 @@ import java.util.List;
 
 @Tag(name = "Salty - 채팅 관련 API")
 @RestController
-@RequestMapping("/api/chat")
+@RequestMapping("api/chat")
 @RequiredArgsConstructor
 public class ChatApiController {
     private static final Logger logger = LoggerFactory.getLogger(ChatApiController.class);

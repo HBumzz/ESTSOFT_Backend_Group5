@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Salty - 게시판(게시글, 댓글) 좋아요 관련 API")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("api")
 public class LikeController {
 
     LikeServiceImpl likeService;

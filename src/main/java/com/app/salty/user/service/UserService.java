@@ -269,6 +269,7 @@ public class UserService {
                 .role(userRole)
                 .build();
         user.addRoleMappings(userRoleMapping);
+
     }
 
     //권한제거
@@ -287,7 +288,6 @@ public class UserService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
         user.addPoint(point);
-
 
     }
 

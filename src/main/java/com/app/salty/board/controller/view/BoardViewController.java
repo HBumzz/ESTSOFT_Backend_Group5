@@ -49,7 +49,7 @@ public class BoardViewController {
 
 
     // 게시판 보기
-    @GetMapping("/board")
+    @GetMapping("board")
     public String board(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         List<GetArticleResponseDto> dtoList = articleService.getArticleList();
 
@@ -66,7 +66,7 @@ public class BoardViewController {
     }
 
     // 게시글 상세 조회
-    @GetMapping("/board/article/{articleId}")
+    @GetMapping("board/article/{articleId}")
     public String showArticle(@PathVariable Long articleId, Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
 
         GetArticleWithCommentResponseDto responseDto = articleService.getArticleWithCommentByArticleId(articleId, currentUser);
@@ -89,7 +89,7 @@ public class BoardViewController {
     }
 
     // 댓글 삭제
-    @GetMapping("/comment/delete/{articleId}/{commentId}")
+    @GetMapping("comment/delete/{articleId}/{commentId}")
     public String deleteComment(@PathVariable Long commentId, @PathVariable Long articleId, Model model
             , @AuthenticationPrincipal CustomUserDetails currentUser) {
 
@@ -110,7 +110,7 @@ public class BoardViewController {
     }
 
     // 게시판에 댓글 달기
-    @PostMapping("/comment")
+    @PostMapping("comment")
     public String saveComment(
             SaveCommentRequestDto requestDto
             , Long articleId
@@ -120,13 +120,13 @@ public class BoardViewController {
         requestDto.setUserId(user.getId());
         SaveCommentResponseDto responseDto = commentService.saveComment(requestDto, articleId);
 
-        String href = "/board/article/" + articleId;
+        String href = "board/article/" + articleId;
         MessageDto message = new MessageDto("댓글 작성 완료!", href);
         return showMessageAndRedirect(message, model);
     }
 
     // 댓글 좋아요
-    @GetMapping("/comment/like/{articleId}/{commentId}")
+    @GetMapping("comment/like/{articleId}/{commentId}")
     public String likeComment(@PathVariable Long commentId, @PathVariable Long articleId
             , @AuthenticationPrincipal CustomUserDetails user, Model model) {
         LikeRequestDto requestDto = new LikeRequestDto();
@@ -139,18 +139,18 @@ public class BoardViewController {
 
         likeService.Like(requestDto);
 
-        return "redirect:/board/article/" + articleId;
+        return "redirect:board/article/" + articleId;
     }
 
     // 새글 작성 페이지
-    @GetMapping("/board/new")
+    @GetMapping("board/new")
     public String newArticle() {
         return "board/newArticle";
     }
 
 
     // 게시글 수정
-    @GetMapping("/board/article/update/{articleId}")
+    @GetMapping("board/article/update/{articleId}")
     public String updateArticle(@PathVariable Long articleId, Model model
             , @AuthenticationPrincipal CustomUserDetails currentUser) {
 
@@ -168,7 +168,7 @@ public class BoardViewController {
     }
 
     // 게시물(articleId) 삭제
-    @GetMapping("/delete/article/{articleId}")
+    @GetMapping("delete/article/{articleId}")
     public String deleteArticle(@PathVariable Long articleId
             , @AuthenticationPrincipal CustomUserDetails user, Model model) {
         Long writerID = articleService.getArticleById(articleId).getWriterId();
@@ -185,7 +185,7 @@ public class BoardViewController {
     }
 
     //게시글 숨김처리
-    @GetMapping("/article/hide")
+    @GetMapping("article/hide")
     public String hideArticle(@RequestParam Long id) {
         articleService.hideArticle(id);
         return "redirect:/board";
