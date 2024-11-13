@@ -1,15 +1,23 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: #f5f5f5;
 }
 
 /* 체크리스트 컨테이너 스타일 */
 .checklist-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 2rem;
+    max-width: 1000px;
+    padding : 1rem;
+    display: flex;
+    margin: 0 auto;
+    flex-direction: column;
+}
+
+.checklist-title {
+    font-size: 1.875rem;
+    letter-spacing: -0.05em;
+    color: #3C4040;
 }
 
 /* 사용자 정보 섹션 */
@@ -26,32 +34,78 @@ body {
     margin: 0 auto 1rem;
 }
 
+.profile-icon {
+    overflow: hidden;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .saving-amount {
-    font-size: 2rem;
-    color: #00a2a2;
-    margin: 1rem 0;
+    font-size: 1.875rem;
+    color: #005757;
+    margin: 1rem 0 2.5rem;
+    font-weight: bold;
 }
 
 /* 진행률 바 */
+
+.progress-container {
+    position: relative;
+    width: 50%;
+    margin: 2.5rem auto 1rem;
+}
+
+.progress-label {
+    position: absolute;
+    top: -35px;
+    left: 0;
+    font-weight: bold;
+    color: #659393;
+    font-size: 1.25rem;
+    letter-spacing: -0.05em;
+}
+
+.progress-label > span {
+    color: #33C1C1;
+    font-weight: bold;
+    font-size: 1.125rem;
+}
+
 .progress-bar {
-    background-color: #eee;
-    height: 20px;
+    width: 100%;
+    height: 13px;
+    background-color: #EBEBEB;
     border-radius: 10px;
-    margin: 1rem 0;
+    overflow: hidden;
 }
 
 .progress {
-    background-color: #7fd1c7;
     height: 100%;
+    background-color: #9AD0D0;
     border-radius: 10px;
     transition: width 0.3s ease;
+}
+
+.progress-numbers-container {
+    width: 105%;
+    margin-left: -2.5%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #666;
+    padding-top: 5px;
 }
 
 /* 체크리스트 타입 탭 */
 .checklist-types {
     display: flex;
-    border-radius: 10px 10px 0 0;
-    overflow: hidden;
+    width: 45%;
+    border-radius: 20px 20px 0 0;
+
 }
 
 .type-tab {
@@ -59,85 +113,163 @@ body {
     padding: 1rem;
     text-align: center;
     cursor: pointer;
-    background-color: #f8f8f8;
-    text-decoration: none;  /* 추가 */
-    color: inherit;  /* 추가 */
-    border-radius: 10px 10px 0 0;
+    background-color: #E4EBEB;
+    font-weight: bold;
+    text-decoration: none;
+    color: #606666;
+    border-radius: 20px 20px 0 0;
+    opacity: 0.8;
+    box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.15);
 }
 
 .type-tab.active {
-    background-color: white;
-    font-weight: bold;
+    background-color: #E8F2F2;
+    opacity: 1;
 }
 
-/* 체크리스트 아이템 스타일 */
+/* 체크리스트 메인 컨테이너 */
 .checklist-items {
-    background-color: white;
+    background-color: #E8F2F2;
     border-radius: 0 0 10px 10px;
     padding: 1rem;
 }
 
+.items-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.date-display {
+    color: #606666;
+    font-weight: bold;
+    line-height: 130%;
+    letter-spacing: -0.05em;
+    margin-bottom: 1rem;
+}
+
 .checklist-item {
     display: flex;
+    gap: 0.5rem;
+}
+
+/* 왼쪽 섹션 */
+.left-section {
+    flex: 0 0 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom:0.5rem;
+}
+/* 1번 줄 스타일링 */
+.item-main-row {
+    display: flex;
     align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
+    gap: 0.5rem;
 }
 
 .item-number {
-    width: 30px;
-    height: 30px;
-    background-color: #e0f2f1;
-    border-radius: 50%;
+    flex: 0 0 1.563rem;
+    height: 1.563rem;
+    background-color: #9AD0D0;
+    border-radius: 10px;
+    border: 1px solid #E3E3E3;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 1rem;
+    margin-right: 0.5rem;
 }
 
-.item-content {
+.title-container {
     flex: 1;
-    display: flex;
-    flex-direction: column;
+    position: relative;
 }
-
-.item-amount {
+.item-title, .item-memo {
     background-color: #f5f5f5;
     padding: 0.5rem;
     border-radius: 5px;
     font-size: 0.9rem;
     color: #666;
+    border: 1px solid #E3E3E3;
 }
 
-.item-memo {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: #888;
+.item-title {
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.item-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-.edit-button, .delete-button {
+.edit-button {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
     color: #666;
+    padding: 0;
 }
 
 .checkbox {
-    width: 24px;
+    flex: 0 0 24px;
     height: 24px;
-    border: 2px solid #00a2a2;
+    border: 2px solid #E3E3E3;
     border-radius: 5px;
-    margin-left: 1rem;
     cursor: pointer;
+    margin-left: 0.5rem;
 }
 
+/* 2번 줄 스타일링 */
+.item-sub-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(100% - 2.063rem - 24px - 1rem);
+    margin-left: calc(2.063rem);
+}
+
+.category-tag {
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.amount-delete-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.item-amount {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    background-color: #f5f5f5;
+    color: #666;
+    border: 1px solid #E3E3E3;
+}
+
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 0.25rem;
+}
+
+/* 오른쪽 섹션 (메모) */
+.right-section {
+    flex: 1;
+    border-left: 1px dashed #ccc;
+    padding-left: 1rem;
+    margin-left: 1rem;
+}
+
+/* 체크박스 체크 스타일 */
 .checkbox.checked {
-    background-color: #00a2a2;
+    background-color: #9AD0D0;
     position: relative;
 }
 
@@ -152,21 +284,36 @@ body {
 
 /* 추가 버튼 스타일 */
 .add-button {
-    width: 50px;
-    height: 50px;
-    background-color: #00a2a2;
-    border-radius: 50%;
+    width: 1.875rem;
+    height: 1.875rem;
+    background-color: #9AD0D0;
+    border-radius: 10px;
     color: white;
-    font-size: 2rem;
-    border: none;
+    font-size: 1.25rem;
+    border: 1px solid #E3E3E3;
     cursor: pointer;
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    margin-top: 0.75rem;
+    margin-left: calc(45% / 2 - 0.9375rem);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.add-button:hover {
+    background-color: #88c0c0;
+}
+
+.items-container .add-button:not(.empty-state .add-button) {
+    width: 1.875rem;
+    height: 1.875rem;
+    margin-top: 0.75rem;
+    margin-left: calc(45% / 2 - 0.9375rem);
+}
+
+.items-container .add-button {
+    margin-top: 0.5rem;
+    margin-left: calc(45% / 2 - 0.9375rem);
 }
 
 /* Modal 스타일 */
@@ -233,7 +380,7 @@ body {
 }
 
 .submit-button {
-    background-color: #00a2a2;
+    background-color: #9AD0D0;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -263,33 +410,35 @@ body {
 .category-C { background-color: #fff3e0; }
 .category-D { background-color: #fce4ec; }
 
-/* 카테고리 태그 스타일 */
 .category-tag {
     display: inline-block;
     padding: 3px 8px;
     border-radius: 12px;
     font-size: 12px;
-    margin-bottom: 6px;
 }
 
 .category-FOOD {
     background-color: #e3f2fd;
     color: #1565c0;
+    border: 1px solid #90caf9;
 }
 
 .category-TRANSPORT {
     background-color: #e8f5e9;
     color: #2e7d32;
+    border: 1px solid #a5d6a7;
 }
 
 .category-SNACK {
     background-color: #fff3e0;
     color: #ef6c00;
+    border: 1px solid #ffcc80;
 }
 
 .category-ETC {
     background-color: #f3e5f5;
     color: #7b1fa2;
+    border: 1px solid #ce93d8;
 }
 
 .item-main {
@@ -336,7 +485,7 @@ body {
 }
 
 .apply-button {
-    background-color: #00a2a2;
+    background-color: #9AD0D0;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -346,12 +495,23 @@ body {
 }
 
 .apply-button:hover {
-    background-color: #008f8f;
+    background-color: #9AD0D0;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 3rem 0;
+}
+
+.empty-state .add-button {
+    margin: 0;
 }
 
 .empty-checklist-message {
     text-align: center;
-    padding: 40px 20px;
     color: #666;
 }
 
