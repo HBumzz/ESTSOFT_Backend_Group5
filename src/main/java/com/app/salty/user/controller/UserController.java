@@ -36,7 +36,7 @@ public class UserController {
     @GetMapping("/login")
     public String showLogin(Model model) {
 
-        return "/user/login";  // login.html 반환
+        return "user/login";  // login.html 반환
     }
 
     //회원가입 페이지
@@ -49,7 +49,7 @@ public class UserController {
     public String createUser(@RequestBody UserSignupRequest request) {
         log.info("request: {}", request);
         UserResponse createdUser = userService.signup(request);
-        return "/user/login";
+        return "user/login";
     }
 
     //카카오 로그인
@@ -81,20 +81,20 @@ public class UserController {
     @GetMapping("/profile")
     public String updateUser(Model model, @AuthenticationPrincipal CustomUserDetails currentUser) {
         if (currentUser == null) {
-            return "redirect:/login";
+            return "redirect:login";
         }
         UsersResponse usersResponse = userService.findByUserWithProfile(currentUser);
         model.addAttribute("user", usersResponse);
         log.info("User: {}", usersResponse);
 
-        return "/user/profile";
+        return "user/profile";
     }
 
     //출석체크 페이지
     @GetMapping("/attendance")
     public String attendance(Model model, @AuthenticationPrincipal UserDetails currentUser) {
 
-        return "/user/attendance";
+        return "user/attendance";
     }
 
     //유저 상세 페이지
@@ -111,13 +111,13 @@ public class UserController {
         }
 
         model.addAttribute("user", usersResponse);
-        return "/user/userDetails";
+        return "user/userDetails";
     }
 
     //회원탈퇴 페이지
     @GetMapping("/withdrawal")
     public String withdrawal() {
 
-        return "/user/withdrawal";
+        return "user/withdrawal";
     }
 }
