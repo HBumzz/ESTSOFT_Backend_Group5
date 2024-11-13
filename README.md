@@ -16,14 +16,7 @@
 
 <br>
 
-# Description
-
--
-
-<br>
-
 # Main Features
-
 
 ### FE
 
@@ -39,6 +32,9 @@
 
 ### INFRA
 
+1. 프로필 이미지와 게시글 이미지를 S3에 관리하여 이미지 업로드 및 접근 속도 향상
+2. RDS를 활용하여 MySQL을 연결
+3. EC2 인스턴스를 통해 배포
 
 
 <br>
@@ -52,7 +48,7 @@
 <img style="width:200px" src="src/main/resources/static/README/login.jpg"/>
 
 ## 메인 화면
-- 커뮤니티에서 제공하는 모든 서비스에 접근가능(사용자 정보, 게시판, 챌린지, 체크리스트)
+- 커뮤니티에서 제공하는 모든 서비스에 접근가능(사용자 정보, 게시판, 챌린지, 체크리스트, 채팅)
 
 <img style="width:400px" src="src/main/resources/static/README/main.jpg"/>
 
@@ -104,9 +100,16 @@
 
 
 ## 채팅 서비스
+#### 1. 채팅방 참여
+- 유저프로필에서 채팅하기 버튼을 통해 채팅방에 참여할 수 있습니다.
 
+<img src="src/main/resources/static/README/profile-to-chat.gif"  width="500"/>
 
+#### 2. 채팅하기
+- 채팅방에서 상대방과의 1:1 채팅이 가능합니다.
+- 채팅을 통해 중고거래, 나눔 서비스를 이용할 수 있습니다.
 
+<img src="src/main/resources/static/README/chatting.gif"  width="500"/>
 
 
 ## 챌린지 서비스
