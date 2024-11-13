@@ -245,15 +245,15 @@ sequenceDiagram
 <br>
 
 # api 기능명세서
-[[http://13.125.188.20:8080/](http://13.125.188.20:8080/swagger-ui/index.html)](http://13.125.188.20:8080/swagger-ui/index.html)
-<img style="width:400px" src="src/main/resources/static/README/swaager_1"/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_2"/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_3"/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_4"/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_5"/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_6"/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_7"/>
-<img style="width:400px" src="src/main/resources/static/README/swaager_8"/>
+[기능 명세서 ](http://13.125.188.20:8080/swagger-ui/index.html)
+<img style="width:400px" src="src/main/resources/static/README/swaager_1.png"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_2.png"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_3.png"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_4.png"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_5.png"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_6.png"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_7.png"/>
+<img style="width:400px" src="src/main/resources/static/README/swaager_8.png"/>
 
 
 
