@@ -2,6 +2,7 @@ package com.app.salty.user.entity;
 
 import com.app.salty.common.aop.PointUpdateAspect;
 import com.app.salty.common.entity.Profile;
+import com.app.salty.user.common.Role;
 import com.app.salty.user.dto.kakao.KakaoUserInfo;
 import com.app.salty.common.entity.Profile;
 import com.app.salty.user.dto.request.withdrawalRequest;
@@ -85,6 +86,10 @@ public class Users extends BaseTimeEntity {
     public void addAttendance(Attendance attendance) {
         this.attendances.add(attendance);
         attendance.addUser(this);
+    }
+
+    public void removeRoleMappings(UserRoleMapping roleMapping) {
+        this.userRoleMappings.remove(roleMapping);
     }
 
     //business method

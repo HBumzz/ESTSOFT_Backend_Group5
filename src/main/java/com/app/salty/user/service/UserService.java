@@ -268,6 +268,14 @@ public class UserService {
         user.addRoleMappings(userRoleMapping);
     }
 
+    //권한제거
+    public void removeUserRole(Users user, Role role) {
+        user.getUserRoleMappings().stream()
+                .filter(userRoleMapping -> userRoleMapping.getRole().equals(role))
+                .findFirst()
+                .ifPresent(UserRoleMapping::removeRole);
+    }
+
     //유저의 권한 업데이트
     private void updateUserRole(CustomUserDetails customUserDetails,Long point) {
         Users user = userRepository.findByEmailWithRoles(customUserDetails.getUsername())
@@ -395,7 +403,7 @@ public class UserService {
     }
 
     private Users socialProviderSignToUser(KakaoUserInfo userInfo) {
-        String email = userInfo.getEmail() != null ? userInfo.getEmail() : userInfo.getId();
+        String email = userInfo.getEmail() != null ? userInfo.getEmail() : userInfo.getId()+"@kakao.user";
         String nickname = userInfo.getNickname() != null ? userInfo.getNickname() : userInfo.getId();
 
         return Users.builder()

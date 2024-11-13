@@ -25,7 +25,7 @@ public class PointUpdateAspect {
     private final UserService userService;
 
     @AfterReturning(
-            "execution(* com.app.salty.user.entity.Users.addPoint(Long))"
+            pointcut ="execution(* com.app.salty.user.entity.Users.addPoint(..)) "
     )
     public void afterPointUpdate(JoinPoint joinPoint) {
         System.out.println("+++++++++++++=AOP 작동 확인+++++++++++++");

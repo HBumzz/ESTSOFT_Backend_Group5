@@ -79,9 +79,10 @@
         }
     }
     document.addEventListener('DOMContentLoaded', () => {
+        const userId =  [[${user.userId}]];
         const loadAttendanceData = async () => {
             try {
-                const response = await fetch('/api/auth/attendance', {
+                const response = await fetch('/api/auth/attendance/'+userId, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

@@ -103,14 +103,15 @@ public class AuthController {
     }
 
     //출석리스트
-    @GetMapping("/attendance")
+    @GetMapping("/attendance/{userId}")
     public ResponseEntity<AttendanceResponse> getAttendanceList(
-            @AuthenticationPrincipal CustomUserDetails currentUser
+            @PathVariable Long userId
     ){
-        AttendanceResponse response = userService.findByUserWithAttendance(currentUser.getId());
+        AttendanceResponse response = userService.findByUserWithAttendance(userId);
 
         return ResponseEntity.ok().body(response);
     }
+
 
     //출석체크
     @PostMapping("/attendance.do")
