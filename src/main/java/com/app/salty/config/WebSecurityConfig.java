@@ -62,7 +62,7 @@ public class WebSecurityConfig {
                         ).permitAll()
                         .requestMatchers("/api/auth/**","/auth/**").permitAll()
                         .requestMatchers("/api/boards/**").permitAll()
-                        .requestMatchers("/admin/**").permitAll() //hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/ws/chat/**").permitAll()
                         .anyRequest().permitAll() //authenticated()
                 )
