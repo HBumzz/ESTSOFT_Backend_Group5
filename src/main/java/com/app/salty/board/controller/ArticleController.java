@@ -7,6 +7,7 @@ import com.app.salty.board.service.ArticleServiceImpl;
 import com.app.salty.user.entity.CustomUserDetails;
 import com.app.salty.user.entity.Users;
 import com.app.salty.user.service.UserService;
+import com.app.salty.util.S3Service;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,13 +33,15 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class ArticleController {
     ArticleServiceImpl articleService;
+    S3Service s3Service;
 
-    ArticleController(ArticleServiceImpl articleService) {
+    ArticleController(ArticleServiceImpl articleService, S3Service s3Service) {
         this.articleService = articleService;
+        this.s3Service = s3Service;
     }
 // ====================================================================================================================
 
-    private final String uploadDir = Paths.get("C:", "tui-editor", "upload").toString();
+    //private final String uploadDir = Paths.get("C:", "tui-editor", "upload").toString();
 
     /**
      * 에디터 이미지 업로드
@@ -53,29 +56,31 @@ public class ArticleController {
             return "";
         }
 
-        String orgFilename = image.getOriginalFilename();                                         // 원본 파일명
-        String uuid = UUID.randomUUID().toString().replaceAll("-", "");           // 32자리 랜덤 문자열
-        assert orgFilename != null;
-        String extension = orgFilename.substring(orgFilename.lastIndexOf(".") + 1);  // 확장자
-        String saveFilename = uuid + "." + extension;                                             // 디스크에 저장할 파일명
-        String fileFullPath = Paths.get(uploadDir, saveFilename).toString();                      // 디스크에 저장할 파일의 전체 경로
+        return s3Service.uploadFile(image);
 
-        // uploadDir에 해당되는 디렉터리가 없으면, uploadDir에 포함되는 전체 디렉터리 생성
-        File dir = new File(uploadDir);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        try {
-            // 파일 저장 (write to disk)
-            File uploadFile = new File(fileFullPath);
-            image.transferTo(uploadFile);
-            return saveFilename;
-
-        } catch (IOException e) {
-            // 예외 처리는 따로 해주는 게 좋습니다.
-            throw new RuntimeException(e);
-        }
+//        String orgFilename = image.getOriginalFilename();                                         // 원본 파일명
+//        String uuid = UUID.randomUUID().toString().replaceAll("-", "");           // 32자리 랜덤 문자열
+//        assert orgFilename != null;
+//        String extension = orgFilename.substring(orgFilename.lastIndexOf(".") + 1);  // 확장자
+//        String saveFilename = uuid + "." + extension;                                             // 디스크에 저장할 파일명
+//        String fileFullPath = Paths.get(uploadDir, saveFilename).toString();                      // 디스크에 저장할 파일의 전체 경로
+//
+//        // uploadDir에 해당되는 디렉터리가 없으면, uploadDir에 포함되는 전체 디렉터리 생성
+//        File dir = new File(uploadDir);
+//        if (!dir.exists()) {
+//            dir.mkdirs();
+//        }
+//
+//        try {
+//            // 파일 저장 (write to disk)
+//            File uploadFile = new File(fileFullPath);
+//            image.transferTo(uploadFile);
+//            return saveFilename;
+//
+//        } catch (IOException e) {
+//            // 예외 처리는 따로 해주는 게 좋습니다.
+//            throw new RuntimeException(e);
+//        }
     }
 
     /**
@@ -85,24 +90,27 @@ public class ArticleController {
      */
     @Hidden
     @GetMapping(value = "/image-print", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
-    public byte[] printEditorImage(@RequestParam final String filename) {
-        // 업로드된 파일의 전체 경로
-        String fileFullPath = Paths.get(uploadDir, filename).toString();
+    public String printEditorImage(@RequestParam final String filename) {
+        log.warn("filename : {}", filename);
+        return filename;
 
-        // 파일이 없는 경우 예외 throw
-        File uploadedFile = new File(fileFullPath);
-        if (!uploadedFile.exists()) {
-            throw new RuntimeException();
-        }
-
-        try {
-            // 이미지 파일을 byte[]로 변환 후 반환
-            return Files.readAllBytes(uploadedFile.toPath());
-
-        } catch (IOException e) {
-            // 예외 처리는 따로 해주는 게 좋습니다.
-            throw new RuntimeException(e);
-        }
+//        // 업로드된 파일의 전체 경로
+//        String fileFullPath = Paths.get(filename).toString();
+//
+//        // 파일이 없는 경우 예외 throw
+//        File uploadedFile = new File(fileFullPath);
+//        if (!uploadedFile.exists()) {
+//            throw new RuntimeException();
+//        }
+//
+//        try {
+//            // 이미지 파일을 byte[]로 변환 후 반환
+//            return Files.readAllBytes(uploadedFile.toPath());
+//
+//        } catch (IOException e) {
+//            // 예외 처리는 따로 해주는 게 좋습니다.
+//            throw new RuntimeException(e);
+//        }
     }
 
     //====================================================================================================================
