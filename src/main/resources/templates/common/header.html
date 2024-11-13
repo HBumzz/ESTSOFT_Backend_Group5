@@ -8,7 +8,12 @@
     <nav class="nav-menu">
         <a th:href="@{/}" th:classappend="${requestURI == '/' ? 'active' : ''}">HOME</a>
         <a th:href="@{/board}" th:classappend="${requestURI.contains('/board') ? 'active' : ''}">BOARD</a>
-        <a th:href="@{/chat}" th:classappend="${requestURI == '/chat' ? 'active' : ''}">CHAT</a>
+        <a href="#"
+           th:if="${#authentication != null and #authentication.principal instanceof T(org.springframework.security.core.userdetails.UserDetails)}"
+           th:href="@{/chat}"
+           th:classappend="${requestURI == '/chat' ? 'active' : ''}">
+            CHAT
+        </a>
         <a th:href="@{/chboard}" th:classappend="${requestURI == '/chboard' ? 'active' : ''}">CHALLENGE</a>
         <a href="#"
            th:onclick="${userPoint != null && userPoint >= 300} ? 'window.location.href=\'/checklist\'' : 'alert(\'포인트 300점을 모아야 합니다.\')'"
