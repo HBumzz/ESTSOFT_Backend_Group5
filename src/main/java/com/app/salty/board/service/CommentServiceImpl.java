@@ -6,6 +6,8 @@ import com.app.salty.board.entity.Comment;
 import com.app.salty.board.repository.ArticleRepository;
 import com.app.salty.board.repository.CommentRepository;
 import com.app.salty.user.repository.UserRepository;
+import com.app.salty.util.PointService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,15 +15,17 @@ import java.util.List;
 @Service
 public class CommentServiceImpl implements CommentService {
 
+    PointService pointService;
     CommentRepository commentRepository;
     ArticleRepository articleRepository;
     UserRepository userRepository;
 
     CommentServiceImpl(CommentRepository commentRepository
-            , ArticleRepository articleRepository, UserRepository userRepository) {
+            , ArticleRepository articleRepository, UserRepository userRepository, PointService pointService) {
         this.commentRepository = commentRepository;
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
+        this.pointService = pointService;
     }
 
     @Override
@@ -38,10 +42,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public SaveCommentResponseDto saveComment(SaveCommentRequestDto dto, Long articleId) {
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
         dto.setArticle(article);
         Comment comment = commentRepository.save(dto.toEntity());
+        pointService.addPoint(article.getUser(),100L);
         return new SaveCommentResponseDto(comment);
     }
 

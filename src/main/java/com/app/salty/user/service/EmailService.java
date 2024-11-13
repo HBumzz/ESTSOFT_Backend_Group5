@@ -20,6 +20,9 @@ public class EmailService {
 
     //메일 전송 및 코드 저장
     public String sendVerificationEmail(String email) {
+        if(userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email already exists");
+        }
         String verificationCode = generateVerificationCode();
         redisTemplate.opsForValue()
                 .set(getRedisKey(email), verificationCode,

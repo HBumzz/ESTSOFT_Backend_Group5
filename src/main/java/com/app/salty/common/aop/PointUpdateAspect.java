@@ -25,7 +25,7 @@ public class PointUpdateAspect {
     private final UserService userService;
 
     @AfterReturning(
-            pointcut ="execution(* com.app.salty.user.service.UserService.addPoint(..)) && args(user, point)"
+            pointcut ="execution(* com.app.salty.util.PointService.addPoint(..)) && args(user, point)"
             ,argNames = "joinPoint,user,point"
     )
     public void afterPointUpdate(JoinPoint joinPoint, Users user, Long point) {
@@ -36,8 +36,10 @@ public class PointUpdateAspect {
         if (point == 100L) {
             userService.addUserRole(user, Role.USER2);
             System.out.println("권한 업데이트 완료");
-        } else if (point == 500L) {
+        } else if (point == 300L) {
             userService.addUserRole(user, Role.USER3);
+        } else if (point == 500L) {
+            userService.addUserRole(user, Role.USER4);
         }
 
     }
