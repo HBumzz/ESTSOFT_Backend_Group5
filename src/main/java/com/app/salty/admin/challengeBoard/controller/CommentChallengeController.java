@@ -4,12 +4,16 @@ import com.app.salty.admin.challengeBoard.dto.request.CommentRequestDTO;
 import com.app.salty.admin.challengeBoard.dto.response.CommentResponseDTO;
 import com.app.salty.admin.challengeBoard.entity.ChallengeComment;
 import com.app.salty.admin.challengeBoard.service.ChallengeCommentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
+@Slf4j
 @RestController
-@RequestMapping("/api/challenges/{articleId}/comments")
+@RequestMapping("/api/chboard/{challengeId}/comments")
 public class CommentChallengeController {
     private final ChallengeCommentService challengeCommentService;
 
@@ -18,9 +22,9 @@ public class CommentChallengeController {
     }
 
     @PostMapping
-    public ResponseEntity<CommentResponseDTO> saveComment(@PathVariable Long articleId,
+    public ResponseEntity<CommentResponseDTO> saveComment(@PathVariable Long challengeId,
                                                           @RequestBody CommentRequestDTO request) {
-        ChallengeComment comment = challengeCommentService.saveComment(articleId, request);
+        ChallengeComment comment = challengeCommentService.saveComment(challengeId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommentResponseDTO(comment));
     }
 
@@ -38,7 +42,8 @@ public class CommentChallengeController {
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
+                                              @PathVariable Long challengeId) {
         challengeCommentService.delete(commentId);
         return ResponseEntity.ok().build();
     }

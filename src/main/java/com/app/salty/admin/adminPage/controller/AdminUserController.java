@@ -1,7 +1,13 @@
 package com.app.salty.admin.adminPage.controller;
 
+import com.app.salty.admin.adminPage.dto.request.UserRoleUpdateRequest;
+import com.app.salty.admin.adminPage.repository.AdminUserRepository;
 import com.app.salty.admin.adminPage.service.AdminUserService;
+import com.app.salty.user.common.Role;
+import com.app.salty.user.entity.Roles;
+import com.app.salty.user.entity.UserRoleMapping;
 import com.app.salty.user.entity.Users;
+import com.app.salty.user.repository.RolesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -16,12 +22,29 @@ import java.util.Optional;
 public class AdminUserController {
 
     private final AdminUserService adminUserService;
+    private final AdminUserRepository adminUserRepository;
 
-    // 유저 전체 정보 조회
-    @GetMapping
-    public ResponseEntity<List<Users>> getAllUsers() {
-        List<Users> users = adminUserService.getAllUsers();
-        return ResponseEntity.ok(users);
+    private final RolesRepository rolesRepository;
+
+    @PutMapping("/roles")
+    public ResponseEntity<Object> updateUserRoles(@RequestBody UserRoleUpdateRequest request) {
+
+        Users found = adminUserRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("not found"));
+
+        if(request.getRoles() == null || request.getRoles().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<UserRoleMapping> newRoles = request.getRoles().stream().map(s -> {
+            Roles role = rolesRepository.findByRole(Role.valueOf(s)).get();
+            return UserRoleMapping.builder().user(found).role(role).build();
+        }).toList();
+
+        found.updateUsersMapping(newRoles);
+        adminUserRepository.save(found);
+
+        return ResponseEntity.ok().build();
     }
+
 
 }
