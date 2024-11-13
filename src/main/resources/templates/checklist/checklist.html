@@ -23,7 +23,7 @@
             <img th:src="${profileImage}" alt="프로필 이미지" class="profile-image">
         </div>
         <h2>
-            <span th:text="${userName}">닉네임</span>
+            <span class="user-name" th:text="${userName}">닉네임</span>
             <span th:text="${savingTitle}">님의 절약 금액</span>
         </h2>
         <div class="saving-amount" th:text="${totalAmount != null ? #numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT') + '원' : '0원'}">0원</div>
