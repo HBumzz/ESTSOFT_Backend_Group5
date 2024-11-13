@@ -13,6 +13,7 @@
 - Salty는 사용자로 하여금 합리적인 소비와 소비에 대한 피드백을 제공하는 서비스입니다.
 - 게시판 기능을 통해서 일상적인 내용 뿐 아니라, 사용하지 않는 물건을 판매하거나, 필요한 물건을 구매할 수 있으며, 무료 나눔 또한 가능합니다.
 - 챌린지와 체크리스트 기능을통해서 좀 더 효율적인 소비를 할 수 있습니다.
+- 채팅 기능을 통해서 다른 사용자와의 커뮤니케이션 또한 가능합니다.
 
 <br>
 
@@ -42,76 +43,74 @@
 
 # Screens
 
-### 회원가입/로그인/프로필
+## 회원가입/로그인/프로필
 
-- 소셜로그인
+- 소셜로그인 기능을 제공합니다.
 
-<img style="width:200px" src="src/main/resources/static/README/login.gif"/>
+<img style="width:200px" src="src/main/resources/static/README/login.jpg"/>
 
-### 메인 화면
+## 메인 화면
 - 커뮤니티에서 제공하는 모든 서비스에 접근가능(사용자 정보, 게시판, 챌린지, 체크리스트)
 
-<img style="width:400px" src="src/main/resources/static/README/main.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/main.jpg"/>
 
-### 사용자 관련 서비스
+## 사용자 관련 서비스
 #### 1. 사용자 정보(User)
 - 사용자의 닉네임, 프로실 사진, 자기소개 와 서비스 이용과 관련된 권한과 포인트등을 확인할 수 있습니다.
 
-<img style="width:400px" src="src/main/resources/static/README/user_info.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/user_info.jpg"/>
 
 #### 2. 프로필 설정
+- 사용자의 프로필을 설정합니다. 프로필 사진, 닉네임, 자기소개를 설정할 수 있습니다.
 
-<img style="width:400px" src="src/main/resources/static/README/"/>
+<img style="width:400px" src="src/main/resources/static/README/profileSet.jpg"/>
 
-### 달성완료 등록
+### 3. 출석 체크
+- 출석체크 후 포인트를 지급합니다. 포인트를 기준으로 다른 서비스를 이용할 수 있습니다.
 
-- 본인 사진 등록, 달성완료 소감 등록
-- 이걸해냄 도장 지급
+<img style="width:400px" src="src/main/resources/static/README/chool.jpg"/>
 
-<img src="res/gif_file/04_achievement.gif"  width="300"/>
+## 게시판 서비스(BOARD)
+#### 1. 게시판 리스트(일반 유저)
+- 모든 게시글을 확인할 수 있습니다.
+- 게시글은 크게 일상, 나눔, 중고거래 카테고리로 구분됩니다. 사용자의 필요에 맞는 글을 작성할 수 있습니다.
+- 제목뒤에는 게시글의 댓글 수가 표시됩니다.
 
-### 마이피드
+<img style="width:400px" src="src/main/resources/static/README/boardlist.gif"/>
 
-- 카테고리 선택 및 달성 여부 탭 선택
+#### 2. 게시판 리스트(관리자)
+- 관리자는 게시글을 관리할 수 있습니다.
+- 숨김 처리를 하면 일반 사용자는 해당 게시글을 확인할 수 없습니다.
 
-<img src="res/gif_file/05_myfeed.gif"  width="300"/>
+<img style="width:400px" src="src/main/resources/static/README/admin_board_list_01.gif"/>
+<img style="width:400px" src="src/main/resources/static/README/admin_board_list_02.gif"/>
 
-### 팔로우/친구찾기
+#### 3. 게시글 작성/수정
+- 게시글을 작성(수정)할 수 있습니다.
+- text, image, video를 첨부할 수 있습니다.
+- 마크다운 형식으로도 작성 가능합니다.
 
-- 팔로우 및 팔로잉, 팔로워 탭 선택
-- 닉네임 검색을 통한 친구 찾기
+<img style="width:400px" src="src/main/resources/static/README/new-article.gif"/>
 
-<img src="res/gif_file/06_follow.gif"  width="300"/>
+#### 4. 게시글 상세 보기
+- 선택한 게시물의 상세 내용을 확인할 수 있습니다.
+- 댓글도 바로 작성할 수 있습니다.
+- 좋아요 기능을 통해 게시글과 댓글에 대한 호감을 표현할 수 있습니다.
+- 게시글의 수정/삭제, 댓글의 삭제 기능 또한 제공합니다.
 
-### 전체피드
+<img style="width:400px" src="src/main/resources/static/README/show_article.gif"/>
 
-- 응원해요 피드
-    - 카테고리별 조회 및 베스트 버킷리스트 조회
-    - 응원해요(좋아요) 기능
-    - 나도할래(스크랩) 기능
+## 채팅 서비스
 
-<img src="res/gif_file/07_cheerupfeed.gif"  width="300"/>
 
-- 축하해요 피드
-    - 카테고리별 조회 및 베스트 버킷리스트 조회
-    - 축하해요(좋아요) 기능
-    - 나도할래(스크랩) 기능
 
-<img src="res/gif_file/08_achievedfeed.gif"  width="300"/>
+## 챌린지 서비스
 
-### 공유하기
 
-- 이미지 저장
 
-<img src="res/gif_file/09_share_imagedownload.gif"  width="300"/>
+## 체크 리스트
 
-- 카카오 공유 API 사용
 
-<img src="res/gif_file/09_share_kakao.gif"  width="300"/>
-
-- url 공유
-
-<img src="res/gif_file/09_share_url.gif"  width="300"/>
 
 <br><br>
 
