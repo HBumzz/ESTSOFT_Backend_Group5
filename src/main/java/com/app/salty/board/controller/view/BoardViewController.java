@@ -139,7 +139,7 @@ public class BoardViewController {
 
         likeService.Like(requestDto);
 
-        return "redirect:board/article/" + articleId;
+        return "redirect:/board/article/" + articleId;
     }
 
     // 새글 작성 페이지
@@ -157,7 +157,7 @@ public class BoardViewController {
         GetArticleResponseDto responseDto = articleService.getArticleById(articleId);
 
         if (!responseDto.getWriterId().equals(currentUser.getId())) {
-            MessageDto message = new MessageDto("작성자만 수정할 수 있습니다.", "board/article/" + articleId);
+            MessageDto message = new MessageDto("작성자만 수정할 수 있습니다.", "/board/article/" + articleId);
             model.addAttribute("data", message);
             return showMessageAndRedirect(message, model);
         }
