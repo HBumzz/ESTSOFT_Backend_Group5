@@ -11,7 +11,7 @@ spring:
 #    password: ''
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://salty.cd6ykcyi6r36.ap-northeast-2.rds.amazonaws.com:3306/salty_db?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/salty
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
@@ -31,7 +31,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
