@@ -234,7 +234,7 @@ sequenceDiagram
 
 <br>
 
-# [기능 명세서 ](http://13.125.188.20:8080/swagger-ui/index.html)
+# [API 명세서 ](http://13.125.188.20:8080/swagger-ui/index.html)
 <img style="width:400px" src="src/main/resources/static/README/swaager_1.png" width=500/>
 <img style="width:400px" src="src/main/resources/static/README/swaager_2.png" width=500/>
 <img style="width:400px" src="src/main/resources/static/README/swaager_3.png" width=500/>
